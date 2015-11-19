@@ -16,6 +16,8 @@
 #include "map.hxx"
 #include "camera.hxx"
 #include <vector>
+#include "render.hxx"
+#include "map-cell.hxx"
 
 class View {
   public:
@@ -31,6 +33,8 @@ class View {
 
   //! method to handle display of the view
     void Render ();
+
+    void Recursive_Render_Chunk(Tile t);
 
   //! animation method
     void Animate ();
@@ -49,6 +53,12 @@ class View {
   //! \param action was the button pressed or released?
   //! \param mods   the state of the modifier keys
     void HandleMouseButton (int button, int action, int mods);
+
+  /*! \brief initialize the renderers by loading and compiling their shaders.
+   *  Note that this function needs to be called after the current
+   *  OpenGL context has been set.
+   */
+    void InitRenderers ();
 
   //! handle resizing the view
     void Resize (int wid, int ht);
@@ -86,6 +96,9 @@ class View {
     double	_lastFrameTime;	//!< time of last frame
     double	_lastStep;	//!< time of last animation step
     cs237::AABBd _mapBBox;	//!< a bounding box around the entire map
+
+    Renderer * wfRender;
+    Renderer * fRender;
 
   // resource management
     class BufferCache	*_bCache;	//! cache of OpenGL VAO objects used for chunks

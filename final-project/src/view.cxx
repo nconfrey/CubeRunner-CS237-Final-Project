@@ -163,6 +163,74 @@ void View::Resize (int wid, int ht)
 
 }
 
+/* InitRenderers:
+ */
+void View::InitRenderers ()
+{
+    this->wfRender = new WireframeRenderer();
+    //this->fRender = new ForwardRenderer();
+}
+
+/* main render loop */
+
+void View::Render ()
+{
+    if (! this->_isVis)
+    return;
+
+    double now = glfwGetTime();
+    float dt = float(now - this->_lastFrameTime);
+    this->_lastFrameTime = now;
+
+    //loop through all cells in map
+    for(int row = 0; row < this->_map->nRows(); row++){
+      for(int col = 0; col < this->_map->nCols(); col++){
+        //get the cell from the map
+        Cell *c = this->_map->Cell(row, col);
+        //get the tile from the cell
+        Tile t = c->Tile(0); //this is the root of the quad tree
+
+        //here we check if it is in the view frustrum
+
+        //call function to render at appropriate level of detail
+        Recursive_Render_Chunk(t);
+
+      }
+    }
+
+    glfwSwapBuffers (this->_window);
+
+}
+
+void View::Recursive_Render_Chunk(Tile t)
+{
+  //here we also have to get texture and rnomal information from the respective tqt's
+
+  //calculate SSE
+  float sse = 0; //replace with real equation
+  int child_null_flag = 0;
+
+  if(sse <= this->ErrorLimit()){
+    //error within tolerance, so we render this node
+    t.Render_Chunk();
+  } else {
+    //verify that children are not null
+    for(int i = 0; i < t.NumChildren(); i++){
+      if(t.Child(i) == NULL)
+        child_null_flag = 1;
+    }
+    if(child_null_flag){
+      t.Render_Chunk(); //we can't go down another level, so we have to render this one
+    } else {
+      //so check all the children
+      for(int j = 0; j < t.NumChildren(); j++){
+        Recursive_Render_Chunk(*(t.Child(j)));
+      }
+    }
+  }
+}
+
+
 /***** Local utility functions *****/
 
 static void Error (int err, const char *msg)

@@ -18,6 +18,7 @@
 #include <fstream>
 #include <vector>
 #include <iomanip>
+#include "mesh.hxx"
 
 // A cell file has the following layout on disk.  All data is in little-endian layout.
 //
@@ -217,6 +218,33 @@ void Tile::_Init (Cell *cell, uint32_t id, uint32_t row, uint32_t col, uint32_t 
     }
 
 }
+
+
+void Tile::Render_Chunk()
+{
+    struct Chunk const c = this->Chunk();
+    Mesh *m = new Mesh(GL_TRIANGLES);
+
+    //scale the vertex array and create vec3 array
+    float hscale = this->_cell->hScale();
+    float vscale = this->_cell->vScale();
+    cs237::vec3f tmp;
+    cs237::vec3f * v = new cs237::vec3f[c._nVertices];
+    for(int i = 0; i<c._nVertices; i++){
+        tmp = cs237::vec3f(c._vertices[i]._x / hscale,
+                            c._vertices[i]._y / vscale,
+                            c._vertices[i]._z / hscale);
+
+        v[i][0] = tmp[0];
+        v[i][1] = tmp[1];
+        v[i][2] = tmp[2];
+    }
+
+    m->LoadVertices(c._nVertices, v);
+    m->LoadIndices(c._nIndices, c._indices);
+    m->Draw();
+}
+
 
 void Tile::Dump (std::ostream &outS)
 {
