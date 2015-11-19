@@ -46,13 +46,13 @@ void Mesh::LoadVertices (int nVerts, const cs237::vec3f *verts)
 }
 
 //! initialize the element array for the mesh
-void Mesh::LoadIndices (int n, const uint32_t *indices)
+void Mesh::LoadIndices (int n, const uint16_t *indices)
 {
     this->nIndices = n;
 	CS237_CHECK( glBindVertexArray (this->vaoId) );
     CS237_CHECK( glGenBuffers (1, &this->indicesVBOId) );
     CS237_CHECK( glBindBuffer (GL_ELEMENT_ARRAY_BUFFER, this->indicesVBOId) );
-    CS237_CHECK( glBufferData (GL_ELEMENT_ARRAY_BUFFER, n*sizeof(uint32_t), indices, GL_STATIC_DRAW) );
+    CS237_CHECK( glBufferData (GL_ELEMENT_ARRAY_BUFFER, n*sizeof(uint16_t), indices, GL_STATIC_DRAW) );
 
     //unbind and cleanup
     CS237_CHECK( glBindBuffer (GL_ELEMENT_ARRAY_BUFFER, 0) );

@@ -35,7 +35,7 @@ struct Mesh {
     void LoadVertices (int nVerts, const cs237::vec3f *verts);
 
   //! initialize the element array for the mesh
-    void LoadIndices (int n, const uint32_t *indices);
+    void LoadIndices (int n, const uint16_t *indices);
 
     //! initialize the texture-coordinate data buffer for the mesh
     void LoadTexCoords (int nCoords, cs237::vec2f *tcoords);

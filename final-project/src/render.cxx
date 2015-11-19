@@ -77,21 +77,6 @@ static cs237::ShaderProgram *LoadShader (std::string const & shaderPrefix, bool 
 }
 
 
-void View::Render ()
-{
-    if (! this->_isVis)
-    return;
-
-    double now = glfwGetTime();
-    float dt = float(now - this->_lastFrameTime);
-    this->_lastFrameTime = now;
-
-    /* YOUR CODE HERE */
-
-    glfwSwapBuffers (this->_window);
-
-}
-
 /***** virtual class Renderer member functions *****/
 
 Renderer::Renderer (cs237::ShaderProgram *sh)
@@ -124,14 +109,13 @@ void WireframeRenderer::Enable (cs237::mat4f const &projectionMat)
     cs237::setUniform(projLoc, projectionMat);
 }
 
-void WireframeRenderer::EnableShadows (cs237::mat4f const &lightProjection, cs237::mat4f const &lightView){};
 
 void WireframeRenderer::Render(cs237::mat4f const &modelViewMat, Mesh *mesh, int type)
 {
   CS237_CHECK(cs237::setUniform(mvLoc, modelViewMat * mesh->toWorld));
   cs237::color4f color = cs237::color4f(mesh->color, 1); //need to change the color into a 4vector for shader programs
   cs237::setUniform(colorLoc, color);
-  mesh->Draw();
+  //mesh->Draw();
 }
 
 

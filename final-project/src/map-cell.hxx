@@ -65,6 +65,7 @@ class Cell {
   //! the normal-map texture-quad-tree for this cell (nullptr if not present)
     TQT::TextureQTree *NormTQT () const { return this->_normTQT; }
 
+
   // constants
     static const uint32_t MAGIC = 0x63656C6C;  // 'cell'
     static const uint32_t MIN_NUM_LODS = 1;
@@ -140,6 +141,8 @@ class Tile {
 
   // dump the tile tree to an output stream
     void Dump (std::ostream &outS);
+
+    void Render_Chunk();
 
   private:
     Cell	*_cell;		//!< the cell that contains this tile
