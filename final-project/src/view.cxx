@@ -299,7 +299,7 @@ bool View::inFrustum(Tile *t)
   cs237::AABBd boundingBox = t->BBox();
   printf("got the bounding box\n");
   Plane *frust = new Plane();
-  Plane *frustum = frust->extractPlanes(this->Camera().projTransform());
+  Plane **frustum = frust->extractPlanes(this->Camera().projTransform());
   printf("we've extracted the planes\n");
   int totalIn = 0;
 
@@ -313,7 +313,7 @@ bool View::inFrustum(Tile *t)
     {
       //test this corner against all of the planes
       cs237::vec3d c = boundingBox.corner(i);
-      if(frustum[frustPlane].ClassifyPoint(c) == Plane::OUTSIDE)
+      if(frustum[frustPlane]->ClassifyPoint(c) == Plane::OUTSIDE)
       {
         somewhatIn = 0;
         inCount--;

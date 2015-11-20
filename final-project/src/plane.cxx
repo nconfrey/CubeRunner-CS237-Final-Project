@@ -28,14 +28,15 @@
 	Attributed to Gil Gribb and Klaus Hartmann
 
 */
- Plane * Plane::extractPlanes(cs237::mat4x4f projTransform)
+ Plane ** Plane::extractPlanes(cs237::mat4x4f projTransform)
  {
  	printf("about to extract planes\n");
- 	Plane **p_planes;
- 	for(int i = 0; i <= 5; i++)
+ 	Plane **p_planes = new Plane *[5];
+ 	for(int i = 0; i <=5; i++)
  		p_planes[i] = new Plane();
  	// Left clipping plane
 	 p_planes[0]->a = projTransform[3][0] + projTransform[0][0];
+	 printf("this worked\n");
 	 p_planes[0]->b = projTransform[3][1] + projTransform[0][1];
 	 p_planes[0]->c = projTransform[3][2] + projTransform[0][2];
 	 p_planes[0]->d = projTransform[3][3] + projTransform[0][3];
@@ -65,6 +66,7 @@
 	 p_planes[5]->c = projTransform[3][2] - projTransform[2][2];
 	 p_planes[5]->d = projTransform[3][3] - projTransform[2][3];
 
+	 printf("extracted planes\n");
 	 //Normalize??
 
 	 return p_planes;
