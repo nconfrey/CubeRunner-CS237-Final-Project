@@ -97,6 +97,32 @@ void Mesh::LoadNormals (int nNorms, cs237::vec3f *norms)
     CS237_CHECK( glBindBuffer (GL_ARRAY_BUFFER, 0) );
 }
 
+    //set the color of the mesh
+    void Mesh::SetColor(cs237::color3f c)
+    {
+        this->color = c;
+    } 
+
+    //set the world transformation matrix of the mesh
+    void Mesh::SetToWorldMatrix(cs237::mat4f m)
+    {
+        this->toWorld = m;
+    } 
+
+    //set the texture of the mesh
+    //NOTE: you still have to use LoadTexCoords
+    void Mesh::SetTexture(cs237::texture2D * texture, cs237::image2d * image)
+    {
+        this->texture = texture;
+        this->image = image;
+    } 
+
+    //set the position of the mesh
+    void Mesh::SetPosition(cs237::vec3f pos)
+    {
+        this->pos = pos;
+    }
+
 void Mesh::Draw ()
 {
     CS237_CHECK(glBindVertexArray(this->vaoId));

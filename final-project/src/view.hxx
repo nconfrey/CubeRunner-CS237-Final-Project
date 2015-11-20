@@ -34,7 +34,7 @@ class View {
   //! method to handle display of the view
     void Render ();
 
-    void Recursive_Render_Chunk(Tile t);
+    void Recursive_Render_Chunk(Tile *t, Renderer *r);
 
   //! animation method
     void Animate ();
@@ -59,6 +59,9 @@ class View {
    *  OpenGL context has been set.
    */
     void InitRenderers ();
+
+    //calculate the model view matrix for the given camera position
+    void UpdateModelViewMat ();
 
   //! handle resizing the view
     void Resize (int wid, int ht);
@@ -96,6 +99,9 @@ class View {
     double	_lastFrameTime;	//!< time of last frame
     double	_lastStep;	//!< time of last animation step
     cs237::AABBd _mapBBox;	//!< a bounding box around the entire map
+
+    cs237::mat4f modelViewMat; //!< the current model-view matrix
+    cs237::mat4f projectionMat; //<! the camera's projection matrix
 
     Renderer * wfRender;
     Renderer * fRender;

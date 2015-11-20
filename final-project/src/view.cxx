@@ -23,6 +23,39 @@ static GLFWwindow *InitGLFW (int wid, int ht, const char *title);
 // animation time step (100Hz)
 #define TIME_STEP	0.001
 
+#define YELLOW_COLOR  cs237::color4f(1.0f, 1.0f, 0.0f, 1.0f);    /*!< Yellow color */
+
+static void SetViewport (GLFWwindow *win)
+{
+    int fbWid, fbHt;
+    glfwGetFramebufferSize (win, &fbWid, &fbHt);
+    glViewport(0, 0 , fbWid, fbHt);
+
+}
+
+/* The vertices for the cube */ 
+static cs237::vec3f cubeVertices[8]= {cs237::vec3f(-1.0f,  -1.0f,  1.0f), //0
+                   cs237::vec3f (-1.0f,  1.0f,  1.0f), //1
+                   cs237::vec3f ( 1.0f,  1.0f,  1.0f), //2
+                   cs237::vec3f( 1.0f,  -1.0f,  1.0f), //3
+                   cs237::vec3f (-1.0f,  -1.0f, -1.0f), //4
+                   cs237::vec3f (-1.0f,  1.0f, -1.0f), //5
+                   cs237::vec3f ( 1.0f,  1.0f, -1.0f), //6
+                   cs237::vec3f ( 1.0f,  -1.0f, -1.0f)}; //7 
+
+/* the indices that allow us to create the cube. */ 
+static const uint16_t cubeIndices[36] = {
+    0,2,1,  0,3,2,
+    4,3,0,  4,7,3,
+    4,1,5,  4,0,1,
+    3,6,2,  3,7,6,
+    1,6,5,  1,2,6,
+    7,5,6,  7,4,5
+  };  
+
+static const cs237::color4f cubeColor = YELLOW_COLOR; 
+
+
 /***** class View member functions *****/
 
 View::View (Map *map)
@@ -49,8 +82,8 @@ void View::Init (int wid, int ht)
   // Place the viewer in the center of cell(0,0), just above the
   // cell's bounding box.
     cs237::AABBd bb = this->_map->Cell(0,0)->Tile(0).BBox();
-    cs237::vec3d pos = bb.center();
-    pos.y = bb.maxY() + 0.01 * (bb.maxX() - bb.minX());
+    cs237::vec3d pos = cs237::vec3d(0.0, 0.0, 8.0);//bb.center();
+    //pos.y = bb.maxY() + 0.01 * (bb.maxX() - bb.minX());
 
   // The camera's direction is toward the bulk of the terrain
     cs237::vec3d  at;
@@ -60,6 +93,8 @@ void View::Init (int wid, int ht)
     else {
 	at = pos + cs237::vec3d(double(this->_map->nCols()-1), 0.0, double(this->_map->nRows()-1));
     }
+
+    at = cs237::vec3d(0.0,0.0,0.0); //!!!!!!!
     this->_cam.move(pos, at, cs237::vec3d(0.0, 1.0, 0.0));
 
   // set the FOV and near/far planes
@@ -69,8 +104,11 @@ void View::Init (int wid, int ht)
 
   // initialize shaders
     /* YOUR CODE HERE */
+    this->InitRenderers();
 
     /* ADDITIONAL INITIALIZATION */
+    this->projectionMat = this->Camera().projTransform();
+    this->UpdateModelViewMat ();
 
   // initialize animation state
     this->_lastStep =
@@ -171,6 +209,11 @@ void View::InitRenderers ()
     //this->fRender = new ForwardRenderer();
 }
 
+void View::UpdateModelViewMat ()
+{
+  this->modelViewMat = this->Camera().ModelViewMatrix();
+}
+
 /* main render loop */
 
 void View::Render ()
@@ -182,49 +225,84 @@ void View::Render ()
     float dt = float(now - this->_lastFrameTime);
     this->_lastFrameTime = now;
 
+    //update model view mat
+    this->UpdateModelViewMat();
+
+    //clear the screen
+    glClearColor (0.2f, 0.2f, 0.4f, 1.0f);  // clear the surface
+    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    //choose renderer
+    Renderer *r;
+    if(this->_wireframe)
+      r = this->wfRender;
+    else
+      r = this->wfRender; //eventually this will be the other renderer
+
+    r->Enable(this->projectionMat);
+
+
+    //print camera
+    //printf("%f, %f, %f\n", this->_cam.position ()[0],this->_cam.position ()[1],this->_cam.position ()[2]);
+    //printf("%f, %f, %f\n", this->_cam.direction ()[0],this->_cam.direction()[1],this->_cam.direction()[2]);
+    //printf("%f, %f, %f\n", this->_cam.up ()[0],this->_cam.up ()[1],this->_cam.up ()[2]);
+
+    //TESTCUBE
+    Mesh *cube = new Mesh(GL_TRIANGLES);
+    cube->LoadVertices(8, cubeVertices);
+    cube->LoadIndices(36, cubeIndices);
+    cube->SetColor(cs237::color3f(0.0f, 0.85f, 0.313f));
+    cube->SetToWorldMatrix(cs237::translate(cs237::vec3f(0.0f,0.0f,0.0f)));
+    r->Render(this->modelViewMat, cube, 0);
+
     //loop through all cells in map
-    for(int row = 0; row < this->_map->nRows(); row++){
+    /*for(int row = 0; row < this->_map->nRows(); row++){
       for(int col = 0; col < this->_map->nCols(); col++){
         //get the cell from the map
         Cell *c = this->_map->Cell(row, col);
         //get the tile from the cell
-        Tile t = c->Tile(0); //this is the root of the quad tree
+        Tile *t = &(c->Tile(0)); //this is the root of the quad tree
+        struct Chunk chu = t->Chunk();
+        for(int ci = 0; ci < 100; ci++){
+          printf("x=%d", chu._vertices[ci]._x);
+        }
 
         //here we check if it is in the view frustrum
 
         //call function to render at appropriate level of detail
-        Recursive_Render_Chunk(t);
+        Recursive_Render_Chunk(t, r);
 
       }
-    }
+    }*/
 
     glfwSwapBuffers (this->_window);
 
 }
 
-void View::Recursive_Render_Chunk(Tile t)
+void View::Recursive_Render_Chunk(Tile *t, Renderer *r)
 {
+
   //here we also have to get texture and rnomal information from the respective tqt's
 
   //calculate SSE
   float sse = 0; //replace with real equation
   int child_null_flag = 0;
 
-  if(sse <= this->ErrorLimit()){
+  if(true){///sse <= this->ErrorLimit()){
     //error within tolerance, so we render this node
-    t.Render_Chunk();
+    t->Render_Chunk(r, modelViewMat);
   } else {
     //verify that children are not null
-    for(int i = 0; i < t.NumChildren(); i++){
-      if(t.Child(i) == NULL)
+    for(int i = 0; i < t->NumChildren(); i++){
+      if(t->Child(i) == NULL)
         child_null_flag = 1;
     }
     if(child_null_flag){
-      t.Render_Chunk(); //we can't go down another level, so we have to render this one
+      t->Render_Chunk(r, this->modelViewMat); //we can't go down another level, so we have to render this one
     } else {
       //so check all the children
-      for(int j = 0; j < t.NumChildren(); j++){
-        Recursive_Render_Chunk(*(t.Child(j)));
+      for(int j = 0; j < t->NumChildren(); j++){
+        Recursive_Render_Chunk(t->Child(j), r);
       }
     }
   }
@@ -266,6 +344,9 @@ static GLFWwindow *InitGLFW (int wid, int ht, const char *title)
     }
 
     glfwMakeContextCurrent (window);
+
+    SetViewport (window);
+
 
   // Check the OpenGL version
     {

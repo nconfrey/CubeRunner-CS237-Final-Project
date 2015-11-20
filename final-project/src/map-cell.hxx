@@ -15,6 +15,7 @@
 #include "map.hxx"
 #include "qtree-util.hxx"
 #include "tqt.hxx"
+ #include "render.hxx"
 
 class Tile;
 
@@ -142,7 +143,7 @@ class Tile {
   // dump the tile tree to an output stream
     void Dump (std::ostream &outS);
 
-    void Render_Chunk();
+    void Render_Chunk(Renderer *r, cs237::mat4f const &modelViewMat);
 
   private:
     Cell	*_cell;		//!< the cell that contains this tile

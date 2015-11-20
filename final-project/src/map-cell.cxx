@@ -181,8 +181,8 @@ Tile::Tile ()
 
 Tile::~Tile ()
 {
-    delete this->_chunk._vertices;
-    delete this->_chunk._indices;
+    //delete this->_chunk._vertices;
+    //delete this->_chunk._indices;
 }
 
 void Tile::_AllocChunk (uint32_t nv, uint32_t ni)
@@ -220,8 +220,10 @@ void Tile::_Init (Cell *cell, uint32_t id, uint32_t row, uint32_t col, uint32_t 
 }
 
 
-void Tile::Render_Chunk()
+void Tile::Render_Chunk(Renderer *r, cs237::mat4f const &modelViewMat)
 {
+    //this->Dump(std::cout);
+
     struct Chunk const c = this->Chunk();
     Mesh *m = new Mesh(GL_TRIANGLES);
 
@@ -242,7 +244,15 @@ void Tile::Render_Chunk()
 
     m->LoadVertices(c._nVertices, v);
     m->LoadIndices(c._nIndices, c._indices);
-    m->Draw();
+
+    //for now we manually set color, but eventually we need to change this to get the color from the tree
+    m->SetColor(cs237::color3f(0.0, 0.85, 0.313));
+    m->SetToWorldMatrix(cs237::translate(cs237::vec3f(0,0,0)));
+    glPrimitiveRestartIndex(0xffff);
+    glEnable(GL_PRIMITIVE_RESTART);
+    r->Render(modelViewMat, m, 0);
+
+    //free m
 }
 
 

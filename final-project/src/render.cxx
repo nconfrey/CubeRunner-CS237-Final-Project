@@ -91,9 +91,9 @@ Renderer::~Renderer ()
 /***** class WireframeRenderer member functions *****/
 
 WireframeRenderer::WireframeRenderer ()
-    : Renderer (LoadShader (SHADER_DIR + std::string("shader")))
+    : Renderer (LoadShader (SHADER_DIR "wireframeshader"))
 { 
-  mvLoc = _shader->UniformLocation ("camera");
+  mvLoc = _shader->UniformLocation ("modelView");
   projLoc = _shader->UniformLocation("projection");
   colorLoc = _shader->UniformLocation("color");
 }
@@ -112,10 +112,11 @@ void WireframeRenderer::Enable (cs237::mat4f const &projectionMat)
 
 void WireframeRenderer::Render(cs237::mat4f const &modelViewMat, Mesh *mesh, int type)
 {
-  CS237_CHECK(cs237::setUniform(mvLoc, modelViewMat * mesh->toWorld));
+  CS237_CHECK(cs237::setUniform(mvLoc, modelViewMat));
   cs237::color4f color = cs237::color4f(mesh->color, 1); //need to change the color into a 4vector for shader programs
   cs237::setUniform(colorLoc, color);
-  //mesh->Draw();
+  printf("about to draw mesh\n");
+  mesh->Draw(); 
 }
 
 
