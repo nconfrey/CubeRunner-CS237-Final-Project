@@ -129,5 +129,5 @@ void Mesh::Draw ()
     CS237_CHECK(glBindBuffer(GL_ARRAY_BUFFER, this->verticesVBOId));
     CS237_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indicesVBOId));
 
-    CS237_CHECK( glDrawElements (this->prim, this->nIndices, GL_UNSIGNED_INT, 0));
+    CS237_CHECK( glDrawElements (this->prim, this->nIndices, GL_UNSIGNED_SHORT, 0));
 }

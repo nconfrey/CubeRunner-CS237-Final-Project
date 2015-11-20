@@ -115,7 +115,7 @@ void WireframeRenderer::Render(cs237::mat4f const &modelViewMat, Mesh *mesh, int
   CS237_CHECK(cs237::setUniform(mvLoc, modelViewMat));
   cs237::color4f color = cs237::color4f(mesh->color, 1); //need to change the color into a 4vector for shader programs
   cs237::setUniform(colorLoc, color);
-  printf("about to draw mesh\n");
+  //printf("about to draw mesh\n");
   mesh->Draw(); 
 }
 

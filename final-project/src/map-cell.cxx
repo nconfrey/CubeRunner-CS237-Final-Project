@@ -224,6 +224,9 @@ void Tile::Render_Chunk(Renderer *r, cs237::mat4f const &modelViewMat)
 {
     //this->Dump(std::cout);
 
+        glEnable(GL_PRIMITIVE_RESTART);
+    glPrimitiveRestartIndex(0xffff);
+
     struct Chunk const c = this->Chunk();
     Mesh *m = new Mesh(GL_TRIANGLES);
 
@@ -243,13 +246,19 @@ void Tile::Render_Chunk(Renderer *r, cs237::mat4f const &modelViewMat)
     }
 
     m->LoadVertices(c._nVertices, v);
+    
+    //create new uint32 array
+    /*uint32_t * a = new uint32_t[c._nIndices];
+    for(int i = 0; i<c._nIndices; i++){
+        a[i] = (uint32_t) c._indices[i];
+        //printf("%u %hu\n",a[i],c._indices[i]);
+    }*/
+
     m->LoadIndices(c._nIndices, c._indices);
 
     //for now we manually set color, but eventually we need to change this to get the color from the tree
     m->SetColor(cs237::color3f(0.0, 0.85, 0.313));
     m->SetToWorldMatrix(cs237::translate(cs237::vec3f(0,0,0)));
-    glPrimitiveRestartIndex(0xffff);
-    glEnable(GL_PRIMITIVE_RESTART);
     r->Render(modelViewMat, m, 0);
 
     //free m
