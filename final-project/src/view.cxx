@@ -229,7 +229,7 @@ void View::Render ()
       r = this->wfRender;
       glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     } else {
-      r = this->wfRender; //eventually this will be the other renderer
+      r = this->fRender; //eventually this will be the other renderer
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 
