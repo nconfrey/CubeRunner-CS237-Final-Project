@@ -26,7 +26,8 @@ class Renderer {
     //! \param modelViewMat the model-view matrix for the mesh and camera
     //! \param mesh the mesh to be rendered
     //! \param type switch between flatShading (1) or WireFrame (2)
-    virtual void Render (cs237::mat4f const &modelViewMat, Mesh *mesh, float hscale, float vscale) = 0;
+    virtual void Render (cs237::mat4f const &modelViewMat, Mesh *mesh) = 0;
+    virtual void RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale) = 0;
 
   protected:
     //each one of the following classes has copies of these structs
@@ -53,7 +54,8 @@ class WireframeRenderer : public Renderer {
     int vscaleLoc;
 
     void Enable (cs237::mat4f const &projectionMat);
-    void Render (cs237::mat4f const &modelViewMat, Mesh *mesh, float hscale, float vscale);
+    void Render (cs237::mat4f const &modelViewMat, Mesh *mesh);
+    void RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale);
 
 };
 

@@ -40,15 +40,6 @@ void VAO::Load (struct Chunk const &chunk)
 
     CS237_CHECK( glBindVertexArray (this->_id) );
 
-    /*Vertex * mod_vs = new Vertex[chunk._nVertices];
-
-    for(int i = 0; i<chunk._nVertices; i++){
-      mod_vs[i]._x = chunk._vertices[i]._x; //* hscale;
-      mod_vs[i]._y = (uint16_t)chunk._vertices[i]._y * vscale;
-      mod_vs[i]._z = chunk._vertices[i]._z; //* hscale;
-      mod_vs[i]._morphDelta = chunk._vertices[i]._morphDelta;
-    }*/
-
   // setup the vertex array (4 shorts per vertex)
     CS237_CHECK( glBindBuffer (GL_ARRAY_BUFFER, this->_vBuf) );
     CS237_CHECK( glBufferData (GL_ARRAY_BUFFER, chunk.vSize(), chunk._vertices, GL_DYNAMIC_DRAW) );
@@ -62,6 +53,16 @@ void VAO::Load (struct Chunk const &chunk)
 
     CS237_CHECK( glBindVertexArray (0) );
 
+}
+
+void VAO::Render ()
+{
+    glEnable(GL_PRIMITIVE_RESTART);
+    glPrimitiveRestartIndex(0xffff);
+    CS237_CHECK( glBindVertexArray (this->_id) );
+    CS237_CHECK( glDrawElements (GL_TRIANGLE_STRIP, this->_nIndices, GL_UNSIGNED_SHORT, 0) );
+    CS237_CHECK( glBindVertexArray (0) );
+    glDisable(GL_PRIMITIVE_RESTART);
 }
 
 /**** class BufferCache member functions *****/

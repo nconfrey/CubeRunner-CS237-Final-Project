@@ -35,13 +35,7 @@ struct VAO {
 
   //! render the contents of the VAO using the current OpenGL state.  The VAO is rendered as
   //! a triangle strip.
-    void Render ()
-    {
-	CS237_CHECK( glBindVertexArray (this->_id) );
-	CS237_CHECK( glDrawElements (GL_TRIANGLE_STRIP, this->_nIndices, GL_UNSIGNED_SHORT, 0) );
-	CS237_CHECK( glBindVertexArray (0) );
-    }
-
+    void Render ();
 };
 
 //! A cache of VAO objects
