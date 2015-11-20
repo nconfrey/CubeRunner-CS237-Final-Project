@@ -13,6 +13,7 @@
 
 #include "cs237.hxx"
 #include "view.hxx"
+#include "plane.hxx"
 #include "map-cell.hxx"
 #include "buffer-cache.hxx"
 #include "texture-cache.hxx"
@@ -202,8 +203,53 @@ void View::Render ()
 
 }
 
+bool View::inFrustum(Tile t)
+{
+  cs237::AABBd boundingBox = t.BBox();
+  Plane *frust = new Plane();
+  Plane *frustum = frust->extractPlanes(this->Camera().projTransform());
+  int totalIn = 0;
+
+  //Test all 8 corners of the bounding box with the 6 planes of the view frustum
+  for(int frustPlane = 0; frustPlane < 6; frustPlane++)
+  {
+    //counting how many corners are in the planes
+    int inCount = 8;
+    int somewhatIn = 1;
+    for(int i = 0; i < 8; i++)
+    {
+      //test this corner against all of the planes
+      cs237::vec3d c = boundingBox.corner(i);
+      if(frustum[frustPlane].ClassifyPoint(c) == Plane::OUTSIDE)
+      {
+        somewhatIn = 0;
+        inCount--;
+      }
+    }
+
+    if(inCount == 0)
+    {
+      //all the corners of the bounding box were outside of the planes
+      return false;
+    }
+    totalIn += somewhatIn;
+  }
+
+  if(totalIn == 6)
+    return true; // all of the corners are inside the view
+
+  //otherwise, we are partially in which we will consider as an in for now
+  //will come back to this later when optimizing
+  return true;
+}
+
 void View::Recursive_Render_Chunk(Tile t)
 {
+  //check to see if this tile is in the view frustum to save time
+  if(!inFrustum(t))
+    return;
+
+
   //here we also have to get texture and rnomal information from the respective tqt's
 
   //calculate SSE
