@@ -66,6 +66,7 @@ View::View (Map *map)
 
 void View::Init (int wid, int ht)
 {
+
     this->_window = InitGLFW(wid, ht, this->_map->Name().c_str());
 
   // attach the view to the window so we can get it from callbacks
@@ -164,10 +165,10 @@ void View::HandleKey (int key, int scancode, int action, int mods)
       this->_cam.move(this->Camera().position()+cs237::vec3d(0.5, 0.0, 0.0));
       break;
       case GLFW_KEY_UP:
-      this->_cam.move(this->Camera().position()-cs237::vec3d(0.0, 0.0, 0.5));
+      this->_cam.move(this->Camera().position()-cs237::vec3d(0.0, 0.0, 5));
       break;
       case GLFW_KEY_DOWN:
-      this->_cam.move(this->Camera().position()-cs237::vec3d(0.0, 0.0, -0.5));
+      this->_cam.move(this->Camera().position()-cs237::vec3d(0.0, 0.0, -5));
       break;
       default: // ignore all other keys
 	return;
@@ -292,25 +293,26 @@ void View::Render ()
 
 }
 
+float View::SSE(Tile *t)
+{
+  double dist = t->BBox().distanceToPt(this->_cam.position());
+  return this->_cam.screenError(dist, t->Chunk()._maxError);
+}
+
 void View::Recursive_Render_Chunk(Tile *t, Renderer *r)
 {
-
   //here we also have to get texture and rnomal information from the respective tqt's
 
   //calculate SSE
-  float sse = 0; //replace with real equation
+  float sse = this->SSE(t); //replace with real equation
   int child_null_flag = 0;
 
-  if(true){///sse <= this->ErrorLimit()){
+  if(sse <= this->ErrorLimit()){
     //error within tolerance, so we render this node
     t->Render_Chunk(r, modelViewMat);
   } else {
     //verify that children are not null
-    for(int i = 0; i < t->NumChildren(); i++){
-      if(t->Child(i) == NULL)
-        child_null_flag = 1;
-    }
-    if(child_null_flag){
+    if(t->NumChildren() < 4){
       t->Render_Chunk(r, this->modelViewMat); //we can't go down another level, so we have to render this one
     } else {
       //so check all the children
