@@ -240,33 +240,20 @@ void View::Render ()
     this->UpdateModelViewMat();
 
     //clear the screen
-    glClearColor (0.2f, 0.2f, 0.4f, 1.0f);  // clear the surface
+    glClearColor (1.0f, 1.0f, 1.0f, 1.0f);  // clear the surface
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //choose renderer
     Renderer *r;
-    if(this->_wireframe)
+    if(this->_wireframe){
       r = this->wfRender;
-    else
+      glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    } else {
       r = this->wfRender; //eventually this will be the other renderer
-
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
 
     r->Enable(this->projectionMat);
-
-
-    //print camera
-    //printf("%f, %f, %f\n", this->_cam.position ()[0],this->_cam.position ()[1],this->_cam.position ()[2]);
-    //printf("%f, %f, %f\n", this->_cam.direction ()[0],this->_cam.direction()[1],this->_cam.direction()[2]);
-    //printf("%f, %f, %f\n", this->_cam.up ()[0],this->_cam.up ()[1],this->_cam.up ()[2]);
-
-    //TESTCUBE
-    /*Mesh *cube = new Mesh(GL_TRIANGLES);
-    cube->LoadVertices(8, cubeVertices);
-    cube->LoadIndices(36, cubeIndices);
-    cube->SetColor(cs237::color3f(0.0f, 0.85f, 0.313f));
-    cube->SetToWorldMatrix(cs237::translate(cs237::vec3f(0.0f,0.0f,0.0f)));
-    r->Render(this->modelViewMat, cube, 0);*/
 
     //loop through all cells in map
     for(int row = 0; row < this->_map->nRows(); row++){
@@ -276,11 +263,6 @@ void View::Render ()
         //get the tile from the cell
         Tile *t = &(c->Tile(0)); //this is the root of the quad tree
         struct Chunk chu = t->Chunk();
-        for(int ci = 0; ci < 100; ci++){
-          //printf("x=%d", chu._vertices[ci]._x);
-        }
-
-        //here we check if it is in the view frustrum
 
         //call function to render at appropriate level of detail
         Recursive_Render_Chunk(t, r);
@@ -324,37 +306,21 @@ void View::Recursive_Render_Chunk(Tile *t, Renderer *r)
 
 void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat)
 {
-    //this->Dump(std::cout);
-
     struct Chunk const c = t->Chunk();
-    Mesh *m = new Mesh(GL_TRIANGLE_STRIP);
 
-    //scale the vertex array and create vec3 array
+    //scales for the vertices
     float hscale = t->Cell()->hScale() /3.0f;
     float vscale = t->Cell()->vScale();
-    
-    //create new vertices array to store transformed values in
-    //eventualy we can do morphing here as well
-    /*Vertex * mod_vs = new Vertex[c._nVertices];
 
-    for(int i = 0; i<c._nVertices; i++){
-      mod_vs[i]._x = c._vertices[i]._x * hscale;
-      mod_vs[i]._y = c._vertices[i]._y * vscale;
-      mod_vs[i]._z = c._vertices[i]._z * hscale;
-    }
-
-    m->LoadVertices(c._nVertices, mod_vs);
-
-    m->LoadIndices(c._nIndices, c._indices);*/
 
     //apparently we have a function for this
-    m->vao = new VAO();
-    m->vao->Load(c);
+    VAO *vao = new VAO();
+    vao->Load(c);
 
     //for now we manually set color, but eventually we need to change this to get the color from the tree
-    m->SetColor(cs237::color3f(0.0, 0.85, 0.313));
-    m->SetToWorldMatrix(cs237::translate(cs237::vec3f(0,0,0)));
-    r->Render(modelViewMat, m, hscale, vscale);
+
+    //render the chunk
+    r->RenderChunk(modelViewMat, vao, hscale, vscale);
 
     //free m
 }
