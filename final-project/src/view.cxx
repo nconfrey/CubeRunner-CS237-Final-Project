@@ -13,7 +13,6 @@
 
 #include "cs237.hxx"
 #include "view.hxx"
-#include "map-cell.hxx"
 #include "buffer-cache.hxx"
 #include "texture-cache.hxx"
 
@@ -251,7 +250,7 @@ void View::Render ()
     else
       r = this->wfRender; //eventually this will be the other renderer
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     r->Enable(this->projectionMat);
 
@@ -309,11 +308,11 @@ void View::Recursive_Render_Chunk(Tile *t, Renderer *r)
 
   if(sse <= this->ErrorLimit()){
     //error within tolerance, so we render this node
-    t->Render_Chunk(r, modelViewMat);
+    this->Render_Chunk(t, r, modelViewMat);
   } else {
     //verify that children are not null
     if(t->NumChildren() < 4){
-      t->Render_Chunk(r, this->modelViewMat); //we can't go down another level, so we have to render this one
+      this->Render_Chunk(t, r, this->modelViewMat); //we can't go down another level, so we have to render this one
     } else {
       //so check all the children
       for(int j = 0; j < t->NumChildren(); j++){
@@ -321,6 +320,59 @@ void View::Recursive_Render_Chunk(Tile *t, Renderer *r)
       }
     }
   }
+}
+
+void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat)
+{
+    //this->Dump(std::cout);
+
+    glEnable(GL_PRIMITIVE_RESTART);
+    glPrimitiveRestartIndex(0xffff);
+
+    struct Chunk const c = t->Chunk();
+    Mesh *m = new Mesh(GL_TRIANGLES);
+
+    //scale the vertex array and create vec3 array
+    float hscale = t->Cell()->hScale();
+    float vscale = t->Cell()->vScale();
+    /*cs237::vec3f tmp;
+    cs237::vec3f * v = new cs237::vec3f[c._nVertices];
+    for(int i = 0; i<c._nVertices; i++){
+        tmp = cs237::vec3f(c._vertices[i]._x * hscale,
+                            c._vertices[i]._y * vscale,
+                            c._vertices[i]._z * hscale);
+
+        v[i][0] = tmp[0];
+        v[i][1] = tmp[1];
+        v[i][2] = tmp[2];
+    }
+
+    m->LoadVertices(c._nVertices, v);*/
+    for(int i = 0; i<c._nVertices; i++){
+      c._vertices[i]._x *= hscale;
+      c._vertices[i]._y *= vscale;
+      c._vertices[i]._z *= hscale;
+    }
+
+    m->LoadVertices(c._nVertices, c._vertices);
+    
+    //create new uint32 array
+    /*uint32_t * a = new uint32_t[c._nIndices];
+    for(int i = 0; i<c._nIndices; i++){
+        a[i] = (uint32_t) c._indices[i];
+        //printf("%u %hu\n",a[i],c._indices[i]);
+    }*/
+
+    m->LoadIndices(c._nIndices, c._indices);
+
+    //for now we manually set color, but eventually we need to change this to get the color from the tree
+    m->SetColor(cs237::color3f(0.0, 0.85, 0.313));
+    m->SetToWorldMatrix(cs237::translate(cs237::vec3f(0,0,0)));
+    r->Render(modelViewMat, m, 0);
+
+    glDisable(GL_PRIMITIVE_RESTART);
+
+    //free m
 }
 
 
