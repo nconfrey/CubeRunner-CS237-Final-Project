@@ -34,11 +34,11 @@ void Mesh::LoadVertices (int nVerts, const struct Vertex *v)
     //Set up the buffer so that it knows its holding vertice information
     CS237_CHECK(glBindBuffer(GL_ARRAY_BUFFER, this->verticesVBOId));
     //Now push the data into the buffer
-    CS237_CHECK(glBufferData(GL_ARRAY_BUFFER, nVerts * sizeof(struct Vertex), v, GL_STATIC_DRAW));
+    CS237_CHECK(glBufferData(GL_ARRAY_BUFFER, nVerts * sizeof(struct Vertex), v, GL_DYNAMIC_DRAW));
 
     //This describes the data as vertices
     //CoordAttrLoc is a location in memory
-    CS237_CHECK(glVertexAttribPointer(CoordAttrLoc, 3, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(struct Vertex), ((GLvoid*) 0)));
+    CS237_CHECK(glVertexAttribPointer(CoordAttrLoc, 4, GL_SHORT, GL_FALSE, 0, ((GLvoid*) 0)));
     CS237_CHECK(glEnableVertexAttribArray(CoordAttrLoc));
 
     //unbind stuff here
@@ -52,7 +52,7 @@ void Mesh::LoadIndices (int n, const uint16_t *indices)
 	CS237_CHECK( glBindVertexArray (this->vaoId) );
     CS237_CHECK( glGenBuffers (1, &this->indicesVBOId) );
     CS237_CHECK( glBindBuffer (GL_ELEMENT_ARRAY_BUFFER, this->indicesVBOId) );
-    CS237_CHECK( glBufferData (GL_ELEMENT_ARRAY_BUFFER, n*sizeof(uint16_t), indices, GL_STATIC_DRAW) );
+    CS237_CHECK( glBufferData (GL_ELEMENT_ARRAY_BUFFER, n*sizeof(uint16_t), indices, GL_DYNAMIC_DRAW) );
 
     //unbind and cleanup
     CS237_CHECK( glBindBuffer (GL_ELEMENT_ARRAY_BUFFER, 0) );
@@ -129,5 +129,21 @@ void Mesh::Draw ()
     CS237_CHECK(glBindBuffer(GL_ARRAY_BUFFER, this->verticesVBOId));
     CS237_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indicesVBOId));
 
+    glEnable(GL_PRIMITIVE_RESTART);
+    glPrimitiveRestartIndex(0xffff);
     CS237_CHECK( glDrawElements (this->prim, this->nIndices, GL_UNSIGNED_SHORT, 0));
+    glDisable(GL_PRIMITIVE_RESTART);
 }
+
+void Mesh::DrawFromVAOObj()
+{
+    CS237_CHECK(glBindVertexArray(this->vao->_id));
+    CS237_CHECK( glBindBuffer (GL_ARRAY_BUFFER, this->vao->_vBuf) );
+    CS237_CHECK( glBindBuffer (GL_ELEMENT_ARRAY_BUFFER, this->vao->_iBuf) );
+    glEnable(GL_PRIMITIVE_RESTART);
+    glPrimitiveRestartIndex(0xffff);
+    CS237_CHECK( glDrawElements (this->prim, this->vao->_nIndices, GL_UNSIGNED_SHORT, 0));
+    glDisable(GL_PRIMITIVE_RESTART);
+}
+
+

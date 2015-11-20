@@ -25,7 +25,7 @@ VAO::VAO()
     this->_vBuf = buf[0];
     this->_iBuf = buf[1];
     this->_nIndices = 0;
-    this->_inUse = false;
+    this->_inUse = true;
 
 }
 
@@ -39,6 +39,15 @@ void VAO::Load (struct Chunk const &chunk)
     assert (this->_inUse);
 
     CS237_CHECK( glBindVertexArray (this->_id) );
+
+    /*Vertex * mod_vs = new Vertex[chunk._nVertices];
+
+    for(int i = 0; i<chunk._nVertices; i++){
+      mod_vs[i]._x = chunk._vertices[i]._x; //* hscale;
+      mod_vs[i]._y = (uint16_t)chunk._vertices[i]._y * vscale;
+      mod_vs[i]._z = chunk._vertices[i]._z; //* hscale;
+      mod_vs[i]._morphDelta = chunk._vertices[i]._morphDelta;
+    }*/
 
   // setup the vertex array (4 shorts per vertex)
     CS237_CHECK( glBindBuffer (GL_ARRAY_BUFFER, this->_vBuf) );
