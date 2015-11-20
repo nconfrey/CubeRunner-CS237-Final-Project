@@ -224,7 +224,7 @@ void Tile::Render_Chunk(Renderer *r, cs237::mat4f const &modelViewMat)
 {
     //this->Dump(std::cout);
 
-        glEnable(GL_PRIMITIVE_RESTART);
+    glEnable(GL_PRIMITIVE_RESTART);
     glPrimitiveRestartIndex(0xffff);
 
     struct Chunk const c = this->Chunk();
@@ -236,9 +236,9 @@ void Tile::Render_Chunk(Renderer *r, cs237::mat4f const &modelViewMat)
     cs237::vec3f tmp;
     cs237::vec3f * v = new cs237::vec3f[c._nVertices];
     for(int i = 0; i<c._nVertices; i++){
-        tmp = cs237::vec3f(c._vertices[i]._x / hscale,
-                            c._vertices[i]._y / vscale,
-                            c._vertices[i]._z / hscale);
+        tmp = cs237::vec3f(c._vertices[i]._x * hscale,
+                            c._vertices[i]._y * vscale,
+                            c._vertices[i]._z * hscale);
 
         v[i][0] = tmp[0];
         v[i][1] = tmp[1];
@@ -260,6 +260,8 @@ void Tile::Render_Chunk(Renderer *r, cs237::mat4f const &modelViewMat)
     m->SetColor(cs237::color3f(0.0, 0.85, 0.313));
     m->SetToWorldMatrix(cs237::translate(cs237::vec3f(0,0,0)));
     r->Render(modelViewMat, m, 0);
+
+    glDisable(GL_PRIMITIVE_RESTART);
 
     //free m
 }

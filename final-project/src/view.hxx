@@ -81,6 +81,9 @@ class View {
   //! the view's current error limit
     float ErrorLimit () const { return this->_errorLimit; }
 
+    //calculate screen space error
+    float SSE(Tile *t);
+
   //! the cache of VAO objects for representing chunks
     class BufferCache *VAOCache () const { return this->_bCache; }
 
