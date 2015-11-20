@@ -82,8 +82,8 @@ void View::Init (int wid, int ht)
   // Place the viewer in the center of cell(0,0), just above the
   // cell's bounding box.
     cs237::AABBd bb = this->_map->Cell(0,0)->Tile(0).BBox();
-    cs237::vec3d pos = cs237::vec3d(0.0, 0.0, 8.0);//bb.center();
-    //pos.y = bb.maxY() + 0.01 * (bb.maxX() - bb.minX());
+    cs237::vec3d pos = bb.center();
+    pos.y = bb.maxY() + 0.01 * (bb.maxX() - bb.minX());
 
   // The camera's direction is toward the bulk of the terrain
     cs237::vec3d  at;
@@ -94,7 +94,6 @@ void View::Init (int wid, int ht)
 	at = pos + cs237::vec3d(double(this->_map->nCols()-1), 0.0, double(this->_map->nRows()-1));
     }
 
-    at = cs237::vec3d(0.0,0.0,0.0); //!!!!!!!
     this->_cam.move(pos, at, cs237::vec3d(0.0, 1.0, 0.0));
 
   // set the FOV and near/far planes
@@ -158,6 +157,18 @@ void View::HandleKey (int key, int scancode, int action, int mods)
 	    this->_errorLimit *= SQRT_2;
 	}
 	break;
+      case GLFW_KEY_LEFT:
+      this->_cam.move(this->Camera().position()+cs237::vec3d(-0.5, 0.0, 0.0));
+      break;
+      case GLFW_KEY_RIGHT:
+      this->_cam.move(this->Camera().position()+cs237::vec3d(0.5, 0.0, 0.0));
+      break;
+      case GLFW_KEY_UP:
+      this->_cam.move(this->Camera().position()-cs237::vec3d(0.0, 0.0, 0.5));
+      break;
+      case GLFW_KEY_DOWN:
+      this->_cam.move(this->Camera().position()-cs237::vec3d(0.0, 0.0, -0.5));
+      break;
       default: // ignore all other keys
 	return;
     }
@@ -239,6 +250,8 @@ void View::Render ()
     else
       r = this->wfRender; //eventually this will be the other renderer
 
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
     r->Enable(this->projectionMat);
 
 
@@ -248,15 +261,15 @@ void View::Render ()
     //printf("%f, %f, %f\n", this->_cam.up ()[0],this->_cam.up ()[1],this->_cam.up ()[2]);
 
     //TESTCUBE
-    Mesh *cube = new Mesh(GL_TRIANGLES);
+    /*Mesh *cube = new Mesh(GL_TRIANGLES);
     cube->LoadVertices(8, cubeVertices);
     cube->LoadIndices(36, cubeIndices);
     cube->SetColor(cs237::color3f(0.0f, 0.85f, 0.313f));
     cube->SetToWorldMatrix(cs237::translate(cs237::vec3f(0.0f,0.0f,0.0f)));
-    r->Render(this->modelViewMat, cube, 0);
+    r->Render(this->modelViewMat, cube, 0);*/
 
     //loop through all cells in map
-    /*for(int row = 0; row < this->_map->nRows(); row++){
+    for(int row = 0; row < this->_map->nRows(); row++){
       for(int col = 0; col < this->_map->nCols(); col++){
         //get the cell from the map
         Cell *c = this->_map->Cell(row, col);
@@ -264,7 +277,7 @@ void View::Render ()
         Tile *t = &(c->Tile(0)); //this is the root of the quad tree
         struct Chunk chu = t->Chunk();
         for(int ci = 0; ci < 100; ci++){
-          printf("x=%d", chu._vertices[ci]._x);
+          //printf("x=%d", chu._vertices[ci]._x);
         }
 
         //here we check if it is in the view frustrum
@@ -273,7 +286,7 @@ void View::Render ()
         Recursive_Render_Chunk(t, r);
 
       }
-    }*/
+    }
 
     glfwSwapBuffers (this->_window);
 
