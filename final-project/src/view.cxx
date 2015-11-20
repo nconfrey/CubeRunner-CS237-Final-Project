@@ -297,8 +297,10 @@ void View::Render ()
 bool View::inFrustum(Tile *t)
 {
   cs237::AABBd boundingBox = t->BBox();
+  printf("got the bounding box\n");
   Plane *frust = new Plane();
   Plane *frustum = frust->extractPlanes(this->Camera().projTransform());
+  printf("we've extracted the planes\n");
   int totalIn = 0;
 
   //Test all 8 corners of the bounding box with the 6 planes of the view frustum
@@ -343,7 +345,7 @@ float View::SSE(Tile *t)
 void View::Recursive_Render_Chunk(Tile *t, Renderer *r)
 {
   //check to see if this tile is in the view frustum to save time
-  if(!inFrustum(t))
+  if(!inFrustum(t) || t == NULL)
     return;
 
 

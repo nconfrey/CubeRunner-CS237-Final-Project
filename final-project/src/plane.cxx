@@ -30,37 +30,40 @@
 */
  Plane * Plane::extractPlanes(cs237::mat4x4f projTransform)
  {
- 	Plane p_planes[5];
+ 	printf("about to extract planes\n");
+ 	Plane **p_planes;
+ 	for(int i = 0; i <= 5; i++)
+ 		p_planes[i] = new Plane();
  	// Left clipping plane
-	 p_planes[0].a = projTransform[3][0] + projTransform[0][0];
-	 p_planes[0].b = projTransform[3][1] + projTransform[0][1];
-	 p_planes[0].c = projTransform[3][2] + projTransform[0][2];
-	 p_planes[0].d = projTransform[3][3] + projTransform[0][3];
+	 p_planes[0]->a = projTransform[3][0] + projTransform[0][0];
+	 p_planes[0]->b = projTransform[3][1] + projTransform[0][1];
+	 p_planes[0]->c = projTransform[3][2] + projTransform[0][2];
+	 p_planes[0]->d = projTransform[3][3] + projTransform[0][3];
 	 // Right clipping plane
-	 p_planes[1].a = projTransform[3][0] - projTransform[0][0];
-	 p_planes[1].b = projTransform[3][1] - projTransform[0][1];
-	 p_planes[1].c = projTransform[3][2] - projTransform[0][2];
-	 p_planes[1].d = projTransform[3][3] - projTransform[0][3];
+	 p_planes[1]->a = projTransform[3][0] - projTransform[0][0];
+	 p_planes[1]->b = projTransform[3][1] - projTransform[0][1];
+	 p_planes[1]->c = projTransform[3][2] - projTransform[0][2];
+	 p_planes[1]->d = projTransform[3][3] - projTransform[0][3];
 	 // Top clipping plane
-	 p_planes[2].a = projTransform[3][0] - projTransform[1][0];
-	 p_planes[2].b = projTransform[3][1] - projTransform[1][1];
-	 p_planes[2].c = projTransform[3][2] - projTransform[1][2];
-	 p_planes[2].d = projTransform[3][3] - projTransform[1][3];
+	 p_planes[2]->a = projTransform[3][0] - projTransform[1][0];
+	 p_planes[2]->b = projTransform[3][1] - projTransform[1][1];
+	 p_planes[2]->c = projTransform[3][2] - projTransform[1][2];
+	 p_planes[2]->d = projTransform[3][3] - projTransform[1][3];
 	 // Bottom clipping plane
-	 p_planes[3].a = projTransform[3][0] + projTransform[1][0];
-	 p_planes[3].b = projTransform[3][1] + projTransform[1][1];
-	 p_planes[3].c = projTransform[3][2] + projTransform[1][2];
-	 p_planes[3].d = projTransform[3][3] + projTransform[1][3];
+	 p_planes[3]->a = projTransform[3][0] + projTransform[1][0];
+	 p_planes[3]->b = projTransform[3][1] + projTransform[1][1];
+	 p_planes[3]->c = projTransform[3][2] + projTransform[1][2];
+	 p_planes[3]->d = projTransform[3][3] + projTransform[1][3];
 	 // Near clipping plane
-	 p_planes[4].a = projTransform[3][0] + projTransform[2][0];
-	 p_planes[4].b = projTransform[3][1] + projTransform[2][1];
-	 p_planes[4].c = projTransform[3][2] + projTransform[2][2];
-	 p_planes[4].d = projTransform[3][3] + projTransform[2][3];
+	 p_planes[4]->a = projTransform[3][0] + projTransform[2][0];
+	 p_planes[4]->b = projTransform[3][1] + projTransform[2][1];
+	 p_planes[4]->c = projTransform[3][2] + projTransform[2][2];
+	 p_planes[4]->d = projTransform[3][3] + projTransform[2][3];
 	 // Far clipping plane
-	 p_planes[5].a = projTransform[3][0] - projTransform[2][0];
-	 p_planes[5].b = projTransform[3][1] - projTransform[2][1];
-	 p_planes[5].c = projTransform[3][2] - projTransform[2][2];
-	 p_planes[5].d = projTransform[3][3] - projTransform[2][3];
+	 p_planes[5]->a = projTransform[3][0] - projTransform[2][0];
+	 p_planes[5]->b = projTransform[3][1] - projTransform[2][1];
+	 p_planes[5]->c = projTransform[3][2] - projTransform[2][2];
+	 p_planes[5]->d = projTransform[3][3] - projTransform[2][3];
 
 	 //Normalize??
 
