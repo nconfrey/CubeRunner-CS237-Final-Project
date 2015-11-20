@@ -47,6 +47,9 @@ class Camera {
   //! a transformation matrix that assumes that the camera is at the origin.
     cs237::mat4x4f viewTransform () const;
 
+  //! a modelView transform matrix for the camera
+    cs237::mat4x4f ModelViewMatrix () const;
+
   //! the projection transform for the camera
     cs237::mat4x4f projTransform () const;
 
@@ -81,9 +84,10 @@ class Camera {
   //! \return the screen-space error
     float screenError (float dist, float err) const;
 
+     cs237::vec3f _dir;   //!< the current direction that the camera is pointing towards
+
   private:
-    cs237::vec3d	_pos;		//!< position is double precision to allow large worlds
-    cs237::vec3f	_dir;		//!< the current direction that the camera is pointing towards
+    cs237::vec3d	_pos;		//!< position is double precision to allow large world
     cs237::vec3f	_up;		//! camera up vector
     float		_nearZ;		//!< distance to the near plane
     float		_farZ;		//!< distance to the far plane

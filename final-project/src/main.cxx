@@ -93,6 +93,7 @@ int main (int argc, const char **argv)
 {
     Map map;
 
+
   // get the mapfile
     if (argc < 2) {
 	std::cerr << "usage: proj5 <map-dir>" << std::endl;
