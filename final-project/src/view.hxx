@@ -34,9 +34,9 @@ class View {
   //! method to handle display of the view
     void Render ();
 
-    void Recursive_Render_Chunk(Tile t);
+    void Recursive_Render_Chunk(Tile *t, Renderer *r);
 
-    bool inFrustum(Tile t);
+    bool inFrustum(Tile *t);
 
   //! animation method
     void Animate ();
@@ -62,6 +62,9 @@ class View {
    */
     void InitRenderers ();
 
+    //calculate the model view matrix for the given camera position
+    void UpdateModelViewMat ();
+
   //! handle resizing the view
     void Resize (int wid, int ht);
 
@@ -79,6 +82,9 @@ class View {
 
   //! the view's current error limit
     float ErrorLimit () const { return this->_errorLimit; }
+
+    //calculate screen space error
+    float SSE(Tile *t);
 
   //! the cache of VAO objects for representing chunks
     class BufferCache *VAOCache () const { return this->_bCache; }
@@ -98,6 +104,9 @@ class View {
     double	_lastFrameTime;	//!< time of last frame
     double	_lastStep;	//!< time of last animation step
     cs237::AABBd _mapBBox;	//!< a bounding box around the entire map
+
+    cs237::mat4f modelViewMat; //!< the current model-view matrix
+    cs237::mat4f projectionMat; //<! the camera's projection matrix
 
     Renderer * wfRender;
     Renderer * fRender;

@@ -36,6 +36,21 @@ cs237::mat4x4f Camera::viewTransform () const
 	this->_up);
 }
 
+cs237::vec3f vec3dToVec3f(cs237::vec3d d)
+{
+    return cs237::vec3f((float)d[0],
+                 (float)d[1],
+                 (float)d[2]);
+}
+
+cs237::mat4x4f Camera::ModelViewMatrix () const
+{
+  return cs237::lookAt (
+  vec3dToVec3f(this->position()),
+  this->_dir,
+  this->_up);
+}
+
 // the projection transform for the camera
 cs237::mat4x4f Camera::projTransform () const
 {
