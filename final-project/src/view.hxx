@@ -38,6 +38,8 @@ class View {
 
     bool inFrustum(Tile *t);
 
+    void Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat);
+
   //! animation method
     void Animate ();
 

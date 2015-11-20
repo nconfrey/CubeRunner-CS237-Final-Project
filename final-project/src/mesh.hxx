@@ -8,6 +8,8 @@
 #define _MESH_HXX_
 
 #include "cs237.hxx"
+#include "map-cell.hxx"
+#include "buffer-cache.hxx"
 
 //! the information needed to render a mesh
 struct Mesh {
@@ -29,10 +31,12 @@ struct Mesh {
     cs237::image2d * image;
     cs237::color3f  ambient;
 
+    VAO *vao;
+
     Mesh (GLenum p);
 
   //! initialize the vertex data buffers for the mesh
-    void LoadVertices (int nVerts, const cs237::vec3f *verts);
+    void LoadVertices (int nVerts, const struct Vertex *v);
 
   //! initialize the element array for the mesh
     void LoadIndices (int n, const uint16_t *indices);
@@ -45,6 +49,9 @@ struct Mesh {
 
   //! draw the mesh using a glDrawElements call
     void Draw ();
+
+    //! draw the mesh assuming the vao was created using Reppy's code
+    void DrawFromVAOObj();
 
     //set the color of the mesh
     void SetColor(cs237::color3f c); 

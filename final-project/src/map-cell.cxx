@@ -195,7 +195,7 @@ void Tile::_AllocChunk (uint32_t nv, uint32_t ni)
 
 // initialize the _cell, _id, etc. fields of this tile and its descendants.  The chunk and
 // bounding box get set later
-void Tile::_Init (Cell *cell, uint32_t id, uint32_t row, uint32_t col, uint32_t lod)
+void Tile::_Init (class Cell *cell, uint32_t id, uint32_t row, uint32_t col, uint32_t lod)
 {
     this->_cell = cell;
     this->_id = id;
@@ -219,52 +219,6 @@ void Tile::_Init (Cell *cell, uint32_t id, uint32_t row, uint32_t col, uint32_t 
 
 }
 
-
-void Tile::Render_Chunk(Renderer *r, cs237::mat4f const &modelViewMat)
-{
-    //this->Dump(std::cout);
-
-    glEnable(GL_PRIMITIVE_RESTART);
-    glPrimitiveRestartIndex(0xffff);
-
-    struct Chunk const c = this->Chunk();
-    Mesh *m = new Mesh(GL_TRIANGLES);
-
-    //scale the vertex array and create vec3 array
-    float hscale = this->_cell->hScale();
-    float vscale = this->_cell->vScale();
-    cs237::vec3f tmp;
-    cs237::vec3f * v = new cs237::vec3f[c._nVertices];
-    for(int i = 0; i<c._nVertices; i++){
-        tmp = cs237::vec3f(c._vertices[i]._x * hscale,
-                            c._vertices[i]._y * vscale,
-                            c._vertices[i]._z * hscale);
-
-        v[i][0] = tmp[0];
-        v[i][1] = tmp[1];
-        v[i][2] = tmp[2];
-    }
-
-    m->LoadVertices(c._nVertices, v);
-    
-    //create new uint32 array
-    /*uint32_t * a = new uint32_t[c._nIndices];
-    for(int i = 0; i<c._nIndices; i++){
-        a[i] = (uint32_t) c._indices[i];
-        //printf("%u %hu\n",a[i],c._indices[i]);
-    }*/
-
-    m->LoadIndices(c._nIndices, c._indices);
-
-    //for now we manually set color, but eventually we need to change this to get the color from the tree
-    m->SetColor(cs237::color3f(0.0, 0.85, 0.313));
-    m->SetToWorldMatrix(cs237::translate(cs237::vec3f(0,0,0)));
-    r->Render(modelViewMat, m, 0);
-
-    glDisable(GL_PRIMITIVE_RESTART);
-
-    //free m
-}
 
 
 void Tile::Dump (std::ostream &outS)

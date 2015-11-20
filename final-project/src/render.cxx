@@ -96,6 +96,8 @@ WireframeRenderer::WireframeRenderer ()
   mvLoc = _shader->UniformLocation ("modelView");
   projLoc = _shader->UniformLocation("projection");
   colorLoc = _shader->UniformLocation("color");
+  hscaleLoc = _shader->UniformLocation("hscale");
+  vscaleLoc = _shader->UniformLocation("vscale");
 }
 
 WireframeRenderer::~WireframeRenderer ()
@@ -110,13 +112,15 @@ void WireframeRenderer::Enable (cs237::mat4f const &projectionMat)
 }
 
 
-void WireframeRenderer::Render(cs237::mat4f const &modelViewMat, Mesh *mesh, int type)
+void WireframeRenderer::Render(cs237::mat4f const &modelViewMat, Mesh *mesh, float hscale, float vscale)
 {
   CS237_CHECK(cs237::setUniform(mvLoc, modelViewMat));
+  CS237_CHECK(cs237::setUniform(hscaleLoc, hscale));
+  CS237_CHECK(cs237::setUniform(vscaleLoc, vscale));
   cs237::color4f color = cs237::color4f(mesh->color, 1); //need to change the color into a 4vector for shader programs
   cs237::setUniform(colorLoc, color);
   //printf("about to draw mesh\n");
-  mesh->Draw(); 
+  mesh->DrawFromVAOObj(); 
 }
 
 

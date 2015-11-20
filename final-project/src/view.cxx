@@ -160,16 +160,16 @@ void View::HandleKey (int key, int scancode, int action, int mods)
 	}
 	break;
       case GLFW_KEY_LEFT:
-      this->_cam.move(this->Camera().position()+cs237::vec3d(-0.5, 0.0, 0.0));
+      this->_cam.move(this->Camera().position()+cs237::vec3d(-10, 0.0, 0.0));
       break;
       case GLFW_KEY_RIGHT:
-      this->_cam.move(this->Camera().position()+cs237::vec3d(0.5, 0.0, 0.0));
+      this->_cam.move(this->Camera().position()+cs237::vec3d(10, 0.0, 0.0));
       break;
       case GLFW_KEY_UP:
-      this->_cam.move(this->Camera().position()-cs237::vec3d(0.0, 0.0, 5));
+      this->_cam.move(this->Camera().position()-cs237::vec3d(0.0, 0.0, 10));
       break;
       case GLFW_KEY_DOWN:
-      this->_cam.move(this->Camera().position()-cs237::vec3d(0.0, 0.0, -5));
+      this->_cam.move(this->Camera().position()-cs237::vec3d(0.0, 0.0, -10));
       break;
       default: // ignore all other keys
 	return;
@@ -297,10 +297,8 @@ void View::Render ()
 bool View::inFrustum(Tile *t)
 {
   cs237::AABBd boundingBox = t->BBox();
-  printf("got the bounding box\n");
   Plane *frust = new Plane();
-  Plane **frustum = frust->extractPlanes(this->Camera().projTransform());
-  printf("we've extracted the planes\n");
+  Plane **frustum = frust->extractPlanes(this->Camera().ModelViewMatrix());
   int totalIn = 0;
 
   //Test all 8 corners of the bounding box with the 6 planes of the view frustum
@@ -323,16 +321,20 @@ bool View::inFrustum(Tile *t)
     if(inCount == 0)
     {
       //all the corners of the bounding box were outside of the planes
+      printf("All of the corners are outside the planes for face [%d]\n", frustPlane);
       return false;
     }
     totalIn += somewhatIn;
   }
 
+  printf("total corners in is: %d", totalIn);
   if(totalIn == 6)
     return true; // all of the corners are inside the view
 
   //otherwise, we are partially in which we will consider as an in for now
   //will come back to this later when optimizing
+
+  printf("base case return\n");
   return true;
 }
 
@@ -345,7 +347,7 @@ float View::SSE(Tile *t)
 void View::Recursive_Render_Chunk(Tile *t, Renderer *r)
 {
   //check to see if this tile is in the view frustum to save time
-  if(!inFrustum(t) || t == NULL)
+  if(!inFrustum(t))
     return;
 
 
@@ -357,11 +359,11 @@ void View::Recursive_Render_Chunk(Tile *t, Renderer *r)
 
   if(sse <= this->ErrorLimit()){
     //error within tolerance, so we render this node
-    t->Render_Chunk(r, modelViewMat);
+    this->Render_Chunk(t, r, modelViewMat);
   } else {
     //verify that children are not null
     if(t->NumChildren() < 4){
-      t->Render_Chunk(r, this->modelViewMat); //we can't go down another level, so we have to render this one
+      this->Render_Chunk(t, r, this->modelViewMat); //we can't go down another level, so we have to render this one
     } else {
       //so check all the children
       for(int j = 0; j < t->NumChildren(); j++){
@@ -369,6 +371,43 @@ void View::Recursive_Render_Chunk(Tile *t, Renderer *r)
       }
     }
   }
+}
+
+void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat)
+{
+    //this->Dump(std::cout);
+
+    struct Chunk const c = t->Chunk();
+    Mesh *m = new Mesh(GL_TRIANGLE_STRIP);
+
+    //scale the vertex array and create vec3 array
+    float hscale = t->Cell()->hScale() /3.0f;
+    float vscale = t->Cell()->vScale();
+    
+    //create new vertices array to store transformed values in
+    //eventualy we can do morphing here as well
+    /*Vertex * mod_vs = new Vertex[c._nVertices];
+
+    for(int i = 0; i<c._nVertices; i++){
+      mod_vs[i]._x = c._vertices[i]._x * hscale;
+      mod_vs[i]._y = c._vertices[i]._y * vscale;
+      mod_vs[i]._z = c._vertices[i]._z * hscale;
+    }
+
+    m->LoadVertices(c._nVertices, mod_vs);
+
+    m->LoadIndices(c._nIndices, c._indices);*/
+
+    //apparently we have a function for this
+    m->vao = new VAO();
+    m->vao->Load(c);
+
+    //for now we manually set color, but eventually we need to change this to get the color from the tree
+    m->SetColor(cs237::color3f(0.0, 0.85, 0.313));
+    m->SetToWorldMatrix(cs237::translate(cs237::vec3f(0,0,0)));
+    r->Render(modelViewMat, m, hscale, vscale);
+
+    //free m
 }
 
 
