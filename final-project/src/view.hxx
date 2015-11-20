@@ -36,6 +36,8 @@ class View {
 
     void Recursive_Render_Chunk(Tile t);
 
+    bool inFrustum(Tile t);
+
   //! animation method
     void Animate ();
 
