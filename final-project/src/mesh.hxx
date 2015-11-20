@@ -46,6 +46,19 @@ struct Mesh {
   //! draw the mesh using a glDrawElements call
     void Draw ();
 
+    //set the color of the mesh
+    void SetColor(cs237::color3f c); 
+
+    //set the world transformation matrix of the mesh
+    void SetToWorldMatrix(cs237::mat4f m); 
+
+    //set the texture of the mesh
+    //NOTE: you still have to use LoadTexCoords
+    void SetTexture(cs237::texture2D * texture, cs237::image2d * image); 
+
+    //set the position of the mesh
+    void SetPosition(cs237::vec3f pos);
+
 };
 
 #endif // !_MESH_HXX_
