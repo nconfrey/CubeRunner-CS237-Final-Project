@@ -158,16 +158,16 @@ void View::HandleKey (int key, int scancode, int action, int mods)
 	}
 	break;
       case GLFW_KEY_LEFT:
-      this->_cam.move(this->Camera().position()+cs237::vec3d(-0.5, 0.0, 0.0));
+      this->_cam.move(this->Camera().position()+cs237::vec3d(-10, 0.0, 0.0));
       break;
       case GLFW_KEY_RIGHT:
-      this->_cam.move(this->Camera().position()+cs237::vec3d(0.5, 0.0, 0.0));
+      this->_cam.move(this->Camera().position()+cs237::vec3d(10, 0.0, 0.0));
       break;
       case GLFW_KEY_UP:
-      this->_cam.move(this->Camera().position()-cs237::vec3d(0.0, 0.0, 5));
+      this->_cam.move(this->Camera().position()-cs237::vec3d(0.0, 0.0, 10));
       break;
       case GLFW_KEY_DOWN:
-      this->_cam.move(this->Camera().position()-cs237::vec3d(0.0, 0.0, -5));
+      this->_cam.move(this->Camera().position()-cs237::vec3d(0.0, 0.0, -10));
       break;
       default: // ignore all other keys
 	return;
@@ -250,7 +250,7 @@ void View::Render ()
     else
       r = this->wfRender; //eventually this will be the other renderer
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     r->Enable(this->projectionMat);
 
@@ -326,51 +326,35 @@ void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat)
 {
     //this->Dump(std::cout);
 
-    glEnable(GL_PRIMITIVE_RESTART);
-    glPrimitiveRestartIndex(0xffff);
-
     struct Chunk const c = t->Chunk();
-    Mesh *m = new Mesh(GL_TRIANGLES);
+    Mesh *m = new Mesh(GL_TRIANGLE_STRIP);
 
     //scale the vertex array and create vec3 array
-    float hscale = t->Cell()->hScale();
+    float hscale = t->Cell()->hScale() /3.0f;
     float vscale = t->Cell()->vScale();
-    /*cs237::vec3f tmp;
-    cs237::vec3f * v = new cs237::vec3f[c._nVertices];
-    for(int i = 0; i<c._nVertices; i++){
-        tmp = cs237::vec3f(c._vertices[i]._x * hscale,
-                            c._vertices[i]._y * vscale,
-                            c._vertices[i]._z * hscale);
-
-        v[i][0] = tmp[0];
-        v[i][1] = tmp[1];
-        v[i][2] = tmp[2];
-    }
-
-    m->LoadVertices(c._nVertices, v);*/
-    for(int i = 0; i<c._nVertices; i++){
-      c._vertices[i]._x *= hscale;
-      c._vertices[i]._y *= vscale;
-      c._vertices[i]._z *= hscale;
-    }
-
-    m->LoadVertices(c._nVertices, c._vertices);
     
-    //create new uint32 array
-    /*uint32_t * a = new uint32_t[c._nIndices];
-    for(int i = 0; i<c._nIndices; i++){
-        a[i] = (uint32_t) c._indices[i];
-        //printf("%u %hu\n",a[i],c._indices[i]);
-    }*/
+    //create new vertices array to store transformed values in
+    //eventualy we can do morphing here as well
+    /*Vertex * mod_vs = new Vertex[c._nVertices];
 
-    m->LoadIndices(c._nIndices, c._indices);
+    for(int i = 0; i<c._nVertices; i++){
+      mod_vs[i]._x = c._vertices[i]._x * hscale;
+      mod_vs[i]._y = c._vertices[i]._y * vscale;
+      mod_vs[i]._z = c._vertices[i]._z * hscale;
+    }
+
+    m->LoadVertices(c._nVertices, mod_vs);
+
+    m->LoadIndices(c._nIndices, c._indices);*/
+
+    //apparently we have a function for this
+    m->vao = new VAO();
+    m->vao->Load(c);
 
     //for now we manually set color, but eventually we need to change this to get the color from the tree
     m->SetColor(cs237::color3f(0.0, 0.85, 0.313));
     m->SetToWorldMatrix(cs237::translate(cs237::vec3f(0,0,0)));
-    r->Render(modelViewMat, m, 0);
-
-    glDisable(GL_PRIMITIVE_RESTART);
+    r->Render(modelViewMat, m, hscale, vscale);
 
     //free m
 }
