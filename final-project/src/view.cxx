@@ -22,8 +22,6 @@ static GLFWwindow *InitGLFW (int wid, int ht, const char *title);
 // animation time step (100Hz)
 #define TIME_STEP	0.001
 
-#define YELLOW_COLOR  cs237::color4f(1.0f, 1.0f, 0.0f, 1.0f);    /*!< Yellow color */
-
 static void SetViewport (GLFWwindow *win)
 {
     int fbWid, fbHt;
@@ -31,29 +29,6 @@ static void SetViewport (GLFWwindow *win)
     glViewport(0, 0 , fbWid, fbHt);
 
 }
-
-/* The vertices for the cube */ 
-static cs237::vec3f cubeVertices[8]= {cs237::vec3f(-1.0f,  -1.0f,  1.0f), //0
-                   cs237::vec3f (-1.0f,  1.0f,  1.0f), //1
-                   cs237::vec3f ( 1.0f,  1.0f,  1.0f), //2
-                   cs237::vec3f( 1.0f,  -1.0f,  1.0f), //3
-                   cs237::vec3f (-1.0f,  -1.0f, -1.0f), //4
-                   cs237::vec3f (-1.0f,  1.0f, -1.0f), //5
-                   cs237::vec3f ( 1.0f,  1.0f, -1.0f), //6
-                   cs237::vec3f ( 1.0f,  -1.0f, -1.0f)}; //7 
-
-/* the indices that allow us to create the cube. */ 
-static const uint16_t cubeIndices[36] = {
-    0,2,1,  0,3,2,
-    4,3,0,  4,7,3,
-    4,1,5,  4,0,1,
-    3,6,2,  3,7,6,
-    1,6,5,  1,2,6,
-    7,5,6,  7,4,5
-  };  
-
-static const cs237::color4f cubeColor = YELLOW_COLOR; 
-
 
 /***** class View member functions *****/
 
@@ -108,6 +83,11 @@ void View::Init (int wid, int ht)
     /* ADDITIONAL INITIALIZATION */
     this->projectionMat = this->Camera().projTransform();
     this->UpdateModelViewMat ();
+
+    //init light state
+    this->sun.lightDir = this->_map->SunDirection ();
+    this->sun.lightInten = this->_map->SunIntensity();
+    this->sun.lightAmb = this->_map->AmbientIntensity();
 
   // initialize animation state
     this->_lastStep =
@@ -217,7 +197,7 @@ void View::Resize (int wid, int ht)
 void View::InitRenderers ()
 {
     this->wfRender = new WireframeRenderer();
-    //this->fRender = new ForwardRenderer();
+    this->fRender = new FullRenderer();
 }
 
 void View::UpdateModelViewMat ()
@@ -253,7 +233,7 @@ void View::Render ()
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 
-    r->Enable(this->projectionMat);
+    r->Enable(this->projectionMat, this->sun);
 
     //loop through all cells in map
     for(int row = 0; row < this->_map->nRows(); row++){
@@ -262,7 +242,6 @@ void View::Render ()
         Cell *c = this->_map->Cell(row, col);
         //get the tile from the cell
         Tile *t = &(c->Tile(0)); //this is the root of the quad tree
-        struct Chunk chu = t->Chunk();
 
         //call function to render at appropriate level of detail
         Recursive_Render_Chunk(t, r);
@@ -286,7 +265,6 @@ void View::Recursive_Render_Chunk(Tile *t, Renderer *r)
 
   //calculate SSE
   float sse = this->SSE(t); //replace with real equation
-  int child_null_flag = 0;
 
   if(sse <= this->ErrorLimit()){
     //error within tolerance, so we render this node

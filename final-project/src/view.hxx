@@ -92,6 +92,7 @@ class View {
   //! the cache of OpenGL textures for the map tiles
     class TextureCache *TxtCache () const { return this->_tCache; }
 
+
   private:
     Map		*_map;		//!< the map being rendered
     class Camera _cam;		//!< tracks viewer position, etc.
@@ -104,6 +105,8 @@ class View {
     double	_lastFrameTime;	//!< time of last frame
     double	_lastStep;	//!< time of last animation step
     cs237::AABBd _mapBBox;	//!< a bounding box around the entire map
+
+    Sunlight sun; //container for the light info
 
     cs237::mat4f modelViewMat; //!< the current model-view matrix
     cs237::mat4f projectionMat; //<! the camera's projection matrix

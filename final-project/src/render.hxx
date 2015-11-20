@@ -5,6 +5,7 @@
 #include "mesh.hxx"
 //#include "view.hxx" //need this for modes enum
 
+
 //! an abstract base class that wraps a renderer behavior
 //
  enum RenderMode {
@@ -13,12 +14,19 @@
     NUM_RENDER_MODES    //!< == to the number of rendering modes
 };
 
+//container strcut for light information
+struct Sunlight {
+  cs237::vec3f lightDir;
+  cs237::color3f lightInten;
+  cs237::color3f lightAmb;
+};
+
 class Renderer {
   public:
 
   //! enable the renderer
   //! \param projectMat the projection matrix for the current camera state
-    virtual void Enable (cs237::mat4f const &projectionMat) = 0;
+    virtual void Enable (cs237::mat4f const &projectionMat, Sunlight sun) = 0;
 
     virtual ~Renderer ();
 
@@ -48,15 +56,39 @@ class WireframeRenderer : public Renderer {
     int mvLoc;
     int projLoc;
     int colorLoc;
-    int samplerLoc;
 
     int hscaleLoc;
     int vscaleLoc;
 
-    void Enable (cs237::mat4f const &projectionMat);
+    void Enable (cs237::mat4f const &projectionMat, Sunlight sun);
     void Render (cs237::mat4f const &modelViewMat, Mesh *mesh);
     void RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale);
 
+};
+
+class FullRenderer : public Renderer {
+    public:
+        FullRenderer();
+        virtual ~FullRenderer();
+
+        //transformation uniforms
+        int mvLoc;
+        int projLoc;
+        int hscaleLoc;
+        int vscaleLoc;
+
+        //texture sampling uniforms
+        int texSamplerLoc;
+        int normSamplerLoc;
+
+        //directional lighting uniforms
+        int lightDirLoc;
+        int lightIntenLoc;
+        int lightAmbLoc;
+
+        void Enable(cs237::mat4f const &projectionMat, Sunlight sun);
+        void Render (cs237::mat4f const &modelViewMat, Mesh *mesh);
+        void RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale);
 };
 
 #endif // !_RENDER_HXX_
