@@ -7,13 +7,16 @@
  */
 #version 410 core
 
-layout(location = 0) in vec3 position; 
+layout(location = 0) in vec4 position; 
 
 uniform mat4 modelView; 
 uniform mat4 projection;
+uniform float hscale;
+uniform float vscale;
 
 
 void main (void)
 {
-    gl_Position =  projection * modelView * vec4(position,1.0);  
+	vec3 pos = vec3(position.x * hscale, position.y * vscale, position.z * hscale);
+    gl_Position =  projection * modelView * vec4(pos, 1.0);  
 }
