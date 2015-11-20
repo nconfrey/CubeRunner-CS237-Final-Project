@@ -8,6 +8,7 @@
 #define _MESH_HXX_
 
 #include "cs237.hxx"
+#include "map-cell.hxx"
 
 //! the information needed to render a mesh
 struct Mesh {
@@ -32,7 +33,7 @@ struct Mesh {
     Mesh (GLenum p);
 
   //! initialize the vertex data buffers for the mesh
-    void LoadVertices (int nVerts, const cs237::vec3f *verts);
+    void LoadVertices (int nVerts, const struct Vertex *v);
 
   //! initialize the element array for the mesh
     void LoadIndices (int n, const uint16_t *indices);

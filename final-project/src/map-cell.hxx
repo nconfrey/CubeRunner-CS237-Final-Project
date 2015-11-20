@@ -15,7 +15,7 @@
 #include "map.hxx"
 #include "qtree-util.hxx"
 #include "tqt.hxx"
- #include "render.hxx"
+
 
 class Tile;
 
@@ -143,10 +143,10 @@ class Tile {
   // dump the tile tree to an output stream
     void Dump (std::ostream &outS);
 
-    void Render_Chunk(Renderer *r, cs237::mat4f const &modelViewMat);
+    class Cell * Cell() const { return this->_cell; }
 
   private:
-    Cell	*_cell;		//!< the cell that contains this tile
+    class Cell	*_cell;		//!< the cell that contains this tile
     uint32_t	_id;		//!< the ID of this tile, which is also its index in the quadtree array
     uint32_t	_row;		//<! the row of this tile's NW vertex in its cell
     uint32_t	_col;		//<! the column of this tile's NW vertex in its cell
@@ -157,7 +157,7 @@ class Tile {
 
   //! initialize the _cell, _id, etc. fields of this tile and its descendants.  The chunk and
   //! bounding box get set later
-    void _Init (Cell *cell, uint32_t id, uint32_t row, uint32_t col, uint32_t lod);
+    void _Init (class Cell *cell, uint32_t id, uint32_t row, uint32_t col, uint32_t lod);
 
   //! allocate memory for the chunk
     void _AllocChunk (uint32_t nv, uint32_t ni);

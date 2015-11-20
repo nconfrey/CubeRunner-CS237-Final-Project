@@ -26,7 +26,7 @@ Mesh::Mesh(GLenum p)
 }
 
 //! initialize the vertex data buffers for the mesh
-void Mesh::LoadVertices (int nVerts, const cs237::vec3f *verts)
+void Mesh::LoadVertices (int nVerts, const struct Vertex *v)
 {
 	CS237_CHECK(glBindVertexArray(this->vaoId));
     CS237_CHECK(glGenBuffers(1, &this->verticesVBOId));
@@ -34,11 +34,11 @@ void Mesh::LoadVertices (int nVerts, const cs237::vec3f *verts)
     //Set up the buffer so that it knows its holding vertice information
     CS237_CHECK(glBindBuffer(GL_ARRAY_BUFFER, this->verticesVBOId));
     //Now push the data into the buffer
-    CS237_CHECK(glBufferData(GL_ARRAY_BUFFER, nVerts * sizeof(cs237::vec3f), verts, GL_STATIC_DRAW));
+    CS237_CHECK(glBufferData(GL_ARRAY_BUFFER, nVerts * sizeof(struct Vertex), v, GL_STATIC_DRAW));
 
     //This describes the data as vertices
     //CoordAttrLoc is a location in memory
-    CS237_CHECK(glVertexAttribPointer(CoordAttrLoc, 3, GL_FLOAT, GL_FALSE, sizeof(verts[0]), ((GLvoid*) 0)));
+    CS237_CHECK(glVertexAttribPointer(CoordAttrLoc, 3, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(struct Vertex), ((GLvoid*) 0)));
     CS237_CHECK(glEnableVertexAttribArray(CoordAttrLoc));
 
     //unbind stuff here
