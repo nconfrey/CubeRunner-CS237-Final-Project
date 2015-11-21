@@ -89,6 +89,11 @@ void View::Init (int wid, int ht)
     this->sun.lightInten = this->_map->SunIntensity();
     this->sun.lightAmb = this->_map->AmbientIntensity();
 
+    //init caches
+    this->_tCache = new TextureCache();
+    this->_nCache = new TextureCache();
+    this->_bCache = new BufferCache();
+
   // initialize animation state
     this->_lastStep =
     this->_lastFrameTime = glfwGetTime();
@@ -290,12 +295,26 @@ void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat)
     float hscale = t->Cell()->hScale() /3.0f;
     float vscale = t->Cell()->vScale();
 
+    //get the tqt's
+    printf("get tqt's\n");
+    TQT::TextureQTree *texq = t->Cell()->ColorTQT();
+    TQT::TextureQTree *normq = t->Cell()->NormTQT();
+    //from the trees, get the tex
+    printf("get tex's\n");
+    Texture *tex = this->TxtCache()->Make(texq, t->LOD(), t->Cell()->Row(), t->Cell()->Col());
+    Texture *norm = this->NormCache()->Make(normq, t->LOD(), t->Cell()->Row(), t->Cell()->Col());
+    //use them
+    printf("using tex's\n");
+    assert(tex != nullptr);
+    assert(norm != nullptr);
+    tex->Use(0);
+    printf("hi                   \n");
+    norm->Use(1);
+    printf("used tex's              s\n");
 
     //apparently we have a function for this
     VAO *vao = new VAO();
     vao->Load(c);
-
-    //for now we manually set color, but eventually we need to change this to get the color from the tree
 
     //render the chunk
     r->RenderChunk(modelViewMat, vao, hscale, vscale);

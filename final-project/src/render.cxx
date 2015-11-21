@@ -189,12 +189,14 @@ void FullRenderer::RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float
     CS237_CHECK(cs237::setUniform(vscaleLoc, vscale));
 
     //sampler uniforms
+    CS237_CHECK(cs237::setUniform(texSamplerLoc, 0));
+    CS237_CHECK(cs237::setUniform(normSamplerLoc, 1));
 
     vao->Render();
 }
 
 //___________________________________________________
-void Cell::InitTextures (View *view)
+void Cell::InitTextures ()
 {
   // load textures
     if (this->_map->hasColorMap()) {

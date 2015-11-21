@@ -59,7 +59,7 @@ class Cell {
     class Tile &Tile (int id);
 
   //! initialize the textures for the cell
-    void InitTextures (class View *view);
+    void InitTextures ();
 
   //! the color texture-quad-tree for this cell (nullptr if not present)
     TQT::TextureQTree *ColorTQT () const { return this->_colorTQT; }

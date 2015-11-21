@@ -276,6 +276,7 @@ bool Map::LoadMap (std::string mapName, bool verbose)
 		error (mapName, "bogus grid item");
 	    }
 	    this->_grid[i] = new class Cell(this, r, c, this->_path + s->value());
+	    this->_grid[i]->InitTextures();
 	}
     }
 
