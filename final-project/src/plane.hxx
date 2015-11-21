@@ -22,6 +22,7 @@ class Plane {
 		Plane(float a, float b, float c, float d);
 
 		Plane ** extractPlanes(cs237::mat4x4f projTransform);
+		void NormalizePlane(Plane * plane);
 		int ClassifyPoint(const cs237::vec3d & pt);
 
 		float a;

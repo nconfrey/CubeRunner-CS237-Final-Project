@@ -64,17 +64,39 @@
 	 p_planes[5]->c = projTransform[3][2] - projTransform[2][2];
 	 p_planes[5]->d = projTransform[3][3] - projTransform[2][3];
 
-	 //Normalize??
+	 //NormalizePlane(p_planes[0]);
+	 //NormalizePlane(p_planes[1]);
+	 //NormalizePlane(p_planes[2]);
+	 //NormalizePlane(p_planes[3]);
+	 //NormalizePlane(p_planes[4]);
+	 //NormalizePlane(p_planes[5]);
 
 	 return p_planes;
  }
 
+void Plane::NormalizePlane(Plane * plane)
+{
+ float mag;
+ mag = sqrt(plane->a * plane->a + plane->b * plane->b + plane->c * plane->c);
+ plane->a = plane->a / mag;
+ plane->b = plane->b / mag;
+ plane->c = plane->c / mag;
+ plane->d = plane->d / mag;
+}
+
 int Plane::ClassifyPoint(const cs237::vec3d & pt)
 {
- float d;
- d = this->a*pt.x + this->b*pt.y + this->c*pt.z + this->d;
+ // float d;
+ // d = this->a*pt.x + this->b*pt.y + this->c*pt.z + this->d;
  //printf("distance to plane %f\n", d);
- if (d < 0) return OUTSIDE;
- if (d > 0) return INSIDE;
- return INSIDE;
+ // if (d < 0) return OUTSIDE;
+ // if (d > 0) return INSIDE;
+ // return OUTSIDE;
+
+	const cs237::vec3d * normal = new cs237::vec3d(this->a, this->b, this->c);
+	float distance = cs237::__detail::dot( *normal, pt) + this->d;
+	//printf("distance to plane %f\n", distance);
+	if (distance < 0) return OUTSIDE;
+	if (distance > 0) return INSIDE;
+	return ON_PLANE;
 }
