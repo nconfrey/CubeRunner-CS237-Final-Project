@@ -296,9 +296,10 @@ void View::Render ()
 
 bool View::inFrustum(Tile *t)
 {
+  //printf("considering tile [%d][%d]", t->NWRow(), t->NWCol());
   cs237::AABBd boundingBox = t->BBox();
   Plane *frust = new Plane();
-  Plane **frustum = frust->extractPlanes(this->Camera().ModelViewMatrix());
+  Plane **frustum = frust->extractPlanes(this->Camera().projTransform() * this->Camera().ModelViewMatrix());
   int totalIn = 0;
 
   //Test all 8 corners of the bounding box with the 6 planes of the view frustum
@@ -311,8 +312,10 @@ bool View::inFrustum(Tile *t)
     {
       //test this corner against all of the planes
       cs237::vec3d c = boundingBox.corner(i);
+      //printf("corner [%d] of the bounding box is at [%f][%f][%f]\n", i, c.x, c.y, c.z);
       if(frustum[frustPlane]->ClassifyPoint(c) == Plane::OUTSIDE)
       {
+        printf("the plane [%d] makes it outside\n", frustPlane);
         somewhatIn = 0;
         inCount--;
       }
@@ -321,20 +324,20 @@ bool View::inFrustum(Tile *t)
     if(inCount == 0)
     {
       //all the corners of the bounding box were outside of the planes
-      printf("All of the corners are outside the planes for face [%d]\n", frustPlane);
+      printf("CULLED BY FACE [%d]\n", frustPlane);
       return false;
     }
     totalIn += somewhatIn;
   }
 
-  printf("total corners in is: %d", totalIn);
+  //printf("total corners in is: %d", totalIn);
   if(totalIn == 6)
     return true; // all of the corners are inside the view
 
   //otherwise, we are partially in which we will consider as an in for now
   //will come back to this later when optimizing
 
-  printf("base case return\n");
+  //printf("base case return\n");
   return true;
 }
 
