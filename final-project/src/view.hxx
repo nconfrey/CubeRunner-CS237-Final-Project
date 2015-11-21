@@ -92,6 +92,9 @@ class View {
   //! the cache of OpenGL textures for the map tiles
     class TextureCache *TxtCache () const { return this->_tCache; }
 
+  //! the cache of normals for the map tiles
+    class TextureCache *NormCache () const { return this->_nCache; }
+
 
   private:
     Map		*_map;		//!< the map being rendered
@@ -117,6 +120,7 @@ class View {
   // resource management
     class BufferCache	*_bCache;	//! cache of OpenGL VAO objects used for chunks
     class TextureCache	*_tCache;	//! cache of OpenGL textures
+    class TextureCache *_nCache; //! cache of normals
 
   /* ADDITIONAL STATE HERE */
 
