@@ -50,6 +50,10 @@ class Cell {
   //! get the map vertical scale
     float vScale () const { return this->_map->_vScale; }
 
+    //return the number of tiles along both the x and z axis
+    //NOTE: this assumes every quad tree path goes to the same LOD
+    int xzDim() const { return (int) sqrt(this->_nTiles);}
+
   //! return the path of a data file  for this cell
   //! \param[in] file the name of the file
   //! \return the path to the file for this cell.
@@ -72,8 +76,9 @@ class Cell {
     static const uint32_t MIN_NUM_LODS = 1;
     static const uint32_t MAX_NUM_LODS = 8;
 
+        Map   *_map;    //!< the map containing this cell
+
   private:
-    Map		*_map;		//!< the map containing this cell
     uint32_t	_row, _col;	//!< the row and column of this cell in its map
     std::string _stem;		//!< prefix of pathnames for access cell data files
     uint32_t	_nLODs;		//!< number of levels of detail in this cell's representation

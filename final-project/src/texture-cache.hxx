@@ -34,7 +34,6 @@ class Texture {
   //! bind this texture to the given texture unit (0 based)
     void Use (int txtUnit)
     {
-      printf("in texture use\n");
 	if (! this->_active) {
 	    this->Activate();
 	}
