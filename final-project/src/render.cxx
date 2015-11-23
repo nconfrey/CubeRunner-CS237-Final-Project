@@ -76,6 +76,13 @@ static cs237::ShaderProgram *LoadShader (std::string const & shaderPrefix, bool 
 
 }
 
+cs237::vec3f vec3dToVec3f2(cs237::vec3d d)
+{
+    return cs237::vec3f((float)d[0],
+                 (float)d[1],
+                 (float)d[2]);
+}
+
 
 /***** virtual class Renderer member functions *****/
 
@@ -98,6 +105,7 @@ WireframeRenderer::WireframeRenderer ()
   colorLoc = _shader->UniformLocation("color");
   hscaleLoc = _shader->UniformLocation("hscale");
   vscaleLoc = _shader->UniformLocation("vscale");
+  nwcornerLoc = _shader->UniformLocation("nw_pos");
 }
 
 WireframeRenderer::~WireframeRenderer ()
@@ -123,13 +131,15 @@ void WireframeRenderer::Render(cs237::mat4f const &modelViewMat, Mesh *mesh)
   mesh->Draw(); 
 }
 
-void WireframeRenderer::RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale)
+void WireframeRenderer::RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale,
+                                    float w, cs237::vec3d nw_pos, cs237::vec3d nw_tile)
 {
     cs237::color4f color = cs237::color4f(0.0, 0.313, 0.85, 1.0f);
     CS237_CHECK(cs237::setUniform(mvLoc, modelViewMat));
     CS237_CHECK(cs237::setUniform(hscaleLoc, hscale));
     CS237_CHECK(cs237::setUniform(vscaleLoc, vscale));
-    cs237::setUniform(colorLoc, color);
+    CS237_CHECK(cs237::setUniform(colorLoc, color));
+    CS237_CHECK(cs237::setUniform(nwcornerLoc, vec3dToVec3f2(nw_pos)));
     vao->Render();
 }
 
@@ -144,10 +154,13 @@ FullRenderer::FullRenderer ()
     projLoc = _shader->UniformLocation("projection");
     hscaleLoc = _shader->UniformLocation("hscale");
     vscaleLoc = _shader->UniformLocation("vscale");
+    nwcornerLoc = _shader->UniformLocation("nw_pos");
+    cellwidthLoc = _shader->UniformLocation("cellwidth");
 
     //texture sampling uniforms
     texSamplerLoc = _shader->UniformLocation("texSampler");
     normSamplerLoc = _shader->UniformLocation("normSampler");
+    nwtileLoc = _shader->UniformLocation("nwtile");
 
     //directional lighting uniforms
     lightDirLoc = _shader->UniformLocation("lightDir");
@@ -181,16 +194,20 @@ void FullRenderer::Render(cs237::mat4f const &modelViewMat, Mesh *mesh)
   mesh->Draw(); 
 }
 
-void FullRenderer::RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale)
+void FullRenderer::RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale,
+                               float w, cs237::vec3d nw_pos, cs237::vec3d nw_tile)
 {
     //transformation uniforms
     CS237_CHECK(cs237::setUniform(mvLoc, modelViewMat));
     CS237_CHECK(cs237::setUniform(hscaleLoc, hscale));
     CS237_CHECK(cs237::setUniform(vscaleLoc, vscale));
+    CS237_CHECK(cs237::setUniform(nwcornerLoc, vec3dToVec3f2(nw_pos)));
+    CS237_CHECK(cs237::setUniform(cellwidthLoc, w));
 
     //sampler uniforms
     CS237_CHECK(cs237::setUniform(texSamplerLoc, 0));
     CS237_CHECK(cs237::setUniform(normSamplerLoc, 1));
+    CS237_CHECK(cs237::setUniform(nwtileLoc, vec3dToVec3f2(nw_tile)));  
 
     vao->Render();
 }

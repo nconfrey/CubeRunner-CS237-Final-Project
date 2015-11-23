@@ -292,34 +292,35 @@ void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat)
     struct Chunk const c = t->Chunk();
 
     //scales for the vertices
-    float hscale = t->Cell()->hScale() /3.0f;
+    float hscale = t->Cell()->hScale() / 3.0;
     float vscale = t->Cell()->vScale();
 
     //get the tqt's
-    printf("get tqt's\n");
     TQT::TextureQTree *texq = t->Cell()->ColorTQT();
     TQT::TextureQTree *normq = t->Cell()->NormTQT();
     //from the trees, get the tex
-    printf("get tex's\n");
+    printf("%d : %d %d\n", t->LOD(), t->Cell()->Row(), t->Cell()->Col());
     Texture *tex = this->TxtCache()->Make(texq, t->LOD(), t->Cell()->Row(), t->Cell()->Col());
     Texture *norm = this->NormCache()->Make(normq, t->LOD(), t->Cell()->Row(), t->Cell()->Col());
     //use them
-    printf("using tex's\n");
-    assert(tex != nullptr);
-    assert(norm != nullptr);
     tex->Use(0);
-    printf("hi                   \n");
     norm->Use(1);
-    printf("used tex's              s\n");
 
     //apparently we have a function for this
     VAO *vao = new VAO();
     vao->Load(c);
 
-    //render the chunk
-    r->RenderChunk(modelViewMat, vao, hscale, vscale);
+    //get the cell nw corner position
+    cs237::vec3d nw = t->Cell()->_map->NWCellCorner(t->Cell()->Row(), t->Cell()->Col());
+    //convert that to the tile's nw corner
+    double factor = t->Cell()->Width() / t->Cell()->xzDim(); //get the width per row
+    cs237::vec3d nw_tile = cs237::vec3d(factor * t->NWRow(), 0, factor * t->NWCol());
 
-    //free m
+    //render the chunk
+    r->RenderChunk(modelViewMat, vao, hscale, vscale, t->Width(), nw, nw_tile); //cell width, cell NW
+
+    //free vao
+    printf("%f %f\n", nw_tile[0], nw_tile[1]);
 }
 
 
