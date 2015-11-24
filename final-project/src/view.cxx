@@ -265,12 +265,21 @@ bool View::inFrustum(Tile *t)
   //printf("considering tile [%d][%d]", t->NWRow(), t->NWCol());
   cs237::AABBd boundingBox = t->BBox();
   Plane *frust = new Plane();
-  Plane **frustum = frust->extractPlanes(this->Camera().projTransform() * this->Camera().ModelViewMatrix());
+  Plane **frustum = frust->extractPlanes(this->Camera(), this->Camera().projTransform() * this->Camera().ModelViewMatrix());
+  //Plane **frustum = frust->extractPlanes(this->Camera());
+  printf("Ref:\n far plane is %f\n near plane is %f\n", this->Camera().far(), this->Camera().near());
+  for(int i = 0; i < 6; i++)
+  {
+    //frustum[i]->NormalizePlane();
+    printf("Plane [%d]: %f, %f, %f, %f\n", i, frustum[i]->a, frustum[i]->b, frustum[i]->c, frustum[i]->d);
+  }
+
   int totalIn = 0;
 
   //Test all 8 corners of the bounding box with the 6 planes of the view frustum
   for(int frustPlane = 0; frustPlane < 6; frustPlane++)
   {
+    printf("CONSIDERING PLANE [%d]\n", frustPlane);
     //counting how many corners are in the planes
     int inCount = 8;
     int somewhatIn = 1;
@@ -278,14 +287,17 @@ bool View::inFrustum(Tile *t)
     {
       //test this corner against all of the planes
       cs237::vec3d c = boundingBox.corner(i);
-      //printf("corner [%d] of the bounding box is at [%f][%f][%f]\n", i, c.x, c.y, c.z);
-      if(frustum[frustPlane]->ClassifyPoint(c) == Plane::OUTSIDE)
+      printf("corner [%d] is %f, %f, %f\n", i, c.x, c.y, c.z);
+      
+      if(frustum[frustPlane]->ClassifyPoint(c, this->Camera().projTransform() * this->Camera().ModelViewMatrix()) == Plane::OUTSIDE)
       {
-        printf("the plane [%d] makes it outside\n", frustPlane);
+        //printf("the plane [%d] makes it outside\n", frustPlane);
         somewhatIn = 0;
         inCount--;
       }
     }
+      
+      printf("\n\n");
 
     if(inCount == 0)
     {
@@ -295,6 +307,7 @@ bool View::inFrustum(Tile *t)
     }
     totalIn += somewhatIn;
   }
+  //exit(-1);
 
   //printf("total corners in is: %d", totalIn);
   if(totalIn == 6)
@@ -346,7 +359,7 @@ void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat)
     struct Chunk const c = t->Chunk();
 
     //scales for the vertices
-    float hscale = t->Cell()->hScale() /3.0f;
+    float hscale = t->Cell()->hScale();
     float vscale = t->Cell()->vScale();
 
     //get the tqt's
