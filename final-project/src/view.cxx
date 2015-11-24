@@ -13,6 +13,8 @@
 
 #include "cs237.hxx"
 #include "view.hxx"
+#include "plane.hxx"
+#include "map-cell.hxx"
 #include "buffer-cache.hxx"
 #include "texture-cache.hxx"
 
@@ -258,6 +260,66 @@ void View::Render ()
 
 }
 
+bool View::inFrustum(Tile *t)
+{
+  //printf("considering tile [%d][%d]", t->NWRow(), t->NWCol());
+  cs237::AABBd boundingBox = t->BBox();
+  Plane *frust = new Plane();
+  Plane **frustum = frust->extractPlanes(this->Camera(), this->Camera().projTransform() * this->Camera().ModelViewMatrix());
+  //Plane **frustum = frust->extractPlanes(this->Camera());
+  printf("Ref:\n far plane is %f\n near plane is %f\n", this->Camera().far(), this->Camera().near());
+  for(int i = 0; i < 6; i++)
+  {
+    //frustum[i]->NormalizePlane();
+    printf("Plane [%d]: %f, %f, %f, %f\n", i, frustum[i]->a, frustum[i]->b, frustum[i]->c, frustum[i]->d);
+  }
+
+  int totalIn = 0;
+
+  //Test all 8 corners of the bounding box with the 6 planes of the view frustum
+  for(int frustPlane = 0; frustPlane < 6; frustPlane++)
+  {
+    printf("CONSIDERING PLANE [%d]\n", frustPlane);
+    //counting how many corners are in the planes
+    int inCount = 8;
+    int somewhatIn = 1;
+    for(int i = 0; i < 8; i++)
+    {
+      //test this corner against all of the planes
+      cs237::vec3d c = boundingBox.corner(i);
+      printf("corner [%d] is %f, %f, %f\n", i, c.x, c.y, c.z);
+      
+      if(frustum[frustPlane]->ClassifyPoint(c, this->Camera().projTransform() * this->Camera().ModelViewMatrix()) == Plane::OUTSIDE)
+      {
+        //printf("the plane [%d] makes it outside\n", frustPlane);
+        somewhatIn = 0;
+        inCount--;
+      }
+    }
+      
+      printf("\n\n");
+
+    if(inCount == 0)
+    {
+      //all the corners of the bounding box were outside of the planes
+      printf("CULLED BY FACE [%d]\n", frustPlane);
+      return false;
+    }
+    totalIn += somewhatIn;
+  }
+  //exit(-1);
+
+  //printf("total corners in is: %d", totalIn);
+  if(totalIn == 6)
+    return true; // all of the corners are inside the view
+
+  //otherwise, we are partially in which we will consider as an in for now
+  //will come back to this later when optimizing
+
+  //printf("base case return\n");
+  return true;
+}
+
 float View::SSE(Tile *t)
 {
   double dist = t->BBox().distanceToPt(this->_cam.position());
@@ -266,6 +328,9 @@ float View::SSE(Tile *t)
 
 void View::Recursive_Render_Chunk(Tile *t, Renderer *r, int row, int col)
 {
+  //check to see if this tile is in the view frustum to save time
+  //if(!inFrustum(t))
+  //  return;
 
   //calculate SSE
   float sse = this->SSE(t); //replace with real equation
