@@ -36,6 +36,8 @@ class View {
 
     void Recursive_Render_Chunk(Tile *t, Renderer *r, int row, int col);
 
+    bool inFrustum(Tile *t);
+
     void Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat, int row, int col);
 
   //! animation method
