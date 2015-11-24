@@ -300,7 +300,8 @@ void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat)
     TQT::TextureQTree *normq = t->Cell()->NormTQT();
     //from the trees, get the tex
     printf("%d : %d %d\n", t->LOD(), t->Cell()->Row(), t->Cell()->Col());
-    Texture *tex = this->TxtCache()->Make(texq, t->LOD(), t->Cell()->Row(), t->Cell()->Col());
+    //Texture *tex = this->TxtCache()->Make(texq, t->LOD(), t->Cell()->Row(), t->Cell()->Col());
+    Texture *tex = this->TxtCache()->Make(texq, t->LOD(), 2, 2);
     Texture *norm = this->NormCache()->Make(normq, t->LOD(), t->Cell()->Row(), t->Cell()->Col());
     //use them
     tex->Use(0);
@@ -313,8 +314,8 @@ void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat)
     //get the cell nw corner position
     cs237::vec3d nw = t->Cell()->_map->NWCellCorner(t->Cell()->Row(), t->Cell()->Col());
     //convert that to the tile's nw corner
-    double factor = t->Cell()->Width() / t->Cell()->xzDim(); //get the width per row
-    cs237::vec3d nw_tile = cs237::vec3d(factor * t->NWRow(), 0, factor * t->NWCol());
+    //double factor = t->Cell()->Width() / t->Cell()->xzDim(); //get the width per row
+    cs237::vec3d nw_tile = cs237::vec3d(t->NWCol(), 0, t->NWRow());
 
     //render the chunk
     r->RenderChunk(modelViewMat, vao, hscale, vscale, t->Width(), nw, nw_tile); //cell width, cell NW
