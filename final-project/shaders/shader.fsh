@@ -23,9 +23,12 @@ void main(void)
 {
 	vec4 texcolor = texture(texSampler, texCoord);
 	vec4 normal = texture(normSampler, normCoord);
+	normal = normalize(vec4(normal.x, normal.z, normal.y, 1.0));
+	normal = normal * 2; //convert from [0..1] to [-1..1]
+	normal = normal - 1;
 
 	vec4 lighting = vec4((lightAmb + max(0, dot((lightDir),normalize(vec3(normal)))) * lightInten), 1.0);
 
-	//fragColor = lighting * texcolor;
-	fragColor = lighting * vec4(0.0, 0.313, 0.85, 1.0); //debug
+	fragColor = lighting * texcolor;
+	//fragColor = lighting * vec4(0.0, 0.313, 0.85, 1.0); //debug
 }

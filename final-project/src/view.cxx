@@ -251,7 +251,7 @@ void View::Render ()
         Tile *t = &(c->Tile(0)); //this is the root of the quad tree
 
         //call function to render at appropriate level of detail
-        Recursive_Render_Chunk(t, r);
+        Recursive_Render_Chunk(t, r, 0, 0);
 
       }
     }
@@ -326,67 +326,76 @@ float View::SSE(Tile *t)
   return this->_cam.screenError(dist, t->Chunk()._maxError);
 }
 
-void View::Recursive_Render_Chunk(Tile *t, Renderer *r)
+void View::Recursive_Render_Chunk(Tile *t, Renderer *r, int row, int col)
 {
   //check to see if this tile is in the view frustum to save time
-  if(!inFrustum(t))
-    return;
-
-
-  //here we also have to get texture and rnomal information from the respective tqt's
+  //if(!inFrustum(t))
+  //  return;
 
   //calculate SSE
   float sse = this->SSE(t); //replace with real equation
 
   if(sse <= this->ErrorLimit()){
     //error within tolerance, so we render this node
-    this->Render_Chunk(t, r, modelViewMat);
+    this->Render_Chunk(t, r, modelViewMat, row, col);
   } else {
     //verify that children are not null
-    if(t->NumChildren() < 4){
-      this->Render_Chunk(t, r, this->modelViewMat); //we can't go down another level, so we have to render this one
+    if(t->NumChildren() < 4 || t->LOD() >= t->Cell()->Depth()){
+      this->Render_Chunk(t, r, this->modelViewMat, row, col); //we can't go down another level, so we have to render this one
     } else {
       //so check all the children
+      //we are gonna double the number of rows and cols when we go down a LOD
       for(int j = 0; j < t->NumChildren(); j++){
-        Recursive_Render_Chunk(t->Child(j), r);
+        int userow = row; int usecol = col;
+        if(t->LOD() < t->Cell()->ColorTQT()->Depth() && t->LOD() < t->Cell()->NormTQT()->Depth()){
+          //we can go deeper
+          userow*=2; usecol*=2;
+          if(j == 1) {usecol++;} //we're on the right side
+          if(j == 2) {userow++; usecol++;} //we're on the right and bottom
+          if(j == 3) {userow++;} //we're on the bottom
+        }
+        //printf("%d, %d", userow, usecol);
+        Recursive_Render_Chunk(t->Child(j), r, userow, usecol);
       }
     }
   }
 }
 
-void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat)
+void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat, int row, int col)
 {
     struct Chunk const c = t->Chunk();
 
     //scales for the vertices
+
     float hscale = t->Cell()->hScale();
     float vscale = t->Cell()->vScale();
 
     //get the tqt's
-    printf("get tqt's\n");
     TQT::TextureQTree *texq = t->Cell()->ColorTQT();
     TQT::TextureQTree *normq = t->Cell()->NormTQT();
     //from the trees, get the tex
-    printf("get tex's\n");
-    Texture *tex = this->TxtCache()->Make(texq, t->LOD(), t->Cell()->Row(), t->Cell()->Col());
-    Texture *norm = this->NormCache()->Make(normq, t->LOD(), t->Cell()->Row(), t->Cell()->Col());
+    int depth = std::min(t->LOD(), texq->Depth()-1);
+    depth = std::min(depth, normq->Depth()-1);
+    //printf("  : %d\n", depth);
+    Texture *tex = this->TxtCache()->Make(texq, depth, row, col);
+    Texture *norm = this->NormCache()->Make(normq, depth, row, col);
     //use them
-    printf("using tex's\n");
-    assert(tex != nullptr);
-    assert(norm != nullptr);
     tex->Use(0);
-    printf("hi                   \n");
     norm->Use(1);
-    printf("used tex's              s\n");
 
     //apparently we have a function for this
     VAO *vao = new VAO();
     vao->Load(c);
 
-    //render the chunk
-    r->RenderChunk(modelViewMat, vao, hscale, vscale);
+    //get the cell nw corner position for the cell
+    cs237::vec3d nw = t->Cell()->_map->NWCellCorner(t->Cell()->Row(), t->Cell()->Col());
+    //get the nw corner for the tile
+    cs237::vec3d nw_tile = cs237::vec3d(t->NWCol(), 0, t->NWRow());
 
-    //free m
+    //render the chunk
+    r->RenderChunk(modelViewMat, vao, hscale, vscale, t->Width(), nw, nw_tile); //cell width, cell NW
+
+    //free vao
 }
 
 
