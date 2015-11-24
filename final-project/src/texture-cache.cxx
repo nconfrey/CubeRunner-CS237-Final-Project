@@ -105,16 +105,12 @@ void Texture::Activate ()
 {
     assert (! this->_active);
     if (this->_txt == nullptr) {
-        printf("it was nullptr\n");
       // load the image data from the TQT and create a texture for it
 	cs237::image2d *img = this->_tree->LoadImage (this->_level, this->_row, this->_col, false);
-    printf("helloooooooooooooooooo\n");
 	this->_txt = this->_cache->_AllocTex2D (img);
     }
-    printf("making active\n");
     this->_cache->_MakeActive (this);
     this->_active = true;
-    printf("activated              d\n");
 }
 
 // hint to the texture cache that this texture is not needed.

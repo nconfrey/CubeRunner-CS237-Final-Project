@@ -35,7 +35,8 @@ class Renderer {
     //! \param mesh the mesh to be rendered
     //! \param type switch between flatShading (1) or WireFrame (2)
     virtual void Render (cs237::mat4f const &modelViewMat, Mesh *mesh) = 0;
-    virtual void RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale) = 0;
+    virtual void RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale,
+                             float w, cs237::vec3d nw_pos, cs237::vec3d nw_tile) = 0;
 
   protected:
     //each one of the following classes has copies of these structs
@@ -59,10 +60,13 @@ class WireframeRenderer : public Renderer {
 
     int hscaleLoc;
     int vscaleLoc;
+    int cellwidthLoc;
+    int nwcornerLoc;
 
     void Enable (cs237::mat4f const &projectionMat, Sunlight sun);
     void Render (cs237::mat4f const &modelViewMat, Mesh *mesh);
-    void RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale);
+    void RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale,
+                     float w, cs237::vec3d nw_pos, cs237::vec3d nw_tile);
 
 };
 
@@ -76,6 +80,9 @@ class FullRenderer : public Renderer {
         int projLoc;
         int hscaleLoc;
         int vscaleLoc;
+        int cellwidthLoc;
+        int nwcornerLoc;
+        int nwtileLoc;
 
         //texture sampling uniforms
         int texSamplerLoc;
@@ -88,7 +95,8 @@ class FullRenderer : public Renderer {
 
         void Enable(cs237::mat4f const &projectionMat, Sunlight sun);
         void Render (cs237::mat4f const &modelViewMat, Mesh *mesh);
-        void RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale);
+        void RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale,
+                         float w, cs237::vec3d nw_pos, cs237::vec3d nw_tile);
 };
 
 #endif // !_RENDER_HXX_

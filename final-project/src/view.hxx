@@ -34,11 +34,11 @@ class View {
   //! method to handle display of the view
     void Render ();
 
-    void Recursive_Render_Chunk(Tile *t, Renderer *r);
+    void Recursive_Render_Chunk(Tile *t, Renderer *r, int row, int col);
 
     bool inFrustum(Tile *t);
 
-    void Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat);
+    void Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat, int row, int col);
 
   //! animation method
     void Animate ();
