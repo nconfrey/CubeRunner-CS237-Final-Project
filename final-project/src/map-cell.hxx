@@ -53,6 +53,7 @@ class Cell {
     //return the number of tiles along both the x and z axis
     //NOTE: this assumes every quad tree path goes to the same LOD
     int xzDim() const { return (int) sqrt(this->_nTiles);}
+    
 
   //! return the path of a data file  for this cell
   //! \param[in] file the name of the file
