@@ -7,6 +7,7 @@
 #define _PLANE_HXX_
 
 #include "cs237.hxx"
+#include "camera.hxx"
 
 class Plane {
 	public:
@@ -21,9 +22,9 @@ class Plane {
 		Plane();
 		Plane(float a, float b, float c, float d);
 
-		Plane ** extractPlanes(cs237::mat4x4f projTransform);
-		void NormalizePlane(Plane * plane);
-		int ClassifyPoint(const cs237::vec3d & pt);
+		Plane ** extractPlanes(Camera c, cs237::mat4x4f projTransform);
+		void NormalizePlane();
+		int ClassifyPoint(const cs237::vec3d & pt, cs237::mat4x4f ModelViewMatrix);
 
 		float a;
 		float b;
