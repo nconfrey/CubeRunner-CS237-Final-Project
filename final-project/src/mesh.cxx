@@ -132,6 +132,13 @@ void Mesh::Draw ()
     CS237_CHECK( glDrawElements (this->prim, this->nIndices, GL_UNSIGNED_SHORT, 0));
 }
 
+void Mesh::DrawVertices ()
+{
+    CS237_CHECK(glBindVertexArray(this->vaoId));
+    glBindTexture(GL_TEXTURE_CUBE_MAP, this->texture);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+}
+
 void Mesh::DrawFromVAOObj()
 {
     CS237_CHECK(glBindVertexArray(this->vao->_id));
