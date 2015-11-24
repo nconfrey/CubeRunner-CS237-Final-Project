@@ -32,5 +32,5 @@ void main (void)
 
     //calculate tex coords
     texCoord = vec2((position.x - nwtile.x)/ cellwidth, (position.z - nwtile.z)/ cellwidth);
-    normCoord = vec2(position.x / cellwidth, position.z / cellwidth);
+    normCoord = vec2((position.x - nwtile.x)/ cellwidth, (position.z - nwtile.z) / cellwidth);
 }

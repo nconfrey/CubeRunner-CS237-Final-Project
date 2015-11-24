@@ -301,7 +301,7 @@ void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat, 
     struct Chunk const c = t->Chunk();
 
     //scales for the vertices
-    float hscale = t->Cell()->hScale() / 3.0;
+    float hscale = t->Cell()->hScale();
     float vscale = t->Cell()->vScale();
 
     //get the tqt's
@@ -309,7 +309,7 @@ void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat, 
     TQT::TextureQTree *normq = t->Cell()->NormTQT();
     //from the trees, get the tex
     int depth = std::min(t->LOD(), texq->Depth()-1);
-    depth = std::min(depth, normq->Depth()-1);
+    //depth = std::max(depth, normq->Depth());
     //printf("  : %d\n", depth);
     Texture *tex = this->TxtCache()->Make(texq, depth, row, col);
     Texture *norm = this->NormCache()->Make(normq, depth, row, col);
