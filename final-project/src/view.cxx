@@ -280,13 +280,16 @@ void View::Recursive_Render_Chunk(Tile *t, Renderer *r, int row, int col)
     } else {
       //so check all the children
       //we are gonna double the number of rows and cols when we go down a LOD
-      row*=2; col*=2;
       for(int j = 0; j < t->NumChildren(); j++){
         int userow = row; int usecol = col;
-        if(j == 1) {usecol++;} //we're on the right side
-        if(j == 2) {userow++; usecol++;} //we're on the right and bottom
-        if(j == 3) {userow++;} //we're on the bottom
-        printf("%d, %d", userow, usecol);
+        if(t->LOD() < t->Cell()->ColorTQT()->Depth() && t->LOD() < t->Cell()->NormTQT()->Depth()){
+          //we can go deeper
+          userow*=2; usecol*=2;
+          if(j == 1) {usecol++;} //we're on the right side
+          if(j == 2) {userow++; usecol++;} //we're on the right and bottom
+          if(j == 3) {userow++;} //we're on the bottom
+        }
+        //printf("%d, %d", userow, usecol);
         Recursive_Render_Chunk(t->Child(j), r, userow, usecol);
       }
     }
@@ -305,11 +308,11 @@ void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat, 
     TQT::TextureQTree *texq = t->Cell()->ColorTQT();
     TQT::TextureQTree *normq = t->Cell()->NormTQT();
     //from the trees, get the tex
-    //printf("%d : %d %d\n", t->LOD(), t->Cell()->Row(), t->Cell()->Col());
-    printf("  : %d\n", t->LOD());
-    //Texture *tex = this->TxtCache()->Make(texq, t->LOD(), t->Cell()->Row(), t->Cell()->Col());
-    Texture *tex = this->TxtCache()->Make(texq, t->LOD(), row, col);
-    Texture *norm = this->NormCache()->Make(normq, t->LOD(), row, col);
+    int depth = std::min(t->LOD(), texq->Depth()-1);
+    depth = std::min(depth, normq->Depth()-1);
+    //printf("  : %d\n", depth);
+    Texture *tex = this->TxtCache()->Make(texq, depth, row, col);
+    Texture *norm = this->NormCache()->Make(normq, depth, row, col);
     //use them
     tex->Use(0);
     norm->Use(1);
@@ -318,17 +321,15 @@ void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat, 
     VAO *vao = new VAO();
     vao->Load(c);
 
-    //get the cell nw corner position
+    //get the cell nw corner position for the cell
     cs237::vec3d nw = t->Cell()->_map->NWCellCorner(t->Cell()->Row(), t->Cell()->Col());
-    //convert that to the tile's nw corner
-    //double factor = t->Cell()->Width() / t->Cell()->xzDim(); //get the width per row
+    //get the nw corner for the tile
     cs237::vec3d nw_tile = cs237::vec3d(t->NWCol(), 0, t->NWRow());
 
     //render the chunk
     r->RenderChunk(modelViewMat, vao, hscale, vscale, t->Width(), nw, nw_tile); //cell width, cell NW
 
     //free vao
-    //printf("%f %f\n", nw_tile[0], nw_tile[1]);
 }
 
 
