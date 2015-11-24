@@ -70,6 +70,23 @@ class WireframeRenderer : public Renderer {
 
 };
 
+class SkyBoxRenderer : public Renderer {
+  public:
+    SkyBoxRenderer ();
+    virtual ~SkyBoxRenderer ();
+
+    //Holders for the memory locations of shader program variables
+    int mvLoc;
+    int projLoc;
+    int texSamplerLoc;
+
+    void Enable (cs237::mat4f const &projectionMat, Sunlight sun);
+    void Render (cs237::mat4f const &modelViewMat, Mesh *mesh);
+    void RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale,
+                     float w, cs237::vec3d nw_pos, cs237::vec3d nw_tile);
+
+};
+
 class FullRenderer : public Renderer {
     public:
         FullRenderer();
