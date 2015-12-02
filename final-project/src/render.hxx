@@ -21,6 +21,18 @@ struct Sunlight {
   cs237::color3f lightAmb;
 };
 
+//struct to hold all the uniforms to be used in rendering
+typedef struct uniforms {
+  float hscale;
+  float vscale;
+  float tw;
+  cs237::vec3d nw_pos;
+  cs237::vec3d nw_tile;
+  int hasfog;
+  cs237::color3f fogcolor;
+  float fogdensity;
+} uniforms;
+
 class Renderer {
   public:
 
@@ -35,8 +47,7 @@ class Renderer {
     //! \param mesh the mesh to be rendered
     //! \param type switch between flatShading (1) or WireFrame (2)
     virtual void Render (cs237::mat4f const &modelViewMat, Mesh *mesh) = 0;
-    virtual void RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale,
-                             float w, cs237::vec3d nw_pos, cs237::vec3d nw_tile) = 0;
+    virtual void RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, uniforms *u) = 0;
 
   protected:
     //each one of the following classes has copies of these structs
@@ -65,8 +76,7 @@ class WireframeRenderer : public Renderer {
 
     void Enable (cs237::mat4f const &projectionMat, Sunlight sun);
     void Render (cs237::mat4f const &modelViewMat, Mesh *mesh);
-    void RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale,
-                     float w, cs237::vec3d nw_pos, cs237::vec3d nw_tile);
+    void RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, uniforms *u);
 
 };
 
@@ -95,8 +105,7 @@ class FullRenderer : public Renderer {
 
         void Enable(cs237::mat4f const &projectionMat, Sunlight sun);
         void Render (cs237::mat4f const &modelViewMat, Mesh *mesh);
-        void RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale,
-                         float w, cs237::vec3d nw_pos, cs237::vec3d nw_tile);
+        void RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, uniforms *u);
 };
 
 #endif // !_RENDER_HXX_
