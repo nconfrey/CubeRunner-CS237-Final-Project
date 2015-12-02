@@ -165,6 +165,12 @@ FullRenderer::FullRenderer ()
     lightDirLoc = _shader->UniformLocation("lightDir");
     lightIntenLoc = _shader->UniformLocation("lightInten");
     lightAmbLoc = _shader->UniformLocation("lightAmb");
+
+    //fog uniforms
+    hasFogLoc = _shader->UniformLocation("hasFog");
+    fogColorLoc = _shader->UniformLocation("fogColor");
+    fogDensityLoc = _shader->UniformLocation("fogDensity");
+
 }
 
 FullRenderer::~FullRenderer()
@@ -206,6 +212,11 @@ void FullRenderer::RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, unifo
     CS237_CHECK(cs237::setUniform(texSamplerLoc, 0));
     CS237_CHECK(cs237::setUniform(normSamplerLoc, 1));
     CS237_CHECK(cs237::setUniform(nwtileLoc, vec3dToVec3f2(u->nw_tile)));  
+
+    //fog uniforms
+    CS237_CHECK(cs237::setUniform(hasFogLoc, u->hasfog));
+    CS237_CHECK(cs237::setUniform(fogColorLoc, u->fogcolor));
+    CS237_CHECK(cs237::setUniform(fogDensityLoc, u->fogdensity));
 
     vao->Render();
 }

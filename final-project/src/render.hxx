@@ -103,6 +103,11 @@ class FullRenderer : public Renderer {
         int lightIntenLoc;
         int lightAmbLoc;
 
+        //fog uniforms
+        int hasFogLoc;
+        int fogColorLoc;
+        int fogDensityLoc;
+
         void Enable(cs237::mat4f const &projectionMat, Sunlight sun);
         void Render (cs237::mat4f const &modelViewMat, Mesh *mesh);
         void RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, uniforms *u);

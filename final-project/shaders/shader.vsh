@@ -21,6 +21,7 @@ uniform float cellwidth;
 
 out vec2 texCoord;
 out vec2 normCoord; 
+out float distToCam;
 
 
 void main (void)
@@ -29,6 +30,7 @@ void main (void)
 	//pos = vec3(position.x * hscale, position.y * vscale, position.z * hscale);
     gl_Position =  projection * modelView * vec4(pos, 1.0);  
 
+    distToCam = -gl_Position.z;
 
     //calculate tex coords
     texCoord = vec2((position.x - nwtile.x)/ cellwidth, (position.z - nwtile.z)/ cellwidth);
