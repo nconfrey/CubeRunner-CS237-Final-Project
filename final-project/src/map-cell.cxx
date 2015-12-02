@@ -202,6 +202,9 @@ void Tile::_Init (class Cell *cell, uint32_t id, uint32_t row, uint32_t col, uin
     this->_row = row;
     this->_col = col;
     this->_lod = lod;
+    this->_hasvao = 0;
+    this->_hastex = 0;
+    this->_hasnorm = 0;
 
     if (lod+1 < cell->Depth()) {
 	uint32_t halfWid = (cell->Width() >> (lod+1));
@@ -235,3 +238,75 @@ void Tile::Dump (std::ostream &outS)
 	this->Child(i)->Dump (outS);
 
 }
+
+
+    //return the vao if it has one cached, otherwise NULL
+    VAO * Tile::VAO()
+    {
+        if(this->_hasvao != 0){
+            return this->_vao;
+        } else {
+            return nullptr;
+        }
+    }
+
+    //return the texture if it has one cached, otherwise NULL
+    Texture * Tile::Tex()
+    {
+        if(this->_hastex != 0){
+            return this->_tex;
+        } else {
+            return nullptr;
+        }
+    }
+
+    //return the normal map if it has one cached, otherwise NULL
+    Texture * Tile::Norm()
+    {
+        if(this->_hasnorm != 0){
+            return this->_norm;
+        } else {
+            return nullptr;
+        }
+    }
+
+    //add the given vao to the tile
+    void Tile::setVAO(struct VAO *vao)
+    {
+        if(vao == nullptr){
+            //invalid
+            this->_hasvao = 0;
+            this->_vao = nullptr;
+        } else {
+            this->_hasvao = 1;
+            this->_vao = vao;
+        }
+    }
+
+    //add the given texture to the tile
+    void Tile::setTex(Texture *tex)
+    {
+        if(tex == nullptr){
+            //invalid
+            this->_hastex = 0;
+            this->_tex = nullptr;
+        } else {
+            this->_hastex = 1;
+            this->_tex = tex;
+        }
+    }
+
+    //add the given normal map to the tile
+    void Tile::setNorm(Texture *norm)
+    {
+        if(norm == nullptr){
+            //invalid
+            this->_hasnorm = 0;
+            this->_norm = nullptr;
+        } else {
+            this->_hasnorm = 1;
+            this->_norm = norm;
+        }
+    }
+
+

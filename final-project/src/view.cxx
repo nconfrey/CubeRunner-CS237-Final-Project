@@ -369,22 +369,32 @@ void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat, 
     float hscale = t->Cell()->hScale();
     float vscale = t->Cell()->vScale();
 
-    //get the tqt's
-    TQT::TextureQTree *texq = t->Cell()->ColorTQT();
-    TQT::TextureQTree *normq = t->Cell()->NormTQT();
-    //from the trees, get the tex
-    int depth = std::min(t->LOD(), texq->Depth()-1);
-    //depth = std::max(depth, normq->Depth());
-    //printf("  : %d\n", depth);
-    Texture *tex = this->TxtCache()->Make(texq, depth, row, col);
-    Texture *norm = this->NormCache()->Make(normq, depth, row, col);
+    //first, check what information is already chaced for us in the tile struct
+    VAO *vao = t->VAO();
+    Texture *tex = t->Tex();
+    Texture *norm = t->Norm();
+    //nullptr indicates it was not already cached
+    if(vao == nullptr){
+      //create it in the bufferchace
+      vao = this->VAOCache()->Acquire();
+      vao->Load(c);
+      t->setVAO(vao);
+    }
+    if(tex == nullptr){
+      TQT::TextureQTree *texq = t->Cell()->ColorTQT();
+      int depth = std::min(t->LOD(), texq->Depth()-1);
+      tex = this->TxtCache()->Make(texq, depth, row, col);
+      t->setTex(tex);
+    }
+    if(norm == nullptr){
+      TQT::TextureQTree *normq = t->Cell()->NormTQT();
+      int depth = std::min(t->LOD(), normq->Depth()-1);
+      norm = this->NormCache()->Make(normq, depth, row, col);
+    }
+
     //use them
     tex->Use(0);
     norm->Use(1);
-
-    //apparently we have a function for this
-    VAO *vao = new VAO();
-    vao->Load(c);
 
     //get the cell nw corner position for the cell
     cs237::vec3d nw = t->Cell()->_map->NWCellCorner(t->Cell()->Row(), t->Cell()->Col());
