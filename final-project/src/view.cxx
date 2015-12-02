@@ -35,7 +35,7 @@ static void SetViewport (GLFWwindow *win)
 /***** class View member functions *****/
 
 View::View (Map *map)
-    : _map(map), _errorLimit(2.0), _isVis(true), _window(nullptr), _wireframe(true),
+    : _map(map), _errorLimit(2.0), _isVis(true), _window(nullptr),
       _bCache(new BufferCache()), _tCache(new TextureCache())
 {
 }
@@ -100,6 +100,11 @@ void View::Init (int wid, int ht)
     this->_lastStep =
     this->_lastFrameTime = glfwGetTime();
 
+    //logic intialization
+    this->_wireframe = true;
+    this->_lightingOn = true;
+    this->_fogOn = true;
+
 }
 
 #define SIN_ONE_DEGREE	0.0174524064373f
@@ -156,6 +161,14 @@ void View::HandleKey (int key, int scancode, int action, int mods)
       case GLFW_KEY_DOWN:
       this->_cam.move(this->Camera().position()-cs237::vec3d(0.0, 0.0, -100));
       break;
+
+      case GLFW_KEY_F:
+        this->_fogOn = !this->_fogOn;
+        break;
+
+      case GLFW_KEY_L:
+        this->_lightingOn = !this->_lightingOn;
+        break;
       default: // ignore all other keys
 	return;
     }
@@ -336,27 +349,29 @@ void View::Recursive_Render_Chunk(Tile *t, Renderer *r, int row, int col)
   //  return;
 
   //calculate SSE
-  float sse = this->SSE(t); //replace with real equation
+  float sse = this->SSE(t);
+  float sseLim = this->ErrorLimit();
+  float morphFactor = std::max(0.0f, std::min(1.0f, (2.0f*sse/sseLim - 1.0f))); //clamp to 1
 
-  if(sse <= this->ErrorLimit()){
+  if(sse <= sseLim){
     //error within tolerance, so we render this node
-    this->Render_Chunk(t, r, modelViewMat, row, col);
+    this->Render_Chunk(t, r, modelViewMat, row, col, morphFactor);
   } else {
     //verify that children are not null
     if(t->NumChildren() < 4 || t->LOD() >= t->Cell()->Depth()){
-      this->Render_Chunk(t, r, this->modelViewMat, row, col); //we can't go down another level, so we have to render this one
+      this->Render_Chunk(t, r, this->modelViewMat, row, col, morphFactor); //we can't go down another level, so we have to render this one
     } else {
       //so check all the children
       //we are gonna double the number of rows and cols when we go down a LOD
       for(int j = 0; j < t->NumChildren(); j++){
         int userow = row; int usecol = col;
-        if(t->LOD() < t->Cell()->ColorTQT()->Depth() && t->LOD() < t->Cell()->NormTQT()->Depth()){
+        //if(t->LOD() < t->Cell()->ColorTQT()->Depth() && t->LOD() < t->Cell()->NormTQT()->Depth()){
           //we can go deeper
           userow*=2; usecol*=2;
           if(j == 1) {usecol++;} //we're on the right side
           if(j == 2) {userow++; usecol++;} //we're on the right and bottom
           if(j == 3) {userow++;} //we're on the bottom
-        }
+        //}
         //printf("%d, %d", userow, usecol);
         Recursive_Render_Chunk(t->Child(j), r, userow, usecol);
       }
@@ -364,7 +379,7 @@ void View::Recursive_Render_Chunk(Tile *t, Renderer *r, int row, int col)
   }
 }
 
-void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat, int row, int col)
+void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat, int row, int col, float morphFactor)
 {
     struct Chunk const c = t->Chunk();
 
@@ -411,9 +426,11 @@ void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat, 
     u->tw = t->Width();
     u->nw_pos = nw;
     u->nw_tile = nw_tile;
-    u->hasfog = t->Cell()->_map->hasFog();
+    u->hasfog = t->Cell()->_map->hasFog() & this->_fogOn;
     u->fogcolor = t->Cell()->_map->FogColor();
     u->fogdensity = t->Cell()->_map->FogDensity();
+    u->morphFactor = morphFactor;
+    u->lightingOn = this->_lightingOn;
 
     //render the chunk
     r->RenderChunk(modelViewMat, vao, u); //cell width, cell NW

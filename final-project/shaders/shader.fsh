@@ -10,6 +10,7 @@
 uniform vec3 lightDir;
 uniform vec3 lightInten;
 uniform vec3 lightAmb;
+uniform bool lightingOn;
 
 uniform int hasFog;
 uniform vec3 fogColor;
@@ -29,19 +30,20 @@ void main(void)
 {
 
 	vec4 texcolor = texture(texSampler, texCoord);
-	vec4 normal = texture(normSampler, normCoord);
-	normal = normalize(vec4(normal.x, normal.z, normal.y, 1.0));
-	normal = normal * 2; //convert from [0..1] to [-1..1]
-	normal = normal - 1;
+	fragColor = texcolor;
 
-	vec4 lighting = vec4((lightAmb + max(0, dot((lightDir),normalize(vec3(normal)))) * lightInten), 1.0);
+	if(lightingOn){
+		vec4 normal = texture(normSampler, normCoord);
+		normal = normalize(vec4(normal.x, normal.z, normal.y, 1.0));
+		normal = normal * 2; //convert from [0..1] to [-1..1]
+		normal = normal - 1;
+		vec4 lighting = vec4((lightAmb + max(0, dot((lightDir),normalize(vec3(normal)))) * lightInten), 1.0);
+		fragColor = fragColor * lighting;
+	}
 
-	fragColor = lighting * texcolor;
-
-	vec3 fog;
 	if(hasFog != 0){
 		float ffog = exp2(-1.442695 * fogDensity * fogDensity * distToCam * distToCam);
-		fog = (1.0 - ffog) * fogColor;
+		vec3 fog = (1.0 - ffog) * fogColor;
 		fragColor = ffog * fragColor + vec4(fog, 1.0);
 	}
 }

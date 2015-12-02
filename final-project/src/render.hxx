@@ -31,6 +31,8 @@ typedef struct uniforms {
   int hasfog;
   cs237::color3f fogcolor;
   float fogdensity;
+  float morphFactor;
+  bool lightingOn;
 } uniforms;
 
 class Renderer {
@@ -93,6 +95,7 @@ class FullRenderer : public Renderer {
         int cellwidthLoc;
         int nwcornerLoc;
         int nwtileLoc;
+        int morphFactorLoc;
 
         //texture sampling uniforms
         int texSamplerLoc;
@@ -102,6 +105,7 @@ class FullRenderer : public Renderer {
         int lightDirLoc;
         int lightIntenLoc;
         int lightAmbLoc;
+        int lightingOnLoc;
 
         //fog uniforms
         int hasFogLoc;
