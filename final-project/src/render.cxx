@@ -131,15 +131,14 @@ void WireframeRenderer::Render(cs237::mat4f const &modelViewMat, Mesh *mesh)
   mesh->Draw(); 
 }
 
-void WireframeRenderer::RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale,
-                                    float w, cs237::vec3d nw_pos, cs237::vec3d nw_tile)
+void WireframeRenderer::RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, uniforms *u)
 {
     cs237::color4f color = cs237::color4f(0.0, 0.313, 0.85, 1.0f);
     CS237_CHECK(cs237::setUniform(mvLoc, modelViewMat));
-    CS237_CHECK(cs237::setUniform(hscaleLoc, hscale));
-    CS237_CHECK(cs237::setUniform(vscaleLoc, vscale));
+    CS237_CHECK(cs237::setUniform(hscaleLoc, u->hscale));
+    CS237_CHECK(cs237::setUniform(vscaleLoc, u->vscale));
     CS237_CHECK(cs237::setUniform(colorLoc, color));
-    CS237_CHECK(cs237::setUniform(nwcornerLoc, vec3dToVec3f2(nw_pos)));
+    CS237_CHECK(cs237::setUniform(nwcornerLoc, vec3dToVec3f2(u->nw_pos)));
     vao->Render();
 }
 
@@ -156,6 +155,7 @@ FullRenderer::FullRenderer ()
     vscaleLoc = _shader->UniformLocation("vscale");
     nwcornerLoc = _shader->UniformLocation("nw_pos");
     cellwidthLoc = _shader->UniformLocation("cellwidth");
+    morphFactorLoc = _shader->UniformLocation("morphFactor");
 
     //texture sampling uniforms
     texSamplerLoc = _shader->UniformLocation("texSampler");
@@ -166,6 +166,13 @@ FullRenderer::FullRenderer ()
     lightDirLoc = _shader->UniformLocation("lightDir");
     lightIntenLoc = _shader->UniformLocation("lightInten");
     lightAmbLoc = _shader->UniformLocation("lightAmb");
+    lightingOnLoc = _shader->UniformLocation("lightingOn");
+
+    //fog uniforms
+    hasFogLoc = _shader->UniformLocation("hasFog");
+    fogColorLoc = _shader->UniformLocation("fogColor");
+    fogDensityLoc = _shader->UniformLocation("fogDensity");
+
 }
 
 FullRenderer::~FullRenderer()
@@ -194,20 +201,27 @@ void FullRenderer::Render(cs237::mat4f const &modelViewMat, Mesh *mesh)
   mesh->Draw(); 
 }
 
-void FullRenderer::RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale,
-                               float w, cs237::vec3d nw_pos, cs237::vec3d nw_tile)
+void FullRenderer::RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, uniforms *u)
 {
     //transformation uniforms
     CS237_CHECK(cs237::setUniform(mvLoc, modelViewMat));
-    CS237_CHECK(cs237::setUniform(hscaleLoc, hscale));
-    CS237_CHECK(cs237::setUniform(vscaleLoc, vscale));
-    CS237_CHECK(cs237::setUniform(nwcornerLoc, vec3dToVec3f2(nw_pos)));
-    CS237_CHECK(cs237::setUniform(cellwidthLoc, w));
+    CS237_CHECK(cs237::setUniform(hscaleLoc, u->hscale));
+    CS237_CHECK(cs237::setUniform(vscaleLoc, u->vscale));
+    CS237_CHECK(cs237::setUniform(nwcornerLoc, vec3dToVec3f2(u->nw_pos)));
+    CS237_CHECK(cs237::setUniform(cellwidthLoc, u->tw));
+    CS237_CHECK(cs237::setUniform(morphFactorLoc, u->morphFactor));
 
     //sampler uniforms
     CS237_CHECK(cs237::setUniform(texSamplerLoc, 0));
     CS237_CHECK(cs237::setUniform(normSamplerLoc, 1));
-    CS237_CHECK(cs237::setUniform(nwtileLoc, vec3dToVec3f2(nw_tile)));  
+    CS237_CHECK(cs237::setUniform(nwtileLoc, vec3dToVec3f2(u->nw_tile)));  
+
+    //fog uniforms
+    CS237_CHECK(cs237::setUniform(hasFogLoc, u->hasfog));
+    CS237_CHECK(cs237::setUniform(fogColorLoc, u->fogcolor));
+    CS237_CHECK(cs237::setUniform(fogDensityLoc, u->fogdensity));
+
+    CS237_CHECK(cs237::setUniform(lightingOnLoc, u->lightingOn));
 
     vao->Render();
 }
