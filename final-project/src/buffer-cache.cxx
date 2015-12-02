@@ -25,7 +25,7 @@ VAO::VAO()
     this->_vBuf = buf[0];
     this->_iBuf = buf[1];
     this->_nIndices = 0;
-    this->_inUse = true;
+    this->_inUse = false;
 
 }
 

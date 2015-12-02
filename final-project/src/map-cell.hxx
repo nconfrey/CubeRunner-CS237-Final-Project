@@ -16,6 +16,9 @@
 #include "qtree-util.hxx"
 #include "tqt.hxx"
 
+//forward declaration so as to not include header file here and avoid cyclic header dependency...
+struct VAO;
+class Texture;
 
 class Tile;
 
@@ -149,7 +152,26 @@ class Tile {
   // dump the tile tree to an output stream
     void Dump (std::ostream &outS);
 
+    //return the cell
     class Cell * Cell() const { return this->_cell; }
+
+    //return the vao if it has one cached, otherwise NULL
+    VAO * VAO();
+
+    //return the texture if it has one cached, otherwise NULL
+    Texture * Tex();
+
+    //return the normal map if it has one cached, otherwise NULL
+    Texture * Norm();
+
+    //add the given vao to the tile
+    void setVAO(struct VAO *vao);
+
+    //add the given texture to the tile
+    void setTex(Texture *tex);
+
+    //add the given normal map to the tile
+    void setNorm(Texture *norm);
 
   private:
     class Cell	*_cell;		//!< the cell that contains this tile
@@ -160,6 +182,14 @@ class Tile {
     struct Chunk _chunk;	//<! mesh data for this tile
     cs237::AABBd _bbox;		//<! the tile's bounding box in world coordinates; note that we use
 				//!  double precision here so that we can support large worlds	
+
+    struct VAO * _vao; //vao for the chunk mesh
+    Texture *_tex; //texture for the chunk mesh
+    Texture *_norm; //normal map for the chunk mesh
+
+    int _hasvao;
+    int _hastex;
+    int _hasnorm;
 
   //! initialize the _cell, _id, etc. fields of this tile and its descendants.  The chunk and
   //! bounding box get set later
