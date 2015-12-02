@@ -95,6 +95,8 @@ class Cell {
 
     class Tile *LoadTile (int id);
 
+    float timeLastRendered; //the timestamp of when we last rendered this LOD
+
 };
 
 //! packed vertex representation

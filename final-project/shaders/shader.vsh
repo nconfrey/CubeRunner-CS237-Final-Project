@@ -18,17 +18,21 @@ uniform float vscale;
 uniform vec3 nw_pos;
 uniform vec3 nwtile;
 uniform float cellwidth;
+uniform float morphFactor;
 
 out vec2 texCoord;
 out vec2 normCoord; 
+out float distToCam;
 
 
 void main (void)
 {
-	vec3 pos = vec3((position.x + nw_pos.x) * hscale, position.y * vscale, (position.z + nw_pos.z) * hscale);
-	//pos = vec3(position.x * hscale, position.y * vscale, position.z * hscale);
+	float ypos = (morphFactor * (position[3] + position[1])) + ((1.0 - morphFactor) * position[1]);
+	vec3 pos = vec3((position.x + nw_pos.x) * hscale, ypos * vscale, (position.z + nw_pos.z) * hscale);
+
     gl_Position =  projection * modelView * vec4(pos, 1.0);  
 
+    distToCam = -gl_Position.z;
 
     //calculate tex coords
     texCoord = vec2((position.x - nwtile.x)/ cellwidth, (position.z - nwtile.z)/ cellwidth);

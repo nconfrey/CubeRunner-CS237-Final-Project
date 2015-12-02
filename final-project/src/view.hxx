@@ -38,7 +38,7 @@ class View {
 
     bool inFrustum(Tile *t);
 
-    void Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat, int row, int col);
+    void Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat, int row, int col, float morphFactor);
 
   //! animation method
     void Animate ();
@@ -106,7 +106,6 @@ class View {
     GLFWwindow	*_window;	//!< the main window 
     int		_fbWid;		//!< current framebuffer width
     int		_fbHt;		//!< current framebuffer height
-    bool	_wireframe;	//!< true if we are rendering the wireframe
     double	_lastFrameTime;	//!< time of last frame
     double	_lastStep;	//!< time of last animation step
     cs237::AABBd _mapBBox;	//!< a bounding box around the entire map
@@ -123,6 +122,11 @@ class View {
     class BufferCache	*_bCache;	//! cache of OpenGL VAO objects used for chunks
     class TextureCache	*_tCache;	//! cache of OpenGL textures
     class TextureCache *_nCache; //! cache of normals
+
+    //internal logic
+    bool _fogOn;
+    bool _lightingOn;
+    bool _wireframe; //!< true if we are rendering the wireframe
 
   /* ADDITIONAL STATE HERE */
 
