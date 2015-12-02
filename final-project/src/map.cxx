@@ -220,6 +220,29 @@ bool Map::LoadMap (std::string mapName, bool verbose)
 	}
     }
 
+  	// fog (optional)
+    if ((*root)["fog-color"] != nullptr) {	
+	float fogColor[3];
+	this->_hasFog = true;		
+	if (GetThreeFloats (root, "fog-color", fogColor)) {
+	    this->_fogColor = cs237::color3f(fogColor[0], fogColor[1], fogColor[2]);		
+	}		
+	else {
+	    error (mapName, "bogus fog-color field");
+	    return false;
+	}
+	num = (*root)["fog-density"]->asNumber();
+	if (num == nullptr) {
+	    error (mapName, "missing/bogus fog-density field");
+	    return false;
+	}
+	this->_fogDensity = num->value();
+    }
+    else {
+	this->_fogColor = cs237::color3f(0, 0, 0);
+	this->_fogDensity = 0;		
+    }
+
   // compute and check other map info
     int cellShft = ilog2(this->_cellSize);
     if ((cellShft < 0)
@@ -255,6 +278,9 @@ bool Map::LoadMap (std::string mapName, bool verbose)
 	std::clog << "sun-dir = " << this->_sunDir << std::endl;
 	std::clog << "sun-intensity = " << this->_sunI << std::endl;
 	std::clog << "ambient = " << this->_ambI << std::endl;
+	std::clog << "fog-color = " << this->_fogColor << std::endl;
+	std::clog << "fog-density = " << this->_fogDensity << std::endl;
+
     }
 
   // get array of grid filenames

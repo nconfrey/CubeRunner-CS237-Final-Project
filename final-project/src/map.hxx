@@ -68,6 +68,13 @@ class Map {
     cs237::color3f SunIntensity () const { return this->_sunI; }
   //! intensity of ambient light
     cs237::color3f AmbientIntensity () const { return this->_ambI; }
+  //! does the map have fog information?
+    bool hasFog () const { return this->_hasFog; }
+  //! return the fog color (assuming hasFog() is true)
+    cs237::color3f FogColor () const { return this->_fogColor; }
+  //! return the fog density constant (assuming hasFog() is true)
+    float FogDensity () const { return this->_fogDensity; }
+
 
   //! return the cell at grid cell (row, col)
     class Cell *Cell (uint32_t row, uint32_t col) const;
@@ -108,6 +115,10 @@ class Map {
     cs237::vec3f _sunDir;	//!< unit vector pointing toward the sun
     cs237::color3f _sunI;	//!< intensity of the sun light
     cs237::color3f _ambI;	//!< intensity of ambient light
+    bool  _hasFog;  //!< true if the map specification includes fog info
+    cs237::color3f _fogColor; //!< the color of the fog at full strength
+    float _fogDensity;  //!< the density factor for the fog; will be 0 for no fog
+
 
   //! the number of cells in the map
     uint32_t _nCells () const { return this->_nRows * this->_nCols; }
