@@ -155,6 +155,7 @@ FullRenderer::FullRenderer ()
     vscaleLoc = _shader->UniformLocation("vscale");
     nwcornerLoc = _shader->UniformLocation("nw_pos");
     cellwidthLoc = _shader->UniformLocation("cellwidth");
+    morphFactorLoc = _shader->UniformLocation("morphFactor");
 
     //texture sampling uniforms
     texSamplerLoc = _shader->UniformLocation("texSampler");
@@ -165,6 +166,7 @@ FullRenderer::FullRenderer ()
     lightDirLoc = _shader->UniformLocation("lightDir");
     lightIntenLoc = _shader->UniformLocation("lightInten");
     lightAmbLoc = _shader->UniformLocation("lightAmb");
+    lightingOnLoc = _shader->UniformLocation("lightingOn");
 
     //fog uniforms
     hasFogLoc = _shader->UniformLocation("hasFog");
@@ -207,6 +209,7 @@ void FullRenderer::RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, unifo
     CS237_CHECK(cs237::setUniform(vscaleLoc, u->vscale));
     CS237_CHECK(cs237::setUniform(nwcornerLoc, vec3dToVec3f2(u->nw_pos)));
     CS237_CHECK(cs237::setUniform(cellwidthLoc, u->tw));
+    CS237_CHECK(cs237::setUniform(morphFactorLoc, u->morphFactor));
 
     //sampler uniforms
     CS237_CHECK(cs237::setUniform(texSamplerLoc, 0));
@@ -217,6 +220,8 @@ void FullRenderer::RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, unifo
     CS237_CHECK(cs237::setUniform(hasFogLoc, u->hasfog));
     CS237_CHECK(cs237::setUniform(fogColorLoc, u->fogcolor));
     CS237_CHECK(cs237::setUniform(fogDensityLoc, u->fogdensity));
+
+    CS237_CHECK(cs237::setUniform(lightingOnLoc, u->lightingOn));
 
     vao->Render();
 }
