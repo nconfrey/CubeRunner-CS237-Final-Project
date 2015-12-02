@@ -88,8 +88,7 @@
  	p_planes[0]->a = 0;
  	p_planes[0]->b = 0;
  	p_planes[0]->c = -1.0f;
- 	p_planes[0]->d = -(c.near());
-
+ 	p_planes[0]->d = c.near();
  	//Far
  	p_planes[1]->a = 0;
  	p_planes[1]->b = 0;
@@ -99,22 +98,22 @@
  	p_planes[2]->a = e/(sqrt((e*e) + 1));
  	p_planes[2]->b = 0;
  	p_planes[2]->c = -1.0f/(sqrt((e*e) + 1));
- 	p_planes[2]->d = cs237::__detail::length(c.position());
+ 	p_planes[2]->d = 0;
  	//Right
  	p_planes[3]->a = -e/(sqrt((e*e) + 1));
  	p_planes[3]->b = 0;
  	p_planes[3]->c = -1.0f/(sqrt((e*e) + 1));;
- 	p_planes[3]->d = cs237::__detail::length(c.position());
+ 	p_planes[3]->d = 0;
  	//Bottom
  	p_planes[4]->a = 0;
  	p_planes[4]->b = e / (sqrt((e*e) + (a*a)));
  	p_planes[4]->c = -a / (sqrt((e*e) + (a*a)));
- 	p_planes[4]->d = cs237::__detail::length(c.position());
+ 	p_planes[4]->d = 0;
  	//Top
  	p_planes[5]->a = 0;
  	p_planes[5]->b = -e / (sqrt((e*e) + (a*a)));
  	p_planes[5]->c = -a / (sqrt((e*e) + (a*a)));
- 	p_planes[5]->d = cs237::__detail::length(c.position());
+ 	p_planes[5]->d = 0;
 
 	 return p_planes;
  }
@@ -126,7 +125,18 @@ void Plane::NormalizePlane()
  this->a = this->a / mag;
  this->b = this->b / mag;
  this->c = this->c / mag;
- this->d = this->d / mag;
+ //this->d = this->d / mag;
+}
+
+//move the plane from camera space to world space
+void Plane::transformPlane(cs237::mat3x3d mv, cs237::vec3d t)
+{
+	cs237::vec3d norm = cs237::vec3d(this->a, this->b, this->c);
+	cs237::vec3d movedNorm = norm * mv;
+	this->d = dot(t, norm) + this->d;
+	this->a = movedNorm.x;
+	this->b = movedNorm.y;
+	this->c = movedNorm.z;
 }
 
 int Plane::ClassifyPoint(const cs237::vec3d & pt, cs237::mat4x4f ModelViewMatrix)

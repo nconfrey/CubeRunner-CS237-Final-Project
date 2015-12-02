@@ -265,12 +265,20 @@ bool View::inFrustum(Tile *t)
   //printf("considering tile [%d][%d]", t->NWRow(), t->NWCol());
   cs237::AABBd boundingBox = t->BBox();
   Plane *frust = new Plane();
+  
+  //extract the planes in camera space
   Plane **frustum = frust->extractPlanes(this->Camera(), this->Camera().projTransform() * this->Camera().ModelViewMatrix());
+
   //Plane **frustum = frust->extractPlanes(this->Camera());
   printf("Ref:\n far plane is %f\n near plane is %f\n", this->Camera().far(), this->Camera().near());
+  cs237::mat3x3d mv = cs237::mat3x3d(cs237::lookAt(cs237::vec3d(0.0, 0.0, 0.0),
+                          cs237::toDouble(this->Camera().direction()),
+                          cs237::toDouble(this->Camera().up())));
+
   for(int i = 0; i < 6; i++)
   {
     //frustum[i]->NormalizePlane();
+    frustum[i]->transformPlane(mv, mv * -(this->Camera().position()));
     printf("Plane [%d]: %f, %f, %f, %f\n", i, frustum[i]->a, frustum[i]->b, frustum[i]->c, frustum[i]->d);
   }
 
@@ -329,8 +337,8 @@ float View::SSE(Tile *t)
 void View::Recursive_Render_Chunk(Tile *t, Renderer *r, int row, int col)
 {
   //check to see if this tile is in the view frustum to save time
-  //if(!inFrustum(t))
-  //  return;
+  if(!inFrustum(t))
+   return;
 
   //calculate SSE
   float sse = this->SSE(t); //replace with real equation
