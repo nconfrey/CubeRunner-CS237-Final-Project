@@ -401,10 +401,19 @@ void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat, 
     //get the nw corner for the tile
     cs237::vec3d nw_tile = cs237::vec3d(t->NWCol(), 0, t->NWRow());
 
-    //render the chunk
-    r->RenderChunk(modelViewMat, vao, hscale, vscale, t->Width(), nw, nw_tile); //cell width, cell NW
+    //create uniforms struct;
+    uniforms *u = new uniforms;
+    u->hscale = hscale;
+    u->vscale = vscale;
+    u->tw = t->Width();
+    u->nw_pos = nw;
+    u->nw_tile = nw_tile;
+    u->hasfog = t->Cell()->_map->hasFog();
+    u->fogcolor = t->Cell()->_map->FogColor();
+    u->fogdensity = t->Cell()->_map->FogDensity();
 
-    //free vao
+    //render the chunk
+    r->RenderChunk(modelViewMat, vao, u); //cell width, cell NW
 }
 
 
