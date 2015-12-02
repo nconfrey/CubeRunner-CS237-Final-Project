@@ -57,12 +57,9 @@ void VAO::Load (struct Chunk const &chunk)
 
 void VAO::Render ()
 {
-    glEnable(GL_PRIMITIVE_RESTART);
-    glPrimitiveRestartIndex(0xffff);
     CS237_CHECK( glBindVertexArray (this->_id) );
     CS237_CHECK( glDrawElements (GL_TRIANGLE_STRIP, this->_nIndices, GL_UNSIGNED_SHORT, 0) );
     CS237_CHECK( glBindVertexArray (0) );
-    glDisable(GL_PRIMITIVE_RESTART);
 }
 
 /**** class BufferCache member functions *****/

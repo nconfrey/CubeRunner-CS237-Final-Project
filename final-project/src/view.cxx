@@ -145,16 +145,16 @@ void View::HandleKey (int key, int scancode, int action, int mods)
 	}
 	break;
       case GLFW_KEY_LEFT:
-      this->_cam.move(this->Camera().position()+cs237::vec3d(-10, 0.0, 0.0));
+      this->_cam.move(this->Camera().position()+cs237::vec3d(-100, 0.0, 0.0));
       break;
       case GLFW_KEY_RIGHT:
-      this->_cam.move(this->Camera().position()+cs237::vec3d(10, 0.0, 0.0));
+      this->_cam.move(this->Camera().position()+cs237::vec3d(100, 0.0, 0.0));
       break;
       case GLFW_KEY_UP:
-      this->_cam.move(this->Camera().position()-cs237::vec3d(0.0, 0.0, 10));
+      this->_cam.move(this->Camera().position()-cs237::vec3d(0.0, 0.0, 100));
       break;
       case GLFW_KEY_DOWN:
-      this->_cam.move(this->Camera().position()-cs237::vec3d(0.0, 0.0, -10));
+      this->_cam.move(this->Camera().position()-cs237::vec3d(0.0, 0.0, -100));
       break;
       default: // ignore all other keys
 	return;
@@ -243,6 +243,8 @@ void View::Render ()
     r->Enable(this->projectionMat, this->sun);
 
     //loop through all cells in map
+    glEnable(GL_PRIMITIVE_RESTART);
+    glPrimitiveRestartIndex(0xffff);
     for(int row = 0; row < this->_map->nRows(); row++){
       for(int col = 0; col < this->_map->nCols(); col++){
         //get the cell from the map
@@ -255,6 +257,7 @@ void View::Render ()
 
       }
     }
+    glDisable(GL_PRIMITIVE_RESTART);
 
     glfwSwapBuffers (this->_window);
 
