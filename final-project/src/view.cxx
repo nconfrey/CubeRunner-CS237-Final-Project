@@ -353,8 +353,8 @@ float View::SSE(Tile *t)
 void View::Recursive_Render_Chunk(Tile *t, Renderer *r, int row, int col)
 {
   //check to see if this tile is in the view frustum to save time
-  if(!inFrustum(t))
-   return;
+  //if(!inFrustum(t))
+  // return;
 
   //calculate SSE
   float sse = this->SSE(t);
