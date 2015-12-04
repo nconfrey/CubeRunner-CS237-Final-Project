@@ -18,6 +18,8 @@
 #include <vector>
 #include "render.hxx"
 #include "map-cell.hxx"
+#include "skybox.hxx"
+#include "cube.hxx"
 
 class View {
   public:
@@ -110,6 +112,8 @@ class View {
     cs237::AABBd _mapBBox;	//!< a bounding box around the entire map
 
     Sunlight sun; //container for the light info
+    Skybox *skybox;
+    Cube *cube; //the master cube
 
     cs237::mat4f modelViewMat; //!< the current model-view matrix
     cs237::mat4f projectionMat; //<! the camera's projection matrix
