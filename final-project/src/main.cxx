@@ -51,7 +51,78 @@ void Key (GLFWwindow *win, int key, int scancode, int action, int mods)
     if (action == GLFW_RELEASE)
 	return;
 
-    reinterpret_cast<View *>(glfwGetWindowUserPointer(win))->HandleKey (key, scancode, action, mods);
+    View *view = (View *)(glfwGetWindowUserPointer(win));
+
+    float errlim = view->getErrorLimit();
+
+    switch (key) {
+    case GLFW_KEY_ESCAPE:
+    case GLFW_KEY_Q:
+      if (mods == 0)
+        view->windowShouldClose();
+      break;
+    case GLFW_KEY_W: // toggle wireframe mode
+      view->toggleWireframe();
+      break;
+    case GLFW_KEY_EQUAL:
+        if (mods == GLFW_MOD_SHIFT) { // shift+'=' is '+'
+      // decrease error tolerance
+      if (errlim > 0.5)
+        view->setErrorLimit(errlim / SQRT_2);
+      }
+      break;
+    case GLFW_KEY_KP_ADD:  // keypad '+'
+      if (mods == 0) {
+         // decrease error tolerance
+      if (errlim > 0.5)
+        view->setErrorLimit(errlim / SQRT_2);
+      }
+      break;
+    case GLFW_KEY_MINUS:
+      if (mods == 0) {
+          // increase error tolerance
+        view->setErrorLimit(errlim * SQRT_2);
+      }
+      break;
+    case GLFW_KEY_KP_SUBTRACT:  // keypad '-'
+      if (mods == 0) {
+          // increase error tolerance
+        view->setErrorLimit(errlim * SQRT_2);
+      }
+     break;
+     //OLD CAMERA CONTROLS
+    case GLFW_KEY_S:
+      view->rotateCamUpDown(-10.0f);
+      break;
+    case GLFW_KEY_X:
+      view->rotateCamUpDown(10.0f);
+      break;
+    case GLFW_KEY_Z:
+      view->rotateCamLeftRight(10.0f);
+      break;
+    case GLFW_KEY_C:
+      view->rotateCamLeftRight(-10.0f);
+      break;
+    case GLFW_KEY_A:
+      view->rotateCamRoll(10.0f);
+      break;
+    case GLFW_KEY_D:
+      view->rotateCamRoll(-10.0f);
+      break;
+      //PLAYER MOVEMENT CONTROLS
+    case GLFW_KEY_LEFT:
+      break;
+    case GLFW_KEY_RIGHT:
+      break;
+    case GLFW_KEY_F:
+      view->toggleFog();
+      break;
+    case GLFW_KEY_L:
+      view->toggleLighting();
+      break;
+    default: // ignore all other keys
+      return;
+  }
 
 } /* Key */
 
@@ -134,19 +205,19 @@ int main (int argc, const char **argv)
     float lastFrameTime = glfwGetTime(); 
 
     while (! view->shouldClose()) {
-	//view->Render ();
+    	//view->Render ();
 
-	//view->Animate ();
+    	//view->Animate ();
 
-    now = glfwGetTime();
-    dt = float(now - lastFrameTime);
-    lastFrameTime = now;
-    //printf("time: %f\n", now);
-    world->handleFrame(now, dt);
+        now = glfwGetTime();
+        dt = float(now - lastFrameTime);
+        lastFrameTime = now;
+        //printf("time: %f\n", now);
+        world->handleFrame(now, dt);
 
-	usleep (1000);	// sleep for 1mS to avoid excessive polling
+    	usleep (1000);	// sleep for 1mS to avoid excessive polling
 
-	glfwPollEvents ();
+    	glfwPollEvents ();
     }
 
     glfwTerminate ();
