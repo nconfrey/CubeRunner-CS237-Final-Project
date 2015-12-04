@@ -72,9 +72,9 @@ Skybox::Skybox(int wid, int ht)
     CS237_CHECK( glBindBuffer (GL_ARRAY_BUFFER, 0) );
 //
 	//Now load the textures for the sides of the box
-	glGenTextures(1, &this->textureID);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+	// glGenTextures(1, &this->textureID);
+	// glActiveTexture(GL_TEXTURE0);
+	// glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
 	this->faces = new cs237::texture2D *[6];
 	cs237::image2d * image = new cs237::image2d("../assets/skybox/face1.png");
@@ -102,7 +102,7 @@ Skybox::Skybox(int wid, int ht)
 	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	//glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 //
 	//init our shader programs for this skybox. since we will only have one skybox per scene, this is safe to only call once
 	this->_shader = new cs237::ShaderProgram ("../shaders/skybox.vsh", "../shaders/skybox.fsh");
@@ -110,12 +110,13 @@ Skybox::Skybox(int wid, int ht)
 	mvLoc = _shader->UniformLocation ("modelView");
   	projLoc = _shader->UniformLocation("projection");
   	texSamplerLoc = _shader->UniformLocation("skybox");
+    camPosLoc = _shader->UniformLocation("camPos");
 
     htLoc = _shader->UniformLocation("ht");
     widLoc = _shader->UniformLocation("wid");
 }
 
-void Skybox::Render(cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat)
+void Skybox::Render(cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat, cs237::vec3d position)
 {
 	printf("Skybox render\n");
 	glDepthMask(GL_FALSE);
@@ -125,15 +126,17 @@ void Skybox::Render(cs237::mat4f const &projectionMat, cs237::mat4f const &model
     cs237::setUniform(projLoc, projectionMat);
     //cs237::mat4f noTrans = cs237::mat4f(cs237::mat3f(modelViewMat), cs237::vec4f(0,0,0,0));
     cs237::setUniform(mvLoc, modelViewMat);
-    cs237::setUniform(texSamplerLoc, 0);
+    cs237::setUniform(camPosLoc, cs237::toFloat(position));
+    
     cs237::setUniform(htLoc, this->ht);
     cs237::setUniform(widLoc, this->wid);
 
     glBindVertexArray(this->vaoId);
 
-    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+    //glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
     CS237_CHECK(glActiveTexture(GL_TEXTURE0));
     this->faces[0]->Bind();
+    cs237::setUniform(texSamplerLoc, 0);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 	glDepthMask(GL_TRUE);
