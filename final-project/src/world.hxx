@@ -1,14 +1,13 @@
 #ifndef _WORLD_HXX_
 #define _WORLD_HXX_
 
+#include "cs237.hxx"
 #include "view.hxx"
 #include "map.hxx"
-//#include "player.hxx"
-//#include "level.hxx"
+#include "player.hxx"
+#include "level.hxx"
 #include "render.hxx"
 
-class Player;
-class Level; //replace with headers once done
 
 enum WorldState { //world state
 	TITLE = 0,
