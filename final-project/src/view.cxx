@@ -241,6 +241,12 @@ void View::Render ()
     glClearColor (1.0f, 1.0f, 1.0f, 1.0f);  // clear the surface
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    // cs237::mat3f m = cs237::mat3f(this->modelViewMat);
+    // cs237::mat4f noTrans = cs237::mat4f(
+    // cs237::vec4f(m[0], 0),
+    // cs237::vec4f(m[1], 0),
+    // cs237::vec4f(m[2], 0),
+    // cs237::vec4f(0, 0, 0, 1));
     skybox->Render(this->projectionMat, this->modelViewMat, this->Camera().position());
     //cube->Render(cs237::vec3f(0,0,0), cs237::color3f(0,0,0), this->modelViewMat, this->projectionMat);
 

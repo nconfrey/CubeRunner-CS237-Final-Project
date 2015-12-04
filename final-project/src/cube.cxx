@@ -13,7 +13,7 @@ Cube::Cube()
 					                   cs237::vec3f ( 100.0f,  -100.0f, -100.0f)}; //7 
 
 	/* the indices that allow us to create the cube. */ 
-	uint16_t cubeIndices[36] = {
+	uint32_t cubeIndices[36] = {
 	    0,2,1,  0,3,2,
 	    4,3,0,  4,7,3,
 	    4,1,5,  4,0,1,
