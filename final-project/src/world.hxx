@@ -25,7 +25,7 @@ enum EventType { //things that can cause us to change state
 
 class World {
 	public:
-		World();
+		World(View *v);
 		~World();
 
 		//a dispatch function for each event type

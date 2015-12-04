@@ -14,6 +14,7 @@
 #include "map-cell.hxx"
 #include "view.hxx"
 #include <unistd.h>
+#include "world.hxx"
 
 /***** callbacks *****
  *
@@ -116,6 +117,8 @@ int main (int argc, const char **argv)
     View *view = new View (&map);
     view->Init (1024, 768);
 
+    World *world = new World(view);
+
   // initialize the callback functions
     glfwSetWindowRefreshCallback (view->Window(), Display);
     glfwSetWindowSizeCallback (view->Window(), Reshape);
@@ -125,10 +128,21 @@ int main (int argc, const char **argv)
     glfwSetCursorPosCallback (view->Window(), MouseMotion);
     glfwSetMouseButtonCallback (view->Window(), MouseButton);
 
-    while (! view->shouldClose()) {
-	view->Render ();
+    //frame information
+    double now;
+    float dt = 0;
+    float lastFrameTime = glfwGetTime(); 
 
-	view->Animate ();
+    while (! view->shouldClose()) {
+	//view->Render ();
+
+	//view->Animate ();
+
+    now = glfwGetTime();
+    dt = float(now - lastFrameTime);
+    lastFrameTime = now;
+    //printf("time: %f\n", now);
+    world->handleFrame(now, dt);
 
 	usleep (1000);	// sleep for 1mS to avoid excessive polling
 
