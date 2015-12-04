@@ -36,7 +36,7 @@ struct Mesh {
     Mesh (GLenum p);
 
   //! initialize the vertex data buffers for the mesh
-    void LoadVertices (int nVerts, const struct Vertex *v);
+    void LoadVertices (int nVerts, const cs237::vec3f *verts);
 
   //! initialize the element array for the mesh
     void LoadIndices (int n, const uint16_t *indices);
@@ -52,6 +52,9 @@ struct Mesh {
 
     //! draw the mesh assuming the vao was created using Reppy's code
     void DrawFromVAOObj();
+
+    // draw with just vertices, and no indices
+    void DrawVertices ();
 
     //set the color of the mesh
     void SetColor(cs237::color3f c); 

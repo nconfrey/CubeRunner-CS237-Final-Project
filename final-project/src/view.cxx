@@ -81,6 +81,8 @@ void View::Init (int wid, int ht)
   // initialize shaders
     /* YOUR CODE HERE */
     this->InitRenderers();
+    this->skybox = new Skybox(100,100);
+    this->cube = new Cube();
 
     /* ADDITIONAL INITIALIZATION */
     this->projectionMat = this->Camera().projTransform();
@@ -230,6 +232,9 @@ void View::Render ()
     glClearColor (1.0f, 1.0f, 1.0f, 1.0f);  // clear the surface
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    skybox->Render(this->modelViewMat, this->projectionMat);
+    cube->Render(cs237::vec3f(0,0,0), cs237::color3f(0,0,0), this->modelViewMat, this->projectionMat);
+
     //choose renderer
     Renderer *r;
     if(this->_wireframe){
@@ -255,6 +260,7 @@ void View::Render ()
 
       }
     }
+
 
     glfwSwapBuffers (this->_window);
 
