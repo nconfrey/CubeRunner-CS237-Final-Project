@@ -21,6 +21,10 @@
 #include "skybox.hxx"
 #include "cube.hxx"
 
+#define SIN_ONE_DEGREE  0.0174524064373f
+#define COS_ONE_DEGREE  0.999847695156f
+#define SQRT_2 1.41421356237f
+
 class View {
   public:
 
@@ -44,6 +48,43 @@ class View {
 
   //! animation method
     void Animate ();
+
+    void toggleWireframe();
+
+    void toggleLighting();
+
+    void toggleFog();
+
+    float getErrorLimit();
+
+    void setErrorLimit(float newlim);
+
+//=====rotate camera controls======//
+
+    //rotate camera around an arbitrary axis
+    void rotateCam(float theta, cs237::vec3f axis);
+
+    void rotateCamUpDown(float theta);
+
+    void rotateCamLeftRight(float theta);
+
+    void rotateCamRoll(float theta);
+
+
+    //=====translate camera and look at point=====/
+
+    //translate cam along arbitrary axis, without rotating view at all
+    void translateCam(cs237::vec3f offset);
+
+    void translateCamViewAxis(float dis);
+
+    void translateCamStrafeAxis(float dis);
+
+    void translateCamUpAxis(float dis);
+
+    
+
+    void windowShouldClose();
 
   //! handle kwyboard input
     void HandleKey (int key, int scancode, int action, int mods);

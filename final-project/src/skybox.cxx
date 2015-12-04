@@ -117,7 +117,7 @@ Skybox::Skybox(int wid, int ht)
 
 void Skybox::Render(cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat)
 {
-	printf("Skybox render\n");
+	//printf("Skybox render\n");
 	glDepthMask(GL_FALSE);
 	this->_shader->Use();
 

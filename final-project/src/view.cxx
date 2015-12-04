@@ -109,74 +109,88 @@ void View::Init (int wid, int ht)
 
 }
 
-#define SIN_ONE_DEGREE	0.0174524064373f
-#define COS_ONE_DEGREE	0.999847695156f
-#define SQRT_2 1.41421356237f
-
 void View::HandleKey (int key, int scancode, int action, int mods)
 {
 
-    switch (key) {
-      case GLFW_KEY_ESCAPE:
-      case GLFW_KEY_Q:
-	if (mods == 0)
-	    glfwSetWindowShouldClose (this->_window, true);
-	break;
-      case GLFW_KEY_W: // toggle wireframe mode
-	this->_wireframe = !this->_wireframe;
-	break;
-      case GLFW_KEY_EQUAL:
-	if (mods == GLFW_MOD_SHIFT) { // shift+'=' is '+'
-	  // decrease error tolerance
-	    if (this->_errorLimit > 0.5)
-		this->_errorLimit /= SQRT_2;
-	}
-	break;
-      case GLFW_KEY_KP_ADD:  // keypad '+'
-	if (mods == 0) {
-	  // decrease error tolerance
-	    if (this->_errorLimit > 0.5)
-		this->_errorLimit /= SQRT_2;
-	}
-	break;
-      case GLFW_KEY_MINUS:
-	if (mods == 0) {
-	  // increase error tolerance
-	    this->_errorLimit *= SQRT_2;
-	}
-	break;
-      case GLFW_KEY_KP_SUBTRACT:  // keypad '-'
-	if (mods == 0) {
-	  // increase error tolerance
-	    this->_errorLimit *= SQRT_2;
-	}
-	break;
-      case GLFW_KEY_LEFT:
-      this->_cam.move(this->Camera().position()+cs237::vec3d(-100, 0.0, 0.0));
-      break;
-      case GLFW_KEY_RIGHT:
-      this->_cam.move(this->Camera().position()+cs237::vec3d(100, 0.0, 0.0));
-      break;
-      case GLFW_KEY_UP:
-      this->_cam.move(this->Camera().position()-cs237::vec3d(0.0, 0.0, 100));
-      break;
-      case GLFW_KEY_DOWN:
-      this->_cam.move(this->Camera().position()-cs237::vec3d(0.0, 0.0, -100));
-      break;
+}
 
-      case GLFW_KEY_F:
-        this->_fogOn = !this->_fogOn;
-        break;
+void View::toggleWireframe()
+{
+  this->_wireframe = !this->_wireframe;
+}
 
-      case GLFW_KEY_L:
-        this->_lightingOn = !this->_lightingOn;
-        break;
-      default: // ignore all other keys
-	return;
-    }
+void View::toggleLighting()
+{
+  this->_lightingOn = !this->_lightingOn;
+}
 
-//std::cout << "after handleKey: " << this->_cam << std::endl;
+void View::toggleFog()
+{
+  this->_fogOn = !this->_fogOn;
+}
 
+float View::getErrorLimit()
+{
+  return this->_errorLimit;
+}
+
+void View::setErrorLimit(float newlim)
+{
+  this->_errorLimit = newlim;
+}
+
+//=====rotate camera controls======//
+
+//rotate camera around an arbitrary axis
+void View::rotateCam(float theta, cs237::vec3f axis)
+{
+  this->_cam.rotateCam(theta, axis);
+}
+
+void View::rotateCamUpDown(float theta)
+{
+  this->_cam.rotateCamUpDown(theta);
+}
+
+void View::rotateCamLeftRight(float theta)
+{
+  this->_cam.rotateCamLeftRight(theta);
+}
+
+void View::rotateCamRoll(float theta)
+{
+  this->_cam.rotateCamRoll(theta);
+}
+
+
+//=====translate camera and look at point=====/
+
+//translate cam along arbitrary axis, without rotating view at all
+void View::translateCam(cs237::vec3f offset)
+{
+
+}
+
+void View::translateCamViewAxis(float dis)
+{
+
+}
+
+void View::translateCamStrafeAxis(float dis)
+{
+
+}
+
+void View::translateCamUpAxis(float dis)
+{
+
+}
+
+
+
+void View::windowShouldClose()
+{
+  glfwSetWindowShouldClose (this->_window, true);
 }
 
 void View::HandleMouseEnter (bool entered)

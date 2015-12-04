@@ -78,6 +78,32 @@ class Camera {
   //! change the direction of the camera
     void look (cs237::vec3f const &dir, cs237::vec3f const &up);
 
+
+    //=====rotate camera controls======//
+
+    cs237::vec3f getLookVec();
+
+    //rotate camera around an arbitrary axis
+    void rotateCam(float theta, cs237::vec3f axis);
+
+    void rotateCamUpDown(float theta);
+
+    void rotateCamLeftRight(float theta);
+
+    void rotateCamRoll(float theta);
+
+
+    //=====translate camera and look at point=====/
+
+    //translate cam along arbitrary axis, without rotating view at all
+    void translateCam(cs237::vec3d offset);
+
+    void translateCamViewAxis(float dis);
+
+    void translateCamStrafeAxis(float dis);
+
+    void translateCamUpAxis(float dis);
+
   //! compute the screen-space error for a geometric error
   //! \param dist the distance to the geometric error
   //! \param the geometric error

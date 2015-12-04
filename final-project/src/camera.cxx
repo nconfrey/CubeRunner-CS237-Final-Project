@@ -130,6 +130,75 @@ float Camera::screenError (float dist, float err) const
 
 }
 
+
+//=====rotate camera controls======//
+
+cs237::vec3f Camera::getLookVec(){
+    return normalize(this->direction() - vec3dToVec3f(this->position()));
+}
+
+//rotate camera around an arbitrary axis
+void Camera::rotateCam(float theta, cs237::vec3f axis)
+{
+    //translate lookat point to be relative to a camera ta the origin
+    cs237::vec3f camlook = this->direction() - vec3dToVec3f(this->position());
+
+    //get the rotation matrix and lookat vector
+    cs237::mat4x4f rot = cs237::rotate(theta, axis);
+
+    cs237::vec4f atp = cs237::vec4f(camlook, 1.0f);
+
+    cs237::vec3f newdir = cs237::vec3f(rot * atp);
+
+    //set lookat to the new value relative to the camera position
+    this->_dir = newdir + vec3dToVec3f(this->position());
+
+    //update the up-vector
+    this->_up = normalize(cs237::vec3f(rot * cs237::vec4f(this->up(), 0.0f)));
+
+    printf("axis %f %f %f\n", axis[0], axis[1], axis[2]);
+    printf("new dir %f %f %f\n", newdir[0], newdir[1], newdir[2]);
+}
+
+void Camera::rotateCamUpDown(float theta)
+{
+    this->rotateCam(theta, cross(this->up(), this->getLookVec()));
+}
+
+void Camera::rotateCamLeftRight(float theta)
+{
+    this->rotateCam(theta, this->up());
+}
+
+void Camera::rotateCamRoll(float theta)
+{
+    this->rotateCam(theta, this->getLookVec());
+}
+
+
+//=====translate camera and look at point=====/
+
+//translate cam along arbitrary axis, without rotating view at all
+void Camera::translateCam(cs237::vec3d offset)
+{
+
+}
+
+void Camera::translateCamViewAxis(float dis)
+{
+
+}
+
+void Camera::translateCamStrafeAxis(float dis)
+{
+
+}
+
+void Camera::translateCamUpAxis(float dis)
+{
+
+}
+
 /***** Output *****/
 
 std::ostream& operator<< (std::ostream& s, Camera const &cam)
