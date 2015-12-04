@@ -1,8 +1,10 @@
 #include "cs237.hxx"
+#include "mesh.hxx"
 
 class Skybox {
 
 	cs237::texture2D **faces;
+    Mesh **meshes;
     cs237::ShaderProgram    *_shader;
     //Holders for the memory locations of shader program variables
     int mvLoc;
