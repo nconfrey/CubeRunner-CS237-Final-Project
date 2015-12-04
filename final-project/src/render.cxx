@@ -143,50 +143,38 @@ void WireframeRenderer::RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, 
     vao->Render();
 }
 
-/***** class SkyboxRenderer member functions *****/
+/***** class SkyBoxRenderer member functions *****/
 
-SkyboxRenderer::SkyboxRenderer ()
+SkyBoxRenderer::SkyBoxRenderer ()
     : Renderer (LoadShader (SHADER_DIR "skybox"))
 { 
   mvLoc = _shader->UniformLocation ("modelView");
   projLoc = _shader->UniformLocation("projection");
-  texSampleLoc = _shader->UniformLocation("skybox");
+  texSamplerLoc = _shader->UniformLocation("skybox");
 }
 
-SkyboxRenderer::~SkyboxRenderer ()
+SkyBoxRenderer::~SkyBoxRenderer ()
 { }
 
-void SkyboxRenderer::Enable (cs237::mat4f const &projectionMat, Sunlight sun)
+void SkyBoxRenderer::Enable (cs237::mat4f const &projectionMat, Sunlight sun)
 {
     //Enable the Shader
-    CS237_CHECK(glEnable(GL_DEPTH_TEST));
     _shader->Use();
     cs237::setUniform(projLoc, projectionMat);
 }
 
 
-void SkyboxRenderer::Render(cs237::mat4f const &modelViewMat, Mesh *mesh)
+void SkyBoxRenderer::Render(cs237::mat4f const &modelViewMat, Mesh *mesh)
 {
   CS237_CHECK(cs237::setUniform(mvLoc, modelViewMat * mesh->toWorld));
-  CS237_CHECK(cs237::setUniform(hscaleLoc, 1.0f));
-  CS237_CHECK(cs237::setUniform(vscaleLoc, 1.0f));
-  cs237::color4f color = cs237::color4f(mesh->color, 1); //need to change the color into a 4vector for shader programs
-  cs237::setUniform(colorLoc, color);
-  //printf("about to draw mesh\n");
-  mesh->Draw(); 
+  glDepthMask(GL_FALSE);
+  
+  mesh->DrawVertices();
 }
 
-void SkyboxRenderer::RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale,
+void SkyBoxRenderer::RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale,
                                     float w, cs237::vec3d nw_pos, cs237::vec3d nw_tile)
-{
-    cs237::color4f color = cs237::color4f(0.0, 0.313, 0.85, 1.0f);
-    CS237_CHECK(cs237::setUniform(mvLoc, modelViewMat));
-    CS237_CHECK(cs237::setUniform(hscaleLoc, hscale));
-    CS237_CHECK(cs237::setUniform(vscaleLoc, vscale));
-    CS237_CHECK(cs237::setUniform(colorLoc, color));
-    CS237_CHECK(cs237::setUniform(nwcornerLoc, vec3dToVec3f2(nw_pos)));
-    vao->Render();
-}
+{ }
 
 
 
