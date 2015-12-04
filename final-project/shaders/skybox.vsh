@@ -5,8 +5,12 @@ out vec3 TexCoords;
 uniform mat4 projection;
 uniform mat4 modelView;
 
+uniform float ht;
+uniform float wid;
+
 void main()
 {
-    gl_Position = projection * modelView * vec4(position, 1);
+	vec3 stretchedpos = vec3(position.x * wid, position.y * ht, position.z * wid);
+    gl_Position = projection * modelView * vec4(stretchedpos, 1);
     TexCoords = position;
 } 
