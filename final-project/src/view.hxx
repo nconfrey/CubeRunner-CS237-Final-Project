@@ -97,7 +97,6 @@ class View {
   //! the cache of normals for the map tiles
     class TextureCache *NormCache () const { return this->_nCache; }
 
-
   private:
     Map		*_map;		//!< the map being rendered
     class Camera _cam;		//!< tracks viewer position, etc.

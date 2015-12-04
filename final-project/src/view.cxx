@@ -232,10 +232,6 @@ void View::Render ()
     if (! this->_isVis)
     return;
 
-    double now = glfwGetTime();
-    float dt = float(now - this->_lastFrameTime);
-    this->_lastFrameTime = now;
-
     //update model view mat
     this->UpdateModelViewMat();
 

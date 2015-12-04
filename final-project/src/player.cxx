@@ -49,7 +49,7 @@ void Player::setPos(cs237::vec3f v)
 
 cs237::vec3f Player::addToZPos(float z)
 {
-	this->pos = cs237::vec3f(this->pos[0], this->pos[1], this->pos[3] + z);
+	this->pos = cs237::vec3f(this->pos[0], this->pos[1], this->pos[2] + z);
 	return this->getPos();
 }
 

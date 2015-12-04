@@ -3,19 +3,29 @@
 #define OFFSET 1
 #define NLEVELS 1
 
+//========================= LEVEL MAKER =========================//
+cs237::color3f pallette1[3] = {cs237::color3f(0.5, 0.5, 0.5), cs237::color3f(0.0, 0.0, 0.0), cs237::color3f(1.0, 0.0, 0.0)};
+
+Level *level1 = new Level(1, 1, 0, 100, 2, 0.5, pallette1, 3);
+
+
 //========================= CONSTRUCTOR AND DESTRUCTOR =========================//
 
 //for now we will hard code levels, eventually we would like to load these dynamically
-World::World()
+World::World(View *v)
 {
 	//create level array
 	this->numLevels = NLEVELS;
 	this->levels = new Level *[NLEVELS];
 	//for each level, initalize it with preset data
 	//we can make a CREATE LEVEL 1 function, etc
+	this->levels[0] = level1;
 
 	//set the x edges
 	this->xEdge = 10.0f;
+
+	//grab the view
+	this->view = v;
 
 	//create the player
 	this->player = new Player();
@@ -24,7 +34,7 @@ World::World()
 	this->restart();
 
 	//set the state to title screen
-	this->state = TITLE;
+	this->state = RUNNING;
 }
 
 World::~World()
@@ -156,7 +166,7 @@ int World::handleFrame(float t, float dt)
 			break;
 		case RUNNING:
 			//check if we have any collisions
-			if(!this->checkForCollisions()){
+			if(this->checkForCollisions() != 0){
 				this->tod = t;
 				this->handleEventCOLLISION();
 				break;
@@ -174,6 +184,7 @@ int World::handleFrame(float t, float dt)
 			//we can have some sort of fog or particle effect here based on
 			//lerping between tsd and some predefined value
 			this->renderWorld();
+			break;
 		default:
 			fprintf(stderr, "CRITICAL ERROR: INVALID STATE %d\n", this->state);
 			exit(-1);
@@ -213,11 +224,11 @@ int World::checkForCollisions()
 	if(this->player->getPos()[0] > std::abs(this->xEdge)){
 		return 2;
 	}
-	
 	//check if the player is touching any cube
-	if(this->levels[curLevel]->intersectsAnyCube(this->player->getAABB())){
+	/*if(this->levels[curLevel]->intersectsAnyCube(this->player->getAABB())){
+		printf("in case 1        \n");
 		return 1;
-	}
+	}*/ //enable after levels are intialized
 
 	//we good
 	return 0;
