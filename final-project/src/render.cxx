@@ -142,6 +142,39 @@ void WireframeRenderer::RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, 
     vao->Render();
 }
 
+/***** class SkyBoxRenderer member functions *****/
+
+SkyBoxRenderer::SkyBoxRenderer ()
+    : Renderer (LoadShader (SHADER_DIR "skybox"))
+{ 
+  mvLoc = _shader->UniformLocation ("modelView");
+  projLoc = _shader->UniformLocation("projection");
+  texSamplerLoc = _shader->UniformLocation("skybox");
+}
+
+SkyBoxRenderer::~SkyBoxRenderer ()
+{ }
+
+void SkyBoxRenderer::Enable (cs237::mat4f const &projectionMat, Sunlight sun)
+{
+    //Enable the Shader
+    _shader->Use();
+    cs237::setUniform(projLoc, projectionMat);
+}
+
+
+void SkyBoxRenderer::Render(cs237::mat4f const &modelViewMat, Mesh *mesh)
+{
+  CS237_CHECK(cs237::setUniform(mvLoc, modelViewMat * mesh->toWorld));
+  glDepthMask(GL_FALSE);
+  
+  mesh->DrawVertices();
+}
+
+void SkyBoxRenderer::RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale,
+                                    float w, cs237::vec3d nw_pos, cs237::vec3d nw_tile)
+{ }
+
 
 
 /***** ________________ FullRenderer class ________________ *****/
