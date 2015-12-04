@@ -11,6 +11,8 @@
 #include "map-cell.hxx"
 #include "buffer-cache.hxx"
 
+typedef struct Mesh Mesh;
+
 //! the information needed to render a mesh
 struct Mesh {
 

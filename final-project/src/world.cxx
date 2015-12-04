@@ -1,6 +1,7 @@
 #include "world.hxx"
 
-#define OFFSET 1;
+#define OFFSET 1
+#define NLEVELS 1
 
 //========================= CONSTRUCTOR AND DESTRUCTOR =========================//
 
@@ -8,15 +9,16 @@
 World::World()
 {
 	//create level array
-	this->numLevels = 5;
-	//this->levels = new Level()*[5];
-	//for each level, add it to the array
+	this->numLevels = NLEVELS;
+	this->levels = new Level *[NLEVELS];
+	//for each level, initalize it with preset data
+	//we can make a CREATE LEVEL 1 function, etc
 
 	//set the x edges
 	this->xEdge = 10.0f;
 
 	//create the player
-	//this->player = new Player();
+	this->player = new Player();
 
 	//make sure all values are intialized to their correct values
 	this->restart();
@@ -27,13 +29,13 @@ World::World()
 
 World::~World()
 {
-	//destroy each level
+/*	//destroy each level
 	for(int i = 0; i<this->numLevels; i++){
 		//this->levels[i]->~Level();
 	}
 
 	//destroy player
-	//this->player->~Player();
+	//this->player->~Player();*/
 }
 
 void World::restart()
@@ -43,7 +45,7 @@ void World::restart()
 	this->curLevel = 0;
 	this->tod = 0.0f;
 	this->tsd = 0.0f;
-	//reset player position
+	this->player->setPos(cs237::vec3f(0.0f, 0.0f, 0.0f));
 
 }
 
@@ -155,12 +157,11 @@ int World::handleFrame(float t, float dt)
 		case RUNNING:
 			//check if we have any collisions
 			if(!this->checkForCollisions()){
-				//oops, collision
 				this->tod = t;
 				this->handleEventCOLLISION();
 				break;
-			}
-			this->renderWorld();
+			} //if here, no collisions
+			this->renderWorld(); //renders ground, player, cubes
 			this->updateScore(dt); 
 			this->updatePlayerPosition(dt);
 			break;
@@ -186,22 +187,20 @@ int World::handleFrame(float t, float dt)
 void World::renderWorld()
 {
 	this->view->Render(); //draw the heighfield
-	//this->levels[curLevel]->Render(); //draw every cube in the current level
-	//this->player->Render; //draw the player
+	this->levels[curLevel]->RenderAllCubes(); //draw every cube in the current level
+	this->player->Render(); //draw the player
 }
 
 void World::updateScore(float dt)
 {
-	//get the score multiplier from the current level
-	//multiply it by dt
-	//add it to the current score
+	float mult = this->levels[curLevel]->getScoreMult(); //get the score multiplier from the current level
+	this->addToScore(mult * dt); //multiply it by dt and add it to the current score
 }
 
 void World::updatePlayerPosition(float dt)
 {
-	//get the velocity from the current level
-	//multiply it by dt
-	//add it to the current z position of the player
+	float vel = this->levels[curLevel]->getVelocity(); //get the velocity from the current level
+	this->player->addToZPos(dt * vel); //multiply it by dt and add it to the current z position of the player
 }
 
 
@@ -210,17 +209,28 @@ void World::updatePlayerPosition(float dt)
 
 int World::checkForCollisions()
 {
-	//check if the player's x coord is > abs(xEdge)
+	//check if the player's x coord is out of bounds
+	if(this->player->getPos()[0] > std::abs(this->xEdge)){
+		return 2;
+	}
+	
+	//check if the player is touching any cube
+	if(this->levels[curLevel]->intersectsAnyCube(this->player->getAABB())){
+		return 1;
+	}
 
-	//get the cubelist of the current level
-	//for every cube in that cubelist,
-	// 	check if we intersect
-	return 1; //delete this
+	//we good
+	return 0;
 }
 
 void World::killPlayer()
 {
 	//we might want this function eventually
+	//could handle some kind of death animation?
+	//though we probably want to just handle that a a lerp
+	//between normal -> final death state
+	//based on time since death
+	//in the per frame renderer
 }
 
 
