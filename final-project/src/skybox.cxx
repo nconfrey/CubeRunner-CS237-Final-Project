@@ -72,37 +72,40 @@ Skybox::Skybox(int wid, int ht)
     CS237_CHECK( glBindBuffer (GL_ARRAY_BUFFER, 0) );
 //
 	//Now load the textures for the sides of the box
-	// glGenTextures(1, &this->textureID);
-	// glActiveTexture(GL_TEXTURE0);
-	// glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+	glGenTextures(1, &this->textureID);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+
+    //THIS WORKS
+	// this->faces = new cs237::texture2D *[6];
+	// cs237::image2d * image = new cs237::image2d("../assets/skybox/face1.png");
+ // 	this->faces[0] = new cs237::texture2D (GL_TEXTURE_2D, image);
+ // 	this->faces[0]->Bind();
+ // 	this->faces[0]->Parameter(GL_TEXTURE_MIN_FILTER,GL_LINEAR); 
+	// this->faces[0]->Parameter(GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    //END OF THIS WORKS
 
 	this->faces = new cs237::texture2D *[6];
-	cs237::image2d * image = new cs237::image2d("../assets/skybox/face1.png");
- 	this->faces[0] = new cs237::texture2D (GL_TEXTURE_2D, image);
- 	this->faces[0]->Bind();
- 	this->faces[0]->Parameter(GL_TEXTURE_MIN_FILTER,GL_LINEAR); 
-	this->faces[0]->Parameter(GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-
-	//this->faces = new cs237::texture2D *[6];
 	//unsigned char* image;
- 	/*for(int i = 1; i < 7; i++)
+ 	for(int i = 1; i < 7; i++)
  	{
- 		// cs237::image2d * image = new cs237::image2d("../assets/skybox/face" + i + ".jpg");
- 		// this->faces[i] = new cs237::texture2D (GL_TEXTURE_CUBE_MAP_POSITVE_X + i, 0, wid, ht, 0, GL_FLOAT, image);
- 		image = SOIL_load_image("../assets/skybox/face" + std::to_string(i) + ".png", wid, ht, 0, SOIL_LOAD_RGB);
-    	glTexImage2D(
-        	GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
-        	0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image
-    	);
- 	}*/
+ 		cs237::image2d * image = new cs237::image2d("../assets/skybox/face" + i.toString() + ".jpg");
+ 		this->faces[i] = new cs237::texture2D (GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, wid, ht, 0, GL_FLOAT, image);
+ 		//image = SOIL_load_image("../assets/skybox/face" + std::to_string(i) + ".png", wid, ht, 0, SOIL_LOAD_RGB);
+    	// glTexImage2D(
+     //    	GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
+     //    	0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image
+    	// );
+ 	}
 
-	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-	//glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 //
 	//init our shader programs for this skybox. since we will only have one skybox per scene, this is safe to only call once
 	this->_shader = new cs237::ShaderProgram ("../shaders/skybox.vsh", "../shaders/skybox.fsh");
@@ -133,9 +136,9 @@ void Skybox::Render(cs237::mat4f const &projectionMat, cs237::mat4f const &model
 
     glBindVertexArray(this->vaoId);
 
-    //glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-    CS237_CHECK(glActiveTexture(GL_TEXTURE0));
-    this->faces[0]->Bind();
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+    // CS237_CHECK(glActiveTexture(GL_TEXTURE0));
+    // this->faces[0]->Bind();
     cs237::setUniform(texSamplerLoc, 0);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
