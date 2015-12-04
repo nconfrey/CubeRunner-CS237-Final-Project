@@ -4,13 +4,14 @@ out vec3 TexCoords;
 
 uniform mat4 projection;
 uniform mat4 modelView;
+uniform vec3 camPos;
 
 uniform float ht;
 uniform float wid;
 
 void main()
 {
-	vec3 stretchedpos = vec3(position.x * wid, position.y * ht, position.z * wid);
+	vec3 stretchedpos = vec3((position.x * wid) + camPos.x, (position.y * ht) + camPos.y, (position.z * wid) + camPos.z);
     gl_Position = projection * modelView * vec4(stretchedpos, 1);
-    TexCoords = position;
+    TexCoords = (position + vec3(1.0,1.0,1.0)) / 2.0;
 } 
