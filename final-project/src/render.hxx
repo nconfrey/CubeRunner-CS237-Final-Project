@@ -94,8 +94,7 @@ class SkyBoxRenderer : public Renderer {
 
     void Enable (cs237::mat4f const &projectionMat, Sunlight sun);
     void Render (cs237::mat4f const &modelViewMat, Mesh *mesh);
-    void RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale,
-                     float w, cs237::vec3d nw_pos, cs237::vec3d nw_tile);
+    void RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, uniforms *u);
 
 };
 

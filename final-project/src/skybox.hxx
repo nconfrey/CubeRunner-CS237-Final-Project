@@ -8,12 +8,14 @@ class Skybox {
     int mvLoc;
     int projLoc;
     int texSamplerLoc;
+    int widLoc;
+    int htLoc;
 
     GLuint    vaoId;
     GLuint    verticesVBOId;
+	GLuint    textureID;
 
-	GLuint textureID;
-    int wid, ht;
+    float wid, ht;
 
     public:
     Skybox(int wid, int ht);

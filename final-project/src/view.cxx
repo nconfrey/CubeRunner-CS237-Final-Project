@@ -75,13 +75,13 @@ void View::Init (int wid, int ht)
 
   // set the FOV and near/far planes
     this->_cam.setFOV (60.0);
-    this->_cam.setNearFar (10.0, 1.5 * double(this->_map->CellWidth()) * double(this->_map->hScale()));
+    this->_cam.setNearFar (10.0, 2*1.5 * double(this->_map->CellWidth()) * double(this->_map->hScale()));
     this->Resize (wid, ht);
 
   // initialize shaders
     /* YOUR CODE HERE */
     this->InitRenderers();
-    this->skybox = new Skybox(100,100);
+    this->skybox = new Skybox(1000,1000);
     this->cube = new Cube();
 
     /* ADDITIONAL INITIALIZATION */
@@ -241,8 +241,8 @@ void View::Render ()
     glClearColor (1.0f, 1.0f, 1.0f, 1.0f);  // clear the surface
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    skybox->Render(this->modelViewMat, this->projectionMat);
-    cube->Render(cs237::vec3f(0,0,0), cs237::color3f(0,0,0), this->modelViewMat, this->projectionMat);
+    skybox->Render(this->projectionMat, this->modelViewMat);
+    //cube->Render(cs237::vec3f(0,0,0), cs237::color3f(0,0,0), this->modelViewMat, this->projectionMat);
 
     //choose renderer
     Renderer *r;

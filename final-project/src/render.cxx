@@ -171,8 +171,7 @@ void SkyBoxRenderer::Render(cs237::mat4f const &modelViewMat, Mesh *mesh)
   mesh->DrawVertices();
 }
 
-void SkyBoxRenderer::RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, float hscale, float vscale,
-                                    float w, cs237::vec3d nw_pos, cs237::vec3d nw_tile)
+void SkyBoxRenderer::RenderChunk(cs237::mat4f const &modelViewMat, VAO *vao, uniforms *u)
 { }
 
 
