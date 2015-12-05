@@ -101,80 +101,6 @@ Skybox::Skybox(int wid, int ht)
 	this->wid = (float)wid;
 	this->ht = (float)ht;
 
-    
-
-	// //First, deal with the actual structure of the box in vertex information
-	// CS237_CHECK(glGenVertexArrays (1, &vaoId));
-	// CS237_CHECK(glBindVertexArray(this->vaoId));
- //    CS237_CHECK(glGenBuffers(1, &this->verticesVBOId));
-    
- //    //Set up the buffer so that it knows its holding vertice information
- //    CS237_CHECK(glBindBuffer(GL_ARRAY_BUFFER, this->verticesVBOId));
-
- //    GLfloat skyboxVertices[] = {
- //    // Positions          
- //    -1.0f,  1.0f, -1.0f,
- //    -1.0f, -1.0f, -1.0f,
- //     1.0f, -1.0f, -1.0f,
- //     1.0f, -1.0f, -1.0f,
- //     1.0f,  1.0f, -1.0f,
- //    -1.0f,  1.0f, -1.0f,
-
- //    -1.0f, -1.0f,  1.0f,
- //    -1.0f, -1.0f, -1.0f,
- //    -1.0f,  1.0f, -1.0f,
- //    -1.0f,  1.0f, -1.0f,
- //    -1.0f,  1.0f,  1.0f,
- //    -1.0f, -1.0f,  1.0f,
-
- //     1.0f, -1.0f, -1.0f,
- //     1.0f, -1.0f,  1.0f,
- //     1.0f,  1.0f,  1.0f,
- //     1.0f,  1.0f,  1.0f,
- //     1.0f,  1.0f, -1.0f,
- //     1.0f, -1.0f, -1.0f,
-
- //    -1.0f, -1.0f,  1.0f,
- //    -1.0f,  1.0f,  1.0f,
- //     1.0f,  1.0f,  1.0f,
- //     1.0f,  1.0f,  1.0f,
- //     1.0f, -1.0f,  1.0f,
- //    -1.0f, -1.0f,  1.0f,
-
- //    -1.0f,  1.0f, -1.0f,
- //     1.0f,  1.0f, -1.0f,
- //     1.0f,  1.0f,  1.0f,
- //     1.0f,  1.0f,  1.0f,
- //    -1.0f,  1.0f,  1.0f,
- //    -1.0f,  1.0f, -1.0f,
-
- //    -1.0f, -1.0f, -1.0f,
- //    -1.0f, -1.0f,  1.0f,
- //     1.0f, -1.0f, -1.0f,
- //     1.0f, -1.0f, -1.0f,
- //    -1.0f, -1.0f,  1.0f,
- //     1.0f, -1.0f,  1.0f
-	// };
-
- //    //Now push the data into the buffer
- //    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-
- //    //This describes the data as vertices
- //    glEnableVertexAttribArray(0);
- //    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GL_FLOAT), ((GLvoid*) 0));
- //    glBindVertexArray(0);
-    
-
- //    //unbind stuff here
- //    CS237_CHECK( glBindBuffer (GL_ARRAY_BUFFER, 0) );
-//
-	//Now load the textures for the sides of the box
-	// glGenTextures(1, &this->textureID);
-	// glActiveTexture(GL_TEXTURE0);
-	// glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-
-
-    //THIS WORKS
 	this->faces = new cs237::texture2D *[6];
     for (int i = 0; i < 6; ++i)
     {
@@ -187,8 +113,6 @@ Skybox::Skybox(int wid, int ht)
         this->faces[i]->Parameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         this->faces[i]->Parameter(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
     }
-	
-    //END OF THIS WORKS
 
     const uint32_t indices[4] = {0, 1, 2, 3};
     this->meshes = new Mesh *[6];
@@ -200,35 +124,11 @@ Skybox::Skybox(int wid, int ht)
 
         wall->LoadVertices(4, cur.corners);
         wall->LoadIndices(4, indices); //just a square
-        //wall->LoadNormals(cur.norm);
-        //wall->LoadTexCoords(4, cur.texCoords);
-        //wall->image = image;
         wall->texture = this->faces[i];
 
         this->meshes[i] = wall;
     }
 
-	// this->faces = new cs237::texture2D *[6];
-	// //unsigned char* image;
- // 	for(int i = 1; i < 7; i++)
- // 	{
- // 		cs237::image2d * image = new cs237::image2d("../assets/skybox/face" + i.toString() + ".jpg");
- // 		this->faces[i] = new cs237::texture2D (GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, wid, ht, 0, GL_FLOAT, image);
- // 		//image = SOIL_load_image("../assets/skybox/face" + std::to_string(i) + ".png", wid, ht, 0, SOIL_LOAD_RGB);
- //    	// glTexImage2D(
- //     //    	GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
- //     //    	0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image
- //    	// );
- // 	}
-
-	// glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	// glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	// glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	// glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-	// glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-//
 	//init our shader programs for this skybox. since we will only have one skybox per scene, this is safe to only call once
 	this->_shader = new cs237::ShaderProgram ("../shaders/skybox.vsh", "../shaders/skybox.fsh");
 
@@ -257,23 +157,16 @@ void Skybox::Render(cs237::mat4f const &projectionMat, cs237::mat4f const &model
     cs237::setUniform(htLoc, this->ht);
     cs237::setUniform(widLoc, this->wid);
 
-    //glBindVertexArray(this->vaoId);
-
-    //glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
     CS237_CHECK(glActiveTexture(GL_TEXTURE0));
     
     cs237::setUniform(texSamplerLoc, 0);
 
     for(int i = 0; i < 6; i++)
     {
-      //printf("Attempting to render object %d of 6\n", i);
-        cs237::setUniform(sideLoc, i);
+      cs237::setUniform(sideLoc, i);
       this->faces[i]->Bind();
       this->meshes[i]->Draw();
-      //printf("Did render object %d of 6\n", i);
     }
 
-	//glDrawArrays(GL_TRIANGLES, 0, 36);
-	//glBindVertexArray(0);
 	glDepthMask(GL_TRUE);
 }
