@@ -17,6 +17,7 @@
 #include "world.hxx"
 
 #define SPEED 2.0f
+#define ROLLSPEED 2.0f
 
 /***** callbacks *****
  *
@@ -106,10 +107,10 @@ void Key (GLFWwindow *win, int key, int scancode, int action, int mods)
       view->rotateCamLeftRight(-SPEED);
       break;
     case GLFW_KEY_A:
-      view->rotateCamRoll(SPEED);
+      view->rotateCamRoll(ROLLSPEED);
       break;
     case GLFW_KEY_D:
-      view->rotateCamRoll(-SPEED);
+      view->rotateCamRoll(-ROLLSPEED);
       break;
       //PLAYER MOVEMENT CONTROLS
     case GLFW_KEY_LEFT:

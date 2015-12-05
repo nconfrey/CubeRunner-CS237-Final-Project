@@ -71,11 +71,13 @@ void View::Init (int wid, int ht)
 	at = pos + cs237::vec3d(double(this->_map->nCols()-1), 0.0, double(this->_map->nRows()-1));
     }
 
-    this->_cam.move(pos, at, cs237::vec3d(0.0, 1.0, 0.0));
+    //this->_cam.move(pos, at, cs237::vec3d(0.0, 1.0, 0.0));
+    this->_cam.move(pos, at, cross(normalize(at), cs237::vec3d(0.0, 1.0, 0.0)));
 
     this->lookTarget = this->_cam.getLookVec();
     turnSpeed = 10.0f;
     smoothCam = true;
+    this->upTarget = this->_cam.up();
 
   // set the FOV and near/far planes
     this->_cam.setFOV (60.0);
@@ -175,7 +177,7 @@ void View::rotateCamRoll(float theta)
   if(!smoothCam)
     this->_cam.rotateCamRoll(theta);
   else
-    rotateUpTarget(theta);
+    this->rotateUpTarget(theta);
 }
 
 void View::rotateTowardsTarget(float dt)
@@ -185,7 +187,7 @@ void View::rotateTowardsTarget(float dt)
   float theta = dot(lookvec, this->lookTarget);
 
   //don't rotate if we are above 1.0f due to floating point error
-  if(theta <= 1.0f){
+  if(theta < 1.0f){
     //get the axis 
     cs237::vec3f axis = cross(lookvec, this->lookTarget); 
 
@@ -201,9 +203,10 @@ void View::rotateTowardsTargetUp(float dt)
   cs237::vec3f lookvec = this->_cam.getLookVec();
   //get the total distance between current and the target
   float theta = dot(this->_cam.up(), this->upTarget);
-
-  //don't rotate if we are above 1.0f due to floating point error
-  if(theta <= 1.0f){
+  printf("up: %f %f %f\n",this->_cam.up()[0],this->_cam.up()[1],this->_cam.up()[2]);
+  printf("target: %f %f %f\n",this->upTarget[0],this->upTarget[1],this->upTarget[2]);
+  //don't rotate if we are at target, or above 1.0f due to floating point error
+  if(theta < 1.0f){
     //we turn speed degrees per secong
     theta = this->turnSpeed * dt * theta;
 
@@ -211,6 +214,7 @@ void View::rotateTowardsTargetUp(float dt)
     cs237::mat4x4f rot = cs237::rotate(theta, lookvec);
     this->_cam.look(lookvec, cs237::vec3f(rot * cs237::vec4f(this->_cam.up())));
   } 
+    //exit(0);
 }
 
 //wrapper function for updating the target look vector
@@ -243,6 +247,7 @@ void View::rotateTargetVector_inner(float theta, cs237::vec3f axis, bool recursi
 //wrapper function for rotating the target up vector
 void View::rotateUpTarget(float theta)
 {
+  printf("theta is %f\n", theta);
   this->rotateUpTarget_inner(theta, false);
 }
 
@@ -251,16 +256,18 @@ void View::rotateUpTarget_inner(float theta, bool recursiveCall)
 {
   cs237::vec3f axis = this->_cam.getLookVec();
   float curtheta = dot(this->_cam.up(), this->upTarget);
-  if((curtheta < 0.98) & !recursiveCall){
+  printf("curtheta is %f\n", curtheta);
+  /*if((curtheta < 0.98) & !recursiveCall){
     float (signtheta) = (float)(int)((theta)/std::abs(theta));
     this->rotateUpTarget_inner((-(signtheta))*theta, true);
-  }
+  }*/
 
   //construct rotation matrix
   cs237::mat4x4f rot = cs237::rotate(theta, axis);
 
   //update the up vector
-  this->upTarget = cs237::vec3f(rot * cs237::vec4f(axis, 1.0f));
+  this->upTarget = cs237::vec3f(rot * cs237::vec4f(this->upTarget, 1.0f));
+  //exit(9);
 }
 
 //=====translate camera and look at point=====/
