@@ -172,6 +172,7 @@ int World::handleFrame(float t, float dt)
 				break;
 			} //if here, no collisions
 			this->renderWorld(); //renders ground, player, cubes
+			this->view->Animate();
 			this->updateScore(dt); 
 			this->updatePlayerPosition(dt);
 			break;
