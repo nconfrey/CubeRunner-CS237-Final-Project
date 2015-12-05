@@ -2,10 +2,10 @@
 #define _WORLD_HXX_
 
 #include "cs237.hxx"
+#include "level.hxx"
 #include "view.hxx"
 #include "map.hxx"
 #include "player.hxx"
-#include "level.hxx"
 #include "render.hxx"
 
 

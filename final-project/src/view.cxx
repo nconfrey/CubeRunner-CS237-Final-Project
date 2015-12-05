@@ -42,7 +42,7 @@ View::View (Map *map)
 
 void View::Init (int wid, int ht)
 {
-
+  srand(time(NULL));
     this->_window = InitGLFW(wid, ht, this->_map->Name().c_str());
 
   // attach the view to the window so we can get it from callbacks
@@ -76,7 +76,7 @@ void View::Init (int wid, int ht)
 
     this->lookTarget = this->_cam.getLookVec();
     turnSpeed = 10.0f;
-    smoothCam = true;
+    smoothCam = false;
     this->upTarget = this->_cam.up();
 
   // set the FOV and near/far planes
@@ -370,7 +370,18 @@ void View::Render ()
     // cs237::vec4f(m[2], 0),
     // cs237::vec4f(0, 0, 0, 1));
     skybox->Render(this->projectionMat, this->modelViewMat, this->Camera().position());
-    //cube->Render(cs237::vec3f(0,0,0), cs237::color3f(0,0,0), this->modelViewMat, this->projectionMat);
+
+    for(int i = 0; i < 6; i++)
+    {
+      //init random seed
+      float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+      float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+      float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+      float x = rand() % 5000;
+      float z = rand() % 2000;
+      printf("rendering cube %d with position %f\n", i, x);
+      cube->Render(cs237::vec3f(x,500,z), cs237::color4f(r, g, b, 1.0), this->projectionMat, this->modelViewMat);
+    }
 
     //choose renderer
     Renderer *r;

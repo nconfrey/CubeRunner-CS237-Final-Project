@@ -1,8 +1,8 @@
 #ifndef _LEVEL_HXX_
 #define _LEVEL_HXX_
 
-//#include "cube.hxx"
 #include "cs237.hxx"
+//#include "cube.hxx"
 
 enum locationInPallette {
 	GROUND=0,
@@ -14,11 +14,11 @@ enum locationInPallette {
 class Level {
 	public:
 		Level(int difficulty, int levelNum, float zstart, float zend, float scoreMult, float velocity,
-			  cs237::color3f * palletteColors, int nColors);
+			  cs237::color3f * palletteColors, int nColors, cs237::vec3d playerPos);
 		~Level();
 
 		//render a cube at every positoon in the cube positoon list
-		void RenderAllCubes();
+		void RenderAllCubes(cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat);
 
 		//check if the given AABB intersects any cubes in the cube list
 		//note, this needs an intersection function it can call
@@ -34,7 +34,7 @@ class Level {
 		float getVelocity() const {return this->velocity;}
 
 		float getNCubes() const {return this->nCubes;}
-		cs237::vec3f *getCubes() const {return this->cubePositions;}
+		cs237::vec3f **getCubes() const {return this->cubePositions;}
 
 		cs237::color3f getColorAt(locationInPallette l);
 
@@ -56,7 +56,7 @@ class Level {
 		//and similaraily we can do colission detection by having a single AABB defined for the master cube
 		//that we check against the player's AABB
 		int nCubes;
-		cs237::vec3f *cubePositions;
+		cs237::vec3f **cubePositions;
 		//Cube * masterCube;
 		cs237::AABBd cubeAABB(cs237::vec3f); //returns the AABB for a cube at the given position
 											 //NOTE: we have to predefine a cube size somewhere, not currently done
