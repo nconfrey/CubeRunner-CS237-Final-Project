@@ -236,6 +236,7 @@ Skybox::Skybox(int wid, int ht)
   	projLoc = _shader->UniformLocation("projection");
   	texSamplerLoc = _shader->UniformLocation("skybox");
     camPosLoc = _shader->UniformLocation("camPos");
+    sideLoc = _shader->UniformLocation("side");
 
     htLoc = _shader->UniformLocation("ht");
     widLoc = _shader->UniformLocation("wid");
@@ -266,6 +267,7 @@ void Skybox::Render(cs237::mat4f const &projectionMat, cs237::mat4f const &model
     for(int i = 0; i < 6; i++)
     {
       //printf("Attempting to render object %d of 6\n", i);
+        cs237::setUniform(sideLoc, i);
       this->faces[i]->Bind();
       this->meshes[i]->Draw();
       //printf("Did render object %d of 6\n", i);
