@@ -154,7 +154,7 @@ void Camera::rotateCam(float theta, cs237::vec3f axis)
     this->_dir = newdir + vec3dToVec3f(this->position());
 
     //update the up-vector
-    this->_up = normalize(cs237::vec3f(rot * cs237::vec4f(this->up(), 0.0f)));
+    //this->_up = normalize(cs237::vec3f(rot * cs237::vec4f(this->up(), 0.0f)));
 
     //printf("axis %f %f %f\n", axis[0], axis[1], axis[2]);
     //printf("new dir %f %f %f\n", newdir[0], newdir[1], newdir[2]);

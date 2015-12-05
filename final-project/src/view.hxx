@@ -13,13 +13,13 @@
 #define _VIEW_HXX_
 
 #include "cs237.hxx"
+#include "cube.hxx"
 #include "map.hxx"
 #include "camera.hxx"
 #include <vector>
 #include "render.hxx"
 #include "map-cell.hxx"
 #include "skybox.hxx"
-#include "cube.hxx"
 
 #define SIN_ONE_DEGREE  0.0174524064373f
 #define COS_ONE_DEGREE  0.999847695156f
@@ -125,6 +125,9 @@ class View {
   //! the view's current camera state
     class Camera const &Camera () const { return this->_cam; }
 
+    cs237::mat4f ModelViewMat() { return modelViewMat; }
+    cs237::mat4f ProjectionMat() { return projectionMat; }//<! the camera's projection matrix
+
   //! the view's current error limit
     float ErrorLimit () const { return this->_errorLimit; }
 
@@ -154,7 +157,7 @@ class View {
 
     Sunlight sun; //container for the light info
     Skybox *skybox;
-    Cube *cube; //the master cube
+    Cube *cube;
 
     cs237::mat4f modelViewMat; //!< the current model-view matrix
     cs237::mat4f projectionMat; //<! the camera's projection matrix

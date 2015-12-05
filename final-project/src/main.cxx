@@ -10,11 +10,12 @@
  */
 
 #include "cs237.hxx"
+#include "world.hxx"
 #include "map.hxx"
 #include "map-cell.hxx"
 #include "view.hxx"
 #include <unistd.h>
-#include "world.hxx"
+
 
 #define SPEED 2.0f
 #define ROLLSPEED 2.0f

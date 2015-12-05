@@ -6,7 +6,7 @@
 //========================= LEVEL MAKER =========================//
 cs237::color3f pallette1[3] = {cs237::color3f(0.5, 0.5, 0.5), cs237::color3f(0.0, 0.0, 0.0), cs237::color3f(1.0, 0.0, 0.0)};
 
-Level *level1 = new Level(1, 1, 0, 100, 2, 0.5, pallette1, 3);
+//
 
 
 //========================= CONSTRUCTOR AND DESTRUCTOR =========================//
@@ -19,6 +19,7 @@ World::World(View *v)
 	this->levels = new Level *[NLEVELS];
 	//for each level, initalize it with preset data
 	//we can make a CREATE LEVEL 1 function, etc
+	Level *level1 = new Level(1, 1, 0, 100, 2, 0.5, pallette1, 3, v->Camera().position());
 	this->levels[0] = level1;
 
 	//set the x edges
@@ -196,10 +197,12 @@ int World::handleFrame(float t, float dt)
 
 //========================= PER FRAME FUNCTIONS =========================//
 
+
 void World::renderWorld()
 {
-	this->view->Render(); //draw the heighfield
-	this->levels[curLevel]->RenderAllCubes(); //draw every cube in the current level
+	this->view->Render(); //draw the heighfield and skybox
+	std::cout << this->view->Camera();
+	this->levels[curLevel]->RenderAllCubes(this->view->ProjectionMat(), this->view->ModelViewMat()); //draw every cube in the current level
 	this->player->Render(); //draw the player
 }
 

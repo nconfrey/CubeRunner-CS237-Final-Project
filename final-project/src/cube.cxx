@@ -3,14 +3,14 @@
 //create a master cube
 Cube::Cube()
 {
-	cs237::vec3f cubeVertices[8]= {cs237::vec3f(-100.0f,  -100.0f,  100.0f), //0
-					                   cs237::vec3f (-100.0f,  100.0f,  100.0f), //100
-					                   cs237::vec3f ( 100.0f,  100.0f,  100.0f), //2
-					                   cs237::vec3f( 100.0f,  -100.0f,  100.0f), //3
-					                   cs237::vec3f (-100.0f,  -100.0f, -100.0f), //4
-					                   cs237::vec3f (-100.0f,  100.0f, -100.0f), //5
-					                   cs237::vec3f ( 100.0f,  100.0f, -100.0f), //6
-					                   cs237::vec3f ( 100.0f,  -100.0f, -100.0f)}; //7 
+	cs237::vec3f cubeVertices[8]= {cs237::vec3f(-1.0f,  -1.0f,  1.0f), //0
+					                   cs237::vec3f (-1.0f,  1.0f,  1.0f), //1
+					                   cs237::vec3f ( 1.0f,  1.0f,  1.0f), //2
+					                   cs237::vec3f( 1.0f,  -1.0f,  1.0f), //3
+					                   cs237::vec3f (-1.0f,  -1.0f, -1.0f), //4
+					                   cs237::vec3f (-1.0f,  1.0f, -1.0f), //5
+					                   cs237::vec3f ( 1.0f,  1.0f, -1.0f), //6
+					                   cs237::vec3f ( 1.0f,  -1.0f, -1.0f)}; //7 
 
 	/* the indices that allow us to create the cube. */ 
 	uint32_t cubeIndices[36] = {
@@ -25,21 +25,35 @@ Cube::Cube()
     this->mesh->LoadVertices(8, cubeVertices);
     this->mesh->LoadIndices(36, cubeIndices);
 
-    this->_shader = new cs237::ShaderProgram ("../shaders/skybox.vsh", "../shaders/skybox.fsh");
+    this->_shader = new cs237::ShaderProgram ("../shaders/cube.vsh", "../shaders/cube.fsh");
     mvLoc = _shader->UniformLocation ("modelView");
   	projLoc = _shader->UniformLocation("projection");
-  	texSamplerLoc = _shader->UniformLocation("skybox");
+  	htLoc = _shader->UniformLocation("ht");
+  	widLoc = _shader->UniformLocation("wid");
+  	colorLoc = _shader->UniformLocation("color");
 }
 
-void Cube::Render(cs237::vec3f pos, cs237::color3f color, cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat)
+void Cube::Render(cs237::vec3f pos, cs237::color4f color, cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat)
 {
 	//need to make a toWorld transformation here!!
 	this->_shader->Use();
+	printf("rendering cube with %f, %f, %f\n", pos.x, pos.y, pos.z);
     cs237::setUniform(projLoc, projectionMat);
-    //cs237::mat4f noTrans = cs237::mat4f(cs237::mat3f(modelViewMat), cs237::vec4f(0,0,0,0));
-    cs237::setUniform(mvLoc, modelViewMat);
-    cs237::setUniform(texSamplerLoc, 0);
+    cs237::setUniform(mvLoc, cs237::translate(modelViewMat, pos));
+    cs237::setUniform(colorLoc, color);
+    cs237::setUniform(htLoc, 300.0f);
+    cs237::setUniform(widLoc, 300.0f);
 	this->mesh->Draw();
+}
+
+void Cube::RenderRandom(int xRand, int zRand, cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat)
+{
+	float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	float x = rand() % xRand;//5000;
+	float z = rand() % zRand;
+	Render(cs237::vec3f(x,500,z), cs237::color4f(r, g, b, 1.0), projectionMat, modelViewMat);
 }
 
 // Cube::CubeAABB(cs237::vec3f pos)

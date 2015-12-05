@@ -1,6 +1,7 @@
 #ifndef _PLAYER_HXX_
 #define _PLAYER_HXX_
 
+#include "cs237.hxx"
 #include "mesh.hxx"
 
 //stores:
