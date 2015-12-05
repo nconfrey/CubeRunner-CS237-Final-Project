@@ -88,7 +88,7 @@ void View::Init (int wid, int ht)
     /* YOUR CODE HERE */
     this->InitRenderers();
     this->skybox = new Skybox(wid,ht);
-    this->cube = new Cube();
+    //this->cube = new Cube();
 
     /* ADDITIONAL INITIALIZATION */
     this->projectionMat = this->Camera().projTransform();
@@ -380,7 +380,8 @@ void View::Render ()
       float x = rand() % 5000;
       float z = rand() % 2000;
       printf("rendering cube %d with position %f\n", i, x);
-      cube->Render(cs237::vec3f(x,500,z), cs237::color4f(r, g, b, 1.0), this->projectionMat, this->modelViewMat);
+      
+      //cube->Render(cs237::vec3f(x,500,z), cs237::color4f(r, g, b, 1.0), this->projectionMat, this->modelViewMat);
     }
 
     //choose renderer

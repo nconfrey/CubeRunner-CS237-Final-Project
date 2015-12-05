@@ -13,7 +13,7 @@
 #define _VIEW_HXX_
 
 #include "cs237.hxx"
-#include "cube.hxx"
+//#include "cube.hxx"
 #include "map.hxx"
 #include "camera.hxx"
 #include <vector>
@@ -157,7 +157,7 @@ class View {
 
     Sunlight sun; //container for the light info
     Skybox *skybox;
-    Cube *cube;
+    //Cube *cube;
 
     cs237::mat4f modelViewMat; //!< the current model-view matrix
     cs237::mat4f projectionMat; //<! the camera's projection matrix

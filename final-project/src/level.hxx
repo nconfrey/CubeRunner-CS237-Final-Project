@@ -2,7 +2,7 @@
 #define _LEVEL_HXX_
 
 #include "cs237.hxx"
-//#include "cube.hxx"
+#include "cube.hxx"
 
 enum locationInPallette {
 	GROUND=0,
@@ -57,7 +57,7 @@ class Level {
 		//that we check against the player's AABB
 		int nCubes;
 		cs237::vec3f **cubePositions;
-		//Cube * masterCube;
+		Cube * masterCube;
 		cs237::AABBd cubeAABB(cs237::vec3f); //returns the AABB for a cube at the given position
 											 //NOTE: we have to predefine a cube size somewhere, not currently done
 
