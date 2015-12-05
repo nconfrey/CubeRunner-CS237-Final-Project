@@ -13,6 +13,7 @@ class Skybox {
     int camPosLoc;
     int widLoc;
     int htLoc;
+    int sideLoc;
 
     GLuint    vaoId;
     GLuint    verticesVBOId;
