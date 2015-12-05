@@ -156,8 +156,8 @@ void Camera::rotateCam(float theta, cs237::vec3f axis)
     //update the up-vector
     this->_up = normalize(cs237::vec3f(rot * cs237::vec4f(this->up(), 0.0f)));
 
-    printf("axis %f %f %f\n", axis[0], axis[1], axis[2]);
-    printf("new dir %f %f %f\n", newdir[0], newdir[1], newdir[2]);
+    //printf("axis %f %f %f\n", axis[0], axis[1], axis[2]);
+    //printf("new dir %f %f %f\n", newdir[0], newdir[1], newdir[2]);
 }
 
 void Camera::rotateCamUpDown(float theta)
@@ -173,6 +173,21 @@ void Camera::rotateCamLeftRight(float theta)
 void Camera::rotateCamRoll(float theta)
 {
     this->rotateCam(theta, this->getLookVec());
+}
+
+void Camera::rotateX(float theta)
+{
+    this->rotateCam(theta, cs237::vec3f(1, 0, 0));
+}
+
+void Camera::rotateY(float theta)
+{
+    this->rotateCam(theta, cs237::vec3f(0, 1, 0));
+}
+
+void Camera::rotateZ(float theta)
+{
+    this->rotateCam(theta, cs237::vec3f(0, 0, 1));
 }
 
 

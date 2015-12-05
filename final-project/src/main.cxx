@@ -16,6 +16,8 @@
 #include <unistd.h>
 #include "world.hxx"
 
+#define SPEED 2.0f
+
 /***** callbacks *****
  *
  * These callback functions are wrappers for the methods of the View class
@@ -92,22 +94,22 @@ void Key (GLFWwindow *win, int key, int scancode, int action, int mods)
      break;
      //OLD CAMERA CONTROLS
     case GLFW_KEY_S:
-      view->rotateCamUpDown(-10.0f);
+      view->rotateCamUpDown(-SPEED);
       break;
     case GLFW_KEY_X:
-      view->rotateCamUpDown(10.0f);
+      view->rotateCamUpDown(SPEED);
       break;
     case GLFW_KEY_Z:
-      view->rotateCamLeftRight(10.0f);
+      view->rotateCamLeftRight(SPEED);
       break;
     case GLFW_KEY_C:
-      view->rotateCamLeftRight(-10.0f);
+      view->rotateCamLeftRight(-SPEED);
       break;
     case GLFW_KEY_A:
-      view->rotateCamRoll(10.0f);
+      view->rotateCamRoll(SPEED);
       break;
     case GLFW_KEY_D:
-      view->rotateCamRoll(-10.0f);
+      view->rotateCamRoll(-SPEED);
       break;
       //PLAYER MOVEMENT CONTROLS
     case GLFW_KEY_LEFT:

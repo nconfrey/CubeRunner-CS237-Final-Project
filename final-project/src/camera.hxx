@@ -92,6 +92,12 @@ class Camera {
 
     void rotateCamRoll(float theta);
 
+    void rotateX(float theta);
+
+    void rotateY(float theta);
+
+    void rotateZ(float theta);
+
 
     //=====translate camera and look at point=====/
 

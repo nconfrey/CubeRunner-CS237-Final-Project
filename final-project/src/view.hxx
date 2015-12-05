@@ -82,7 +82,7 @@ class View {
 
     void translateCamUpAxis(float dis);
 
-    
+
 
     void windowShouldClose();
 
@@ -172,7 +172,14 @@ class View {
     bool _lightingOn;
     bool _wireframe; //!< true if we are rendering the wireframe
 
-  /* ADDITIONAL STATE HERE */
+    //smooth camera movement
+    cs237::vec3f lookTarget;
+    float turnSpeed;
+    bool smoothCam;
+    void rotateTargetVector(float theta, cs237::vec3f axis);
+    void rotateTargetVector_inner(float theta, cs237::vec3f axis, bool recursiveCall);
+    void rotateTowardsTarget(float dt);
+
 
 };
 

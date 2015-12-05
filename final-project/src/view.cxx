@@ -73,6 +73,10 @@ void View::Init (int wid, int ht)
 
     this->_cam.move(pos, at, cs237::vec3d(0.0, 1.0, 0.0));
 
+    this->lookTarget = this->_cam.getLookVec();
+    turnSpeed = 10.0f;
+    smoothCam = true;
+
   // set the FOV and near/far planes
     this->_cam.setFOV (60.0);
     this->_cam.setNearFar (10.0, 2*1.5 * double(this->_map->CellWidth()) * double(this->_map->hScale()));
@@ -144,24 +148,71 @@ void View::setErrorLimit(float newlim)
 //rotate camera around an arbitrary axis
 void View::rotateCam(float theta, cs237::vec3f axis)
 {
-  this->_cam.rotateCam(theta, axis);
+  if(!smoothCam)
+    this->_cam.rotateCam(theta, axis);
+  else
+    rotateTargetVector(theta, axis);
 }
 
 void View::rotateCamUpDown(float theta)
 {
-  this->_cam.rotateCamUpDown(theta);
+  if(!smoothCam)
+    this->_cam.rotateCamUpDown(theta);
+  else 
+    rotateTargetVector(theta, cross(this->_cam.up(), this->_cam.getLookVec()));
 }
 
 void View::rotateCamLeftRight(float theta)
 {
-  this->_cam.rotateCamLeftRight(theta);
+  if(!smoothCam)
+    this->_cam.rotateCamLeftRight(theta);
+  else
+    rotateTargetVector(theta, this->_cam.up());
 }
 
 void View::rotateCamRoll(float theta)
 {
-  this->_cam.rotateCamRoll(theta);
+  if(!smoothCam)
+    this->_cam.rotateCamRoll(theta);
+  else
+    rotateTargetVector(theta, this->_cam.getLookVec());
 }
 
+void View::rotateTowardsTarget(float dt)
+{
+  //get the axis and total distance to rotate 
+  cs237::vec3f axis = cross(this->_cam.getLookVec(), this->lookTarget);
+  float theta = dot(this->_cam.getLookVec(), this->lookTarget);
+
+  //we turn speed degrees per second 
+  theta = this->turnSpeed * dt * theta;
+
+  //turn that much
+  this->_cam.rotateCam(theta, axis);
+}
+
+void View::rotateTargetVector(float theta, cs237::vec3f axis)
+{
+    this->rotateTargetVector_inner(theta, axis, false);
+}
+
+void View::rotateTargetVector_inner(float theta, cs237::vec3f axis, bool recursiveCall)
+{
+  //make sure our target doesn't get too far away...
+  float curtheta = dot(this->_cam.getLookVec(), this->lookTarget);
+  printf("%f\n", curtheta);
+  if((curtheta < 0.98) & !recursiveCall){
+    float signtheta = (float)(int)((theta)/std::abs(theta));
+    //rotate back a bit towards our current view
+    this->rotateTargetVector_inner(-(theta * signtheta), cross(this->_cam.getLookVec(), this->lookTarget), true);
+  }
+
+  //construct the rotation matrix for the given axis
+  cs237::mat4x4f rot = cs237::rotate(theta, axis);
+
+  //update the target vector
+  this->lookTarget = cs237::vec3f(rot * cs237::vec4f(this->lookTarget, 1.0f));
+}
 
 //=====translate camera and look at point=====/
 
@@ -210,8 +261,8 @@ void View::Animate ()
     double now = glfwGetTime();
     double dt = now - this->_lastStep;
     if (dt >= TIME_STEP) {
-	this->_lastStep = now;
-	/* ANIMATE STUFF */
+	     this->_lastStep = now;
+	     this->rotateTowardsTarget(dt);
     }
 
 }
