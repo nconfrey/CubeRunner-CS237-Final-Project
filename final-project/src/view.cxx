@@ -172,45 +172,65 @@ void View::rotateCamLeftRight(float theta)
 
 void View::rotateCamRoll(float theta)
 {
-  //if(!smoothCam)
+  if(!smoothCam)
     this->_cam.rotateCamRoll(theta);
-  //else
-  //  rotateTargetVector(theta, this->_cam.getLookVec());
+  else
+    rotateUpTarget(theta);
 }
 
 void View::rotateTowardsTarget(float dt)
 {
-  //get the total distance to rotate 
-  float theta = dot(this->_cam.getLookVec(), this->lookTarget);
+  cs237::vec3f lookvec = this->_cam.getLookVec();
+  //get the total distance between current and the target
+  float theta = dot(lookvec, this->lookTarget);
 
-  //don't rotate if we are baaaasically there
-  if(theta < 0.9999){
+  //don't rotate if we are above 1.0f due to floating point error
+  if(theta <= 1.0f){
     //get the axis 
-    cs237::vec3f axis = cross(this->_cam.getLookVec(), this->lookTarget); 
+    cs237::vec3f axis = cross(lookvec, this->lookTarget); 
 
     //we turn speed degrees per second 
     theta = this->turnSpeed * dt * theta;
-
-    //turn that much, but don't turn if its insignificant
   
     this->_cam.rotateCam(theta, axis);
   }
 }
 
+void View::rotateTowardsTargetUp(float dt)
+{
+  cs237::vec3f lookvec = this->_cam.getLookVec();
+  //get the total distance between current and the target
+  float theta = dot(this->_cam.up(), this->upTarget);
+
+  //don't rotate if we are above 1.0f due to floating point error
+  if(theta <= 1.0f){
+    //we turn speed degrees per secong
+    theta = this->turnSpeed * dt * theta;
+
+    //get the rotation matrix for this much turning
+    cs237::mat4x4f rot = cs237::rotate(theta, lookvec);
+    this->_cam.look(lookvec, cs237::vec3f(rot * cs237::vec4f(this->_cam.up())));
+  } 
+}
+
+//wrapper function for updating the target look vector
 void View::rotateTargetVector(float theta, cs237::vec3f axis)
 {
     this->rotateTargetVector_inner(theta, axis, false);
 }
 
+//rotate the target look vector by theta around the given axis
 void View::rotateTargetVector_inner(float theta, cs237::vec3f axis, bool recursiveCall)
 {
-  //make sure our target doesn't get too far away...
+  //if the target vector is getting too far from our current vector,
+  //move the target towards the view vector by theta before adding
+  //the new displacement so it doesn't get "too far away"
   float curtheta = dot(this->_cam.getLookVec(), this->lookTarget);
   //printf("%f\n", curtheta);
   if((curtheta < 0.98) & !recursiveCall){
     float signtheta = (float)(int)((theta)/std::abs(theta));
     //rotate back a bit towards our current view
-    this->rotateTargetVector_inner(-(theta * signtheta), cross(this->_cam.getLookVec(), this->lookTarget), true);
+    this->rotateTargetVector_inner((-(signtheta))*theta, cross(this->_cam.getLookVec(), this->lookTarget), true);
   }
 
   //construct the rotation matrix for the given axis
@@ -218,6 +238,29 @@ void View::rotateTargetVector_inner(float theta, cs237::vec3f axis, bool recursi
 
   //update the target vector
   this->lookTarget = cs237::vec3f(rot * cs237::vec4f(this->lookTarget, 1.0f));
+}
+
+//wrapper function for rotating the target up vector
+void View::rotateUpTarget(float theta)
+{
+  this->rotateUpTarget_inner(theta, false);
+}
+
+//rotate the target up vector by theta around the look-at axis of the camera
+void View::rotateUpTarget_inner(float theta, bool recursiveCall)
+{
+  cs237::vec3f axis = this->_cam.getLookVec();
+  float curtheta = dot(this->_cam.up(), this->upTarget);
+  if((curtheta < 0.98) & !recursiveCall){
+    float (signtheta) = (float)(int)((theta)/std::abs(theta));
+    this->rotateUpTarget_inner((-(signtheta))*theta, true);
+  }
+
+  //construct rotation matrix
+  cs237::mat4x4f rot = cs237::rotate(theta, axis);
+
+  //update the up vector
+  this->upTarget = cs237::vec3f(rot * cs237::vec4f(axis, 1.0f));
 }
 
 //=====translate camera and look at point=====/
@@ -269,6 +312,7 @@ void View::Animate ()
     if (dt >= TIME_STEP) {
 	     this->_lastStep = now;
 	     this->rotateTowardsTarget(dt);
+       this->rotateTowardsTargetUp(dt);
     }
 
 }
