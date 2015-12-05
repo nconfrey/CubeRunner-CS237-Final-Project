@@ -110,13 +110,13 @@ void Camera::move (cs237::vec3d const &pos, cs237::vec3d const &at, cs237::vec3d
 // change the direction of the camera
 void Camera::look (cs237::vec3f const &dir)
 {
-    this->_dir = normalize(dir);
+    this->_dir = dir;
 }
 
 // change the direction of the camera
 void Camera::look (cs237::vec3f const &dir, cs237::vec3f const &up)
 {
-    this->_dir = normalize(dir);
+    this->_dir = dir;
     this->_up = up;
 }
 

@@ -174,11 +174,16 @@ class View {
 
     //smooth camera movement
     cs237::vec3f lookTarget;
+    cs237::vec3f upTarget;
     float turnSpeed;
     bool smoothCam;
     void rotateTargetVector(float theta, cs237::vec3f axis);
     void rotateTargetVector_inner(float theta, cs237::vec3f axis, bool recursiveCall);
     void rotateTowardsTarget(float dt);
+
+    void rotateUpTarget(float theta); //rotates the up vector around the look axis for camera rolling
+    void rotateUpTarget_inner(float theta, bool recursiveCell);
+    void rotateTowardsTargetUp(float dt);
 
 
 };
