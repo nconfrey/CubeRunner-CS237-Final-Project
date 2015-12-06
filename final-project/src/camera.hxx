@@ -52,6 +52,8 @@ class Camera {
   //! the horizontal field-of-view of the view frustum
     float fov () const { return cs237::degrees(2.0 * this->_halfFOV); }
 
+    void setUp(cs237::vec3f const &up);
+
   //! translate a point to the coordinate system that has the camera as the origin, but is
   //! oriented and scaled the same as the world coordinates.
     cs237::vec3d translate (cs237::vec3d const &p) const;
