@@ -89,6 +89,8 @@ class View {
 
     void translateCamZAxis(float dis);
 
+    void translateCamXAxis(float dis);
+
 
 
     void windowShouldClose();
@@ -188,9 +190,12 @@ class View {
     //smooth camera movement
     cs237::vec3f lookTarget;
     cs237::vec3f upTarget;
+    cs237::vec3d moveTarget;
     float turnSpeed;
+    float moveSpeed;
     bool smoothCam;
     bool smoothRoll;
+    bool smoothTrans;
     void rotateTargetVector(float theta, cs237::vec3f axis);
     void rotateTargetVector_inner(float theta, cs237::vec3f axis, bool recursiveCall);
     void rotateTowardsTarget(float dt);
@@ -198,6 +203,9 @@ class View {
     void rotateUpTarget(float theta); //rotates the up vector around the look axis for camera rolling
     void rotateUpTarget_inner(float theta, bool recursiveCell);
     void rotateTowardsTargetUp(float dt);
+
+    void translateTarget(cs237::vec3d offset);
+    void translateTowardsTarget(float dt);
 
 
 };

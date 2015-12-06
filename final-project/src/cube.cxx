@@ -4,7 +4,7 @@
 #define WIDTH 1.0f
 
 //create a master cube
-Cube::Cube(Sunlight sun)
+Cube::Cube(Sunlight sun, float height, float width)
 {
 	this->sun = sun;
 	cs237::vec3f cubeVertices[8]= {cs237::vec3f(-1.0f,  -1.0f,  1.0f), //0
@@ -69,6 +69,9 @@ Cube::Cube(Sunlight sun)
     this->mesh->LoadIndices(36, cubeIndices);
     this->mesh->LoadNormals(36, cubeNormals);
 
+    this->height = height;
+    this->width = width;
+
     this->_shader = new cs237::ShaderProgram ("../shaders/cube.vsh", "../shaders/cube.fsh");
     mvLoc = _shader->UniformLocation ("modelView");
   	projLoc = _shader->UniformLocation("projection");
@@ -87,8 +90,8 @@ void Cube::Render(cs237::vec3f pos, cs237::color4f color, cs237::mat4f const &pr
     cs237::setUniform(projLoc, projectionMat);
     cs237::setUniform(mvLoc, cs237::translate(modelViewMat, pos));
     cs237::setUniform(colorLoc, color);
-    cs237::setUniform(htLoc, HEIGHT);
-    cs237::setUniform(widLoc, WIDTH);
+    cs237::setUniform(htLoc, this->height);
+    cs237::setUniform(widLoc, this->width);
     CS237_CHECK(cs237::setUniform(lightDirLoc, sun.lightDir));
     CS237_CHECK(cs237::setUniform(lightIntenLoc, sun.lightInten));
     CS237_CHECK(cs237::setUniform(lightAmbLoc, sun.lightAmb));
@@ -107,5 +110,6 @@ void Cube::RenderRandom(int xRand, int zRand, cs237::mat4f const &projectionMat,
 
 cs237::AABBd Cube::CubeAABB(cs237::vec3f *pos)
 {
-	return cs237::AABBd(cs237::toDouble((*pos) - cs237::vec3f(1.0, 1.0, 1.0)), cs237::toDouble((*pos) + cs237::vec3f(1.0, 1.0, 1.0)));
+	return cs237::AABBd(cs237::toDouble((*pos) - cs237::vec3f(this->width, this->height, this->width)), 
+		   cs237::toDouble((*pos) + cs237::vec3f(this->width, this->height, this->width)));
 }

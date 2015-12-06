@@ -19,7 +19,7 @@ World::World(View *v)
 	this->levels = new Level *[NLEVELS];
 	//for each level, initalize it with preset data
 	//we can make a CREATE LEVEL 1 function, etc
-	Level *level1 = new Level(10, 1, 20, 500, 2, 10, pallette1, 3, v->Camera().position(), 100.0f, v->getSun());
+	Level *level1 = new Level(30, 1, 100, 500, 2, 60, pallette1, 3, v->Camera().position(), 100.0f, v->getSun());
 	this->levels[0] = level1;
 
 	//set the x edges
@@ -29,7 +29,7 @@ World::World(View *v)
 	this->view = v;
 
 	//create the player
-	this->player = new Player();
+	this->player = new Player(v->getSun());
 
 	//make sure all values are intialized to their correct values
 	this->restart();
@@ -213,7 +213,7 @@ void World::renderWorld()
 	this->view->Render(); //draw the heighfield and skybox
 	this->levels[curLevel]->RenderAllCubes(this->view->Camera()); //draw every cube in the current level
 	
-	this->player->Render(); //draw the player
+	this->player->Render(this->view->Camera()); //draw the player
 
 	//draw the window to the window
 	glfwSwapBuffers (this->view->Window());
@@ -228,8 +228,9 @@ void World::updateScore(float dt)
 void World::updatePlayerPosition(float dt)
 {
 	float vel = this->levels[curLevel]->getVelocity(); //get the velocity from the current level
-	this->player->addToZPos(dt * vel); //multiply it by dt and add it to the current z position of the player
 	this->view->translateCamZAxis(dt*vel); //move the camera as well
+	this->player->addToZPos(dt * vel); //multiply it by dt and add it to the current z position of the player
+	this->player->updateXPos(this->view->Camera()); //update the x pos to match the camera
 }
 
 

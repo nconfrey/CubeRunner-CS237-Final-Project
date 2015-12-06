@@ -3,6 +3,8 @@
 
 #include "cs237.hxx"
 #include "mesh.hxx"
+#include "camera.hxx"
+#include "cube.hxx"
 
 //stores:
 // 	info to render the player to the screen
@@ -11,19 +13,20 @@
 class Player {
 	public:
 
-		Player();
+		Player(Sunlight sun);
 		~Player();
 
-		void Render(); //draw the player
+		void Render(Camera c); //draw the player
 
 		cs237::vec3f getPos();
 		void setPos(cs237::vec3f v);
 		cs237::vec3f addToZPos(float z); //also returns the new pos
+		cs237::vec3f updateXPos(Camera c);
 
-		Mesh* getMeshInUse();
+		Cube* getMeshInUse();
 		void setMeshInUse(int n);
 
-		cs237::color3f getColorInUse();
+		cs237::color4f getColorInUse();
 		void setColorInUse(int n);
 
 		cs237::AABBd getAABB(); //note, we might want to eschew all this and have the AABB be a property of the mesh
@@ -34,12 +37,13 @@ class Player {
 		//player mesh
 		int curMesh; //current mesh used by the player
 		int nMeshes; //number of meshes in the array
-		Mesh ** playerMeshes; //array of meshes that by which the player might be represented
+		Cube ** playerMeshes; //array of meshes that by which the player might be represented
+								//have to hijack this and make it cube only until we have some kind of drawables struct
 
 		//player color
 		int curColor;
 		int nColors;
-		cs237::color3f * playerColors;
+		cs237::color4f * playerColors;
 
 		//position
 		cs237::vec3f pos;

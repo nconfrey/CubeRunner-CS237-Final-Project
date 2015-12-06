@@ -79,14 +79,17 @@ void View::Init (int wid, int ht)
     //and have them looking directly down the x axis
     //then the upvector will be the y axis
 
-    float yoffset = 18.0f;
+    float yoffset = 20.0f;
     this->_cam.init(yoffset);
 
     this->lookTarget = this->_cam.getLookVec();
     turnSpeed = 10.0f;
+    moveSpeed = 20.0f;
     smoothCam = true;
     smoothRoll = false;
+    smoothTrans = true;
     this->upTarget = this->_cam.up();
+    this->moveTarget = this->_cam.position();
 
   // set the FOV and near/far planes
     this->_cam.setFOV (60.0);
@@ -315,17 +318,31 @@ void View::toggleSmoothCamType(){
 //translate cam along arbitrary axis, without rotating view at all
 void View::translateCam(cs237::vec3d offset)
 {
-  this->_cam.translateCam(offset);
+  if(!smoothTrans)
+    this->_cam.translateCam(offset);
+  else
+    this->translateTarget(offset);
 }
 
 void View::translateCamZAxis(float dis)
 {
-  this->_cam.moveZAxis(dis);
+  //if(!smoothTrans)
+    this->_cam.moveZAxis(dis);
+  //else
+    //this->translateTarget(cs237::vec3d(0,0,(double)dis));
+}
+
+void View::translateCamXAxis(float dis)
+{
+  if(!smoothTrans)
+    dis += 1.0f;
+  else
+    this->translateTarget(cs237::vec3d((double)dis,0,0));
 }
 
 void View::translateCamViewAxis(float dis)
 {
-    this->_cam.translateCamViewAxis(dis);
+  this->_cam.translateCamViewAxis(dis);
 }
 
 void View::translateCamStrafeAxis(float dis)
@@ -337,6 +354,36 @@ void View::translateCamUpAxis(float dis)
 {
   this->_cam.translateCamUpAxis(dis);
 }
+
+void View::translateTarget(cs237::vec3d offset)
+{
+  /*//dont let it get too far from the current position
+    cs237::vec3d moveTargetWithOffset = this->moveTarget + offset;
+    float distanceToTargetWithOffset = length(moveTargetWithOffset - this->_cam.position());
+    if(distanceToTargetWithOffset <= 10.0f){
+      this->moveTarget = moveTargetWithOffset;
+    }*/
+
+      //new idea: just make the translation point be relative to the current position, not the current offset
+      this->moveTarget = this->_cam.position() + offset;
+}
+
+void View::translateTowardsTarget(float dt)
+{
+    //get the direction to our destination
+    cs237::vec3d delta = this->moveTarget - this->_cam.position();
+    //printf("move direction unnormalized %f %f %f\n", delta[0], delta[1], delta[2]);
+    if((std::abs(delta[0]) > 0.2 | std::abs(delta[1]) > 0.2 | std::abs(delta[2]) > 0.2)){
+      delta = normalize(delta);
+      //printf("move direction %f %f %f\n", delta[0], delta[1], delta[2]);
+      //move in that direction by speed
+      delta = delta * (double)this->moveSpeed * (double)dt;
+      //printf("move amount %f %f %f\n", delta[0], delta[1], delta[2]);
+      this->_cam.translateCam(cs237::vec3d(delta[0], 0.0, 0.0)); //only do x component for now
+    }
+} 
+
+
 
 
 
@@ -368,6 +415,9 @@ void View::Animate ()
        }
        if(smoothRoll){
           this->rotateTowardsTargetUp(dt);  
+       }
+       if(smoothTrans){
+        this->translateTowardsTarget(dt);
        }
     }
 
