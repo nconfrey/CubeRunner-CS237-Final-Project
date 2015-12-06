@@ -120,10 +120,10 @@ void Level::RenderAllCubes(Camera c)
 
 bool intersectionTest(cs237::AABBd bb, cs237::AABBd bb2)
 {
-	std::cout << "Cube pos\n";
-	std::cout << bb.center();
-	std::cout << "Player pos\n";
-	std::cout << bb2.center();
+	//std::cout << "Cube pos\n";
+	//std::cout << bb.center();
+	//std::cout << "Player pos\n";
+	//std::cout << bb2.center();
 	return bb.includesPt(bb2.center()) || bb2.includesPt(bb.center());
 }
 
