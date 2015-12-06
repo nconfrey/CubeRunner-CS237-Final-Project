@@ -19,7 +19,7 @@ World::World(View *v)
 	this->levels = new Level *[NLEVELS];
 	//for each level, initalize it with preset data
 	//we can make a CREATE LEVEL 1 function, etc
-	Level *level1 = new Level(10, 1, 20, 500, 2, 0.5, pallette1, 3, v->Camera().position(), 100.0f);
+	Level *level1 = new Level(10, 1, 20, 500, 2, 0.5, pallette1, 3, v->Camera().position(), 100.0f, v->getSun());
 	this->levels[0] = level1;
 
 	//set the x edges
