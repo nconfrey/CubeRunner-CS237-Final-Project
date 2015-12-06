@@ -79,7 +79,7 @@ class View {
     //=====translate camera and look at point=====/
 
     //translate cam along arbitrary axis, without rotating view at all
-    void translateCam(cs237::vec3f offset);
+    void translateCam(cs237::vec3d offset);
 
     void translateCamViewAxis(float dis);
 

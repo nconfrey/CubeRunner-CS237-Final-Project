@@ -24,10 +24,11 @@ Level::Level(int difficulty, int levelNum, float zstart, float zend, float score
  	{
  		//Assuming for now player is traveling down z axis
  		//new cubes are placed on the x/z plane
- 		float x = rand() % 5000;
+ 		float x = rand() % 200;
+ 		x = x - 100;
       	float z = rand() % 2000;
- 		cubePositions[i] = new cs237::vec3f(x, 500, z);
- 		printf("cube %d at %f, %f, %f\n", i, cubePositions[i]->x, cubePositions[i]->y, cubePositions[i]->z);
+ 		cubePositions[i] = new cs237::vec3f(x, 15, z);
+ 		//printf("cube %d at %f, %f, %f\n", i, cubePositions[i]->x, cubePositions[i]->y, cubePositions[i]->z);
  	}
 }
 

@@ -23,7 +23,7 @@ Camera::Camera ()
 void Camera::init(float yoffset)
 {
     this->_pos = cs237::vec3d(0,(double)yoffset,0);
-    this->_dir = cs237::vec3f(0,0, -10.0);
+    this->_dir = cs237::vec3f(0,(double)yoffset, 10.0);
     this->_up = cs237::vec3f(0, 1.0, 0);
 }
 
@@ -48,6 +48,13 @@ cs237::vec3f vec3dToVec3f(cs237::vec3d d)
     return cs237::vec3f((float)d[0],
                  (float)d[1],
                  (float)d[2]);
+}
+
+cs237::vec3d vec3fToVec3d(cs237::vec3f f)
+{
+    return cs237::vec3d((double)f[0],
+                 (double)f[1],
+                 (double)f[2]);
 }
 
 cs237::mat4x4f Camera::ModelViewMatrix () const
@@ -147,7 +154,7 @@ cs237::vec3f Camera::getLookVec(){
 //rotate camera around an arbitrary axis
 void Camera::rotateCam(float theta, cs237::vec3f axis)
 {
-    //translate lookat point to be relative to a camera ta the origin
+    //translate lookat point to be relative to a camera at the origin
     cs237::vec3f camlook = this->direction() - vec3dToVec3f(this->position());
 
     //get the rotation matrix and lookat vector
@@ -161,7 +168,7 @@ void Camera::rotateCam(float theta, cs237::vec3f axis)
     this->_dir = newdir + vec3dToVec3f(this->position());
 
     //update the up-vector
-    //this->_up = normalize(cs237::vec3f(rot * cs237::vec4f(this->up(), 0.0f)));
+    this->_up = normalize(cs237::vec3f(rot * cs237::vec4f(this->up(), 0.0f)));
 
     //printf("axis %f %f %f\n", axis[0], axis[1], axis[2]);
     //printf("new dir %f %f %f\n", newdir[0], newdir[1], newdir[2]);
@@ -203,27 +210,31 @@ void Camera::rotateZ(float theta)
 //translate cam along arbitrary axis, without rotating view at all
 void Camera::translateCam(cs237::vec3d offset)
 {
-
+    this->_pos = this->_pos + offset;
+    this->_dir = this->_dir + vec3dToVec3f(offset);
 }
 
 void Camera::moveZAxis(float dis)
 {
-    this->_pos.z+= dis;
+    this->translateCam(cs237::vec3d(0.0, 0.0, (double)dis));
 }
 
 void Camera::translateCamViewAxis(float dis)
 {
-
+    cs237::vec3f axis = this->getLookVec();
+    this->translateCam(vec3fToVec3d(dis * axis));
 }
 
 void Camera::translateCamStrafeAxis(float dis)
 {
-
+    cs237::vec3f axis = cross(this->getLookVec(), this->up());
+    this->translateCam(vec3fToVec3d(dis * axis));
 }
 
 void Camera::translateCamUpAxis(float dis)
 {
-
+    cs237::vec3f axis = this->up();
+    this->translateCam(vec3fToVec3d(dis * axis));
 }
 
 /***** Output *****/
