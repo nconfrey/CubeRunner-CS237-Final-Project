@@ -3,6 +3,7 @@
 
 #include "cs237.hxx"
 #include "mesh.hxx"
+#include "camera.hxx"
 //#include "view.hxx" //need this for modes enum
 
 
@@ -12,13 +13,6 @@
     WIREFRAME = 0,      //!< render scene as a wireframe
     FLAT_SHADING,       //!< render the scene using flat shading
     NUM_RENDER_MODES    //!< == to the number of rendering modes
-};
-
-//container strcut for light information
-struct Sunlight {
-  cs237::vec3f lightDir;
-  cs237::color3f lightInten;
-  cs237::color3f lightAmb;
 };
 
 //struct to hold all the uniforms to be used in rendering

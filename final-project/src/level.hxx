@@ -13,9 +13,10 @@ enum locationInPallette {
   //These can be accessed using BOXCOLORSTART + {index of box color} 
 
 class Level {
+
 	public:
 		Level(int difficulty, int levelNum, float zstart, float zend, float scoreMult, float velocity,
-			  cs237::color4f * palletteColors, int nColors, cs237::vec3d playerPos);
+			  cs237::color4f * palletteColors, int nColors, cs237::vec3d playerPos, Sunlight sun);
 		~Level();
 
 		//render a cube at every positoon in the cube positoon list

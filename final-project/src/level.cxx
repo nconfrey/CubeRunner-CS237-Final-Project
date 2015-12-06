@@ -2,7 +2,7 @@
 
 //========================= CONSTRUCTOR AND DESTRUCTOR =========================//
 Level::Level(int difficulty, int levelNum, float zstart, float zend, float scoreMult, float velocity,
-			  cs237::color4f * palletteColors, int nColors, cs237::vec3d playerPos)
+			  cs237::color4f * palletteColors, int nColors, cs237::vec3d playerPos, Sunlight sun)
 {
 	this->difficulty = difficulty;
 	this->levelNum = levelNum;
@@ -11,7 +11,7 @@ Level::Level(int difficulty, int levelNum, float zstart, float zend, float score
 	this->scoreMult = scoreMult;
 	this->velocity = velocity;
 	this->nColors = nColors;
-	this->masterCube = new Cube(); //nick: Should this be here or in view? we can pass it in (only need to make 1 per game)
+	this->masterCube = new Cube(sun); //nick: Should this be here or in view? we can pass it in (only need to make 1 per game)
 	this->palletteColors = new cs237::color4f[nColors];
 	for(int i = 0; i<nColors; i++){
 		this->palletteColors[i] = palletteColors[i];
