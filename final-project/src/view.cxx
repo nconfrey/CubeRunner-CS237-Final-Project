@@ -79,7 +79,7 @@ void View::Init (int wid, int ht)
     //and have them looking directly down the x axis
     //then the upvector will be the y axis
 
-    float yoffset = 20.0f;
+    float yoffset = 18.0f;
     this->_cam.init(yoffset);
 
     this->lookTarget = this->_cam.getLookVec();
