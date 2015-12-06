@@ -42,6 +42,8 @@ class View {
   //! initialize the view (i.e., allocate its window)
     void Init (int wid, int ht);
 
+    void initCamera(float offset);
+
   //! method to handle display of the view
     void Render ();
 
@@ -74,6 +76,8 @@ class View {
     void rotateCamLeftRight(float theta);
 
     void rotateCamRoll(float theta);
+
+    void setUpTarget(cs237::vec3f up);
 
 
     //=====translate camera and look at point=====/
@@ -203,6 +207,7 @@ class View {
     void rotateUpTarget(float theta); //rotates the up vector around the look axis for camera rolling
     void rotateUpTarget_inner(float theta, bool recursiveCell);
     void rotateTowardsTargetUp(float dt);
+    void rotateTargetTowardsStraightUp(float dt);
 
     void translateTarget(cs237::vec3d offset);
     void translateTowardsTarget(float dt);

@@ -60,16 +60,17 @@ class Level {
 		//that we check against the player's AABB
 		int nCubes;
 		cs237::vec3f **cubePositions;
+		locationInPallette *cubeColors;
 		Cube * masterCube;
 
 
 		//cube generation
 		//divides the zrange into a number of slices and populates each slice with a number of cubes
 		//determined by the difficulty
-		cs237::vec3f ** generateCubePositions(int nCubes, float zstart, float zend, float width);
+		void generateCubePositions(int nCubes, float zstart, float zend, float width);
 
 		//populates a given zrange wtih cubes based on the difficulty
-		void generateCubeSlice(int nCubes, float zstart, float zend, float width, int arrayStart, cs237::vec3f **cubes);
+		void generateCubeSlice(int nCubes, float zstart, float zend, float width, int arrayStart);
 
 };
 

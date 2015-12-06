@@ -18,7 +18,12 @@
 
 
 #define SPEED 2.0f
-#define ROLLSPEED 0.1f
+#define ROLLSPEED 0.3f
+
+cs237::vec3f ups[4] = {cs237::vec3f(0.0, 1.0, 0.0), cs237::vec3f(1.0, 0.0, 0.0), cs237::vec3f(0.0, -1.0, 0.0), cs237::vec3f(-1.0, 0.0, 0.0)};
+int curup = 0;
+
+World *OVERWORLD;
 
 /***** callbacks *****
  *
@@ -135,6 +140,21 @@ void Key (GLFWwindow *win, int key, int scancode, int action, int mods)
     case GLFW_KEY_R:
       view->toggleSmoothCamType();
       break;
+    case GLFW_KEY_O:
+      //get crazy
+      curup += 1;
+      curup = curup % 4;
+      view->setUpTarget(ups[curup]);
+      break;
+    case GLFW_KEY_T:
+      OVERWORLD->handleEvent(BACKTOTITLE);
+      break;
+    case GLFW_KEY_N:
+      OVERWORLD->handleEvent(NEWGAME);
+      break;
+    case GLFW_KEY_P:
+      OVERWORLD->handleEvent(PAUSEBUTTON);
+      break;
     default: // ignore all other keys
       return;
   }
@@ -214,7 +234,7 @@ int main (int argc, const char **argv)
     View *view = new View (&map);
     view->Init (1024, 768);
 
-    World *world = new World(view);
+    OVERWORLD = new World(view);
 
   // initialize the callback functions
     glfwSetWindowRefreshCallback (view->Window(), Display);
@@ -239,7 +259,7 @@ int main (int argc, const char **argv)
         dt = float(now - lastFrameTime);
         lastFrameTime = now;
         //printf("time: %f\n", now);
-        world->handleFrame(now, dt);
+        OVERWORLD->handleFrame(now, dt);
 
     	usleep (1000);	// sleep for 1mS to avoid excessive polling
 

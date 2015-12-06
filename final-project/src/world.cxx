@@ -4,9 +4,14 @@
 #define NLEVELS 1
 
 //========================= LEVEL MAKER =========================//
-cs237::color4f pallette1[3] = {cs237::color4f(0.5, 0.5, 0.5, 1.0), cs237::color4f(0.0, 0.0, 0.0,1.0), cs237::color4f(0.0, 0.34, 0.80, 1.0)};
+cs237::color4f pallette1[5] = {cs237::color4f(0.5, 0.5, 0.5, 1.0), cs237::color4f(0.0, 0.0, 0.0,1.0), 
+	cs237::color4f(1.0, 0.2, 1.0, 1.0), cs237::color4f(0.2, 1.0, 1.0, 1.0), cs237::color4f(1.0, 1.0, 1.0, 1.0)} ;
 
-//
+void World::generateLevels(View *v)
+{
+	Level *level1 = new Level(30, 1, 100, 500, 2, 60, pallette1, 5, v->Camera().position(), 100.0f, v->getSun());
+	this->levels[0] = level1;
+}
 
 
 //========================= CONSTRUCTOR AND DESTRUCTOR =========================//
@@ -19,8 +24,7 @@ World::World(View *v)
 	this->levels = new Level *[NLEVELS];
 	//for each level, initalize it with preset data
 	//we can make a CREATE LEVEL 1 function, etc
-	Level *level1 = new Level(30, 1, 100, 500, 2, 60, pallette1, 3, v->Camera().position(), 100.0f, v->getSun());
-	this->levels[0] = level1;
+	this->generateLevels(v);
 
 	//set the x edges
 	this->xEdge = 100.0f;
@@ -35,7 +39,7 @@ World::World(View *v)
 	this->restart();
 
 	//set the state to title screen
-	this->state = RUNNING;
+	this->state = TITLE;
 }
 
 World::~World()
@@ -56,8 +60,9 @@ void World::restart()
 	this->curLevel = 0;
 	this->tod = 0.0f;
 	this->tsd = 0.0f;
-	this->player->setPos(cs237::vec3f(0.0f, 0.0f, 0.0f));
-
+	this->player->reset();
+	this->view->initCamera(20.0f);
+	this->generateLevels(this->view);
 }
 
 //========================= EVENT HANDLERS =========================//
@@ -246,7 +251,7 @@ int World::checkForCollisions()
 	//check if the player is touching any cube
 	if(this->levels[curLevel]->intersectsAnyCube(this->player->getAABB())){
 		printf("COLLISION YOU LOSER\n");
-		exit(-1);
+		//exit(-1);
 		return 1;
 	}
 
@@ -256,12 +261,7 @@ int World::checkForCollisions()
 
 void World::killPlayer()
 {
-	//we might want this function eventually
-	//could handle some kind of death animation?
-	//though we probably want to just handle that a a lerp
-	//between normal -> final death state
-	//based on time since death
-	//in the per frame renderer
+	this->player->setColorInUse(1);
 }
 
 

@@ -83,7 +83,7 @@ void View::Init (int wid, int ht)
     this->_cam.init(yoffset);
 
     this->lookTarget = this->_cam.getLookVec();
-    turnSpeed = 10.0f;
+    turnSpeed = 6.0f;
     moveSpeed = 20.0f;
     smoothCam = true;
     smoothRoll = false;
@@ -125,6 +125,11 @@ void View::Init (int wid, int ht)
     this->_lightingOn = true;
     this->_fogOn = true;
 
+}
+
+void View::initCamera(float offset)
+{
+  this->_cam.init(offset);
 }
 
 void View::HandleKey (int key, int scancode, int action, int mods)
@@ -215,9 +220,9 @@ void View::rotateTowardsTargetUp(float dt)
   cs237::vec3f lookvec = this->_cam.getLookVec();
   //get the total distance between current and the target
   float theta = dot(this->_cam.up(), this->upTarget);
-  printf("up: %f %f %f\n",this->_cam.up()[0],this->_cam.up()[1],this->_cam.up()[2]);
-  printf("target: %f %f %f\n",this->upTarget[0],this->upTarget[1],this->upTarget[2]);
-  printf("dot: %f\n", theta);
+  //printf("up: %f %f %f\n",this->_cam.up()[0],this->_cam.up()[1],this->_cam.up()[2]);
+  //printf("target: %f %f %f\n",this->upTarget[0],this->upTarget[1],this->upTarget[2]);
+  //printf("dot: %f\n", theta);
   //don't rotate if we are at target, or above 1.0f due to floating point error
   if(theta < 1.0f){
     //we turn speed degrees per secong
@@ -228,7 +233,9 @@ void View::rotateTowardsTargetUp(float dt)
     //if the target has a larger abs(x) than us, we have to rotate towards its sign
     float sign;
     bool targetFurther = std::abs(this->upTarget[0]) > std::abs(this->_cam.up()[0]);
-    if(signoftargetx < 0 & signofcurx < 0){ 
+    if(this->upTarget[0] == 0.0){
+      sign = -signofcurx;
+    } else if(signoftargetx < 0 & signofcurx < 0){ 
       if(targetFurther)
         sign = 1.0f;
       else
@@ -244,7 +251,7 @@ void View::rotateTowardsTargetUp(float dt)
       sign = -1.0f;
     }
     sign = sign;
-    printf("sign: %f\n", sign);
+    //printf("sign: %f\n", sign);
     cs237::vec3f axis = normalize(cross(this->_cam.up(), this->upTarget));
     this->_cam.rotateCam(sign*theta, lookvec);
   } 
@@ -282,6 +289,33 @@ void View::rotateTargetVector_inner(float theta, cs237::vec3f axis, bool recursi
 
 }
 
+void View::rotateTargetTowardsStraightUp(float dt)
+{
+  cs237::vec3f straightup = cs237::vec3f(0.0, 0.0, 0.0);
+  float theta = dot(this->upTarget, straightup);
+  printf("theta %f\n", theta);
+  if(theta < 1.0f){
+    theta = this->turnSpeed * dt * theta;
+
+    float signofcurx = this->upTarget[0] / std::abs(this->upTarget[0]);
+    float sign;
+    if(signofcurx < 0){ 
+      sign = 1.0f;
+    } else {
+      sign = -1.0f;
+    }
+    sign = sign;
+    //printf("sign: %f\n", sign);
+    cs237::vec3f axis = normalize(cross(this->upTarget, straightup));
+
+    //construct rotation matrix
+    cs237::mat4x4f rot = cs237::rotate(theta, axis);
+
+    //update the up vector
+    this->upTarget = cs237::vec3f(rot * cs237::vec4f(this->upTarget, 0.0f));
+  }
+}
+
 //wrapper function for rotating the target up vector
 void View::rotateUpTarget(float theta)
 {
@@ -304,8 +338,13 @@ void View::rotateUpTarget_inner(float theta, bool recursiveCall)
   cs237::mat4x4f rot = cs237::rotate(theta, axis);
 
   //update the up vector
-  this->upTarget = cs237::vec3f(rot * cs237::vec4f(this->upTarget, 1.0f));
+  this->upTarget = cs237::vec3f(rot * cs237::vec4f(this->upTarget, 0.0f));
   //exit(9);
+}
+
+void View::setUpTarget(cs237::vec3f up)
+{
+  this->upTarget = up;
 }
 
 void View::toggleSmoothCamType(){
@@ -414,11 +453,13 @@ void View::Animate ()
 	        this->rotateTowardsTarget(dt);
        }
        if(smoothRoll){
-          this->rotateTowardsTargetUp(dt);  
+          
        }
        if(smoothTrans){
         this->translateTowardsTarget(dt);
        }
+       this->rotateTowardsTargetUp(-dt); 
+                 //this->rotateTargetTowardsStraightUp(dt); 
     }
 
 }

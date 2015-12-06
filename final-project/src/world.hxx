@@ -69,6 +69,7 @@ class World {
 		void updatePlayerPosition(float dt);
 
 		//LEVELS
+		void generateLevels(View *v);
 		int numLevels;
 		int curLevel;
 		Level** levels;
