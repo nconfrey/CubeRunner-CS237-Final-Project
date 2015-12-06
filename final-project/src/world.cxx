@@ -4,7 +4,7 @@
 #define NLEVELS 1
 
 //========================= LEVEL MAKER =========================//
-cs237::color3f pallette1[3] = {cs237::color3f(0.5, 0.5, 0.5), cs237::color3f(0.0, 0.0, 0.0), cs237::color3f(1.0, 0.0, 0.0)};
+cs237::color4f pallette1[3] = {cs237::color4f(0.5, 0.5, 0.5, 1.0), cs237::color4f(0.0, 0.0, 0.0,1.0), cs237::color4f(1.0, 0.0, 0.0, 1.0)};
 
 //
 
@@ -200,6 +200,9 @@ int World::handleFrame(float t, float dt)
 
 void World::renderWorld()
 {
+	if (! this->view->visible())
+    	return;
+
 	//clear the screen
     glClearColor (1.0f, 1.0f, 1.0f, 1.0f);  // clear the surface
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -213,7 +216,8 @@ void World::renderWorld()
 	
 	this->player->Render(); //draw the player
 
-	glfwSwapBuffers (this->view->_window);
+	//draw the window to the window
+	glfwSwapBuffers (this->view->Window());
 }
 
 void World::updateScore(float dt)

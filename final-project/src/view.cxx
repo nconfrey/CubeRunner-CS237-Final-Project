@@ -97,7 +97,6 @@ void View::Init (int wid, int ht)
     /* YOUR CODE HERE */
     this->InitRenderers();
     this->skybox = new Skybox(wid,ht);
-    this->cube = new Cube();
 
     /* ADDITIONAL INITIALIZATION */
     this->projectionMat = this->Camera().projTransform();
@@ -364,33 +363,10 @@ void View::UpdateModelViewMat ()
 
 void View::Render ()
 {
-    if (! this->_isVis)
-    return;
 
-
-    // cs237::mat3f m = cs237::mat3f(this->modelViewMat);
-    // cs237::mat4f noTrans = cs237::mat4f(
-    // cs237::vec4f(m[0], 0),
-    // cs237::vec4f(m[1], 0),
-    // cs237::vec4f(m[2], 0),
-    // cs237::vec4f(0, 0, 0, 1));
-    skybox->Render(this->projectionMat, this->modelViewMat, this->Camera().position());
-    //std::cout << "View " << this->projectionMat << "\n";
-    for(int i = 0; i < 6; i++)
-    {
-      //init random seed
-      float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-      float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-      float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-      float x = rand() % 5000;
-      float z = rand() % 2000;
-      printf("rendering cube %d with position %f\n", i, x);
-      
-      //cube->Render(cs237::vec3f(x,500,z), cs237::color4f(r, g, b, 1.0), this->projectionMat, this->modelViewMat);
-    }
-
-    //choose renderer
-    Renderer *r;
+    //choose renderer for the ground
+    //and set the render mode
+    Renderer *r; 
     if(this->_wireframe){
       r = this->wfRender;
       glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -399,9 +375,11 @@ void View::Render ()
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 
-    r->Enable(this->projectionMat, this->sun);
+    //DRAW SKYBOX
+    skybox->Render(this->projectionMat, this->modelViewMat, this->Camera().position());
 
-    //loop through all cells in map
+    //DRAW GROUND
+    r->Enable(this->projectionMat, this->sun);
     glEnable(GL_PRIMITIVE_RESTART);
     glPrimitiveRestartIndex(0xffff);
     for(int row = 0; row < this->_map->nRows(); row++){
