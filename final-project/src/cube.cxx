@@ -4,8 +4,9 @@
 #define WIDTH 3.0f
 
 //create a master cube
-Cube::Cube()
+Cube::Cube(Sunlight sun)
 {
+	this->sun = sun;
 	cs237::vec3f cubeVertices[8]= {cs237::vec3f(-1.0f,  -1.0f,  1.0f), //0
 					                   cs237::vec3f (-1.0f,  1.0f,  1.0f), //1
 					                   cs237::vec3f ( 1.0f,  1.0f,  1.0f), //2
@@ -24,9 +25,25 @@ Cube::Cube()
 	    1,6,5,  1,2,6,
 	    7,5,6,  7,4,5
 	  };
+
+	cs237::vec3f cubeNormals[12] = {
+		cs237::vec3f(  1.0f,  0.0f,  0.0f ),
+		cs237::vec3f(  1.0f,  0.0f,  0.0f ),
+		cs237::vec3f( -1.0f,  0.0f,  0.0f ),
+		cs237::vec3f( -1.0f,  0.0f,  0.0f ),
+		cs237::vec3f(  0.0f, -1.0f,  0.0f ),
+		cs237::vec3f(  0.0f, -1.0f,  0.0f ),
+		cs237::vec3f(  0.0f,  1.0f,  0.0f ),
+		cs237::vec3f(  0.0f,  1.0f,  0.0f ),
+		cs237::vec3f(  0.0f,  0.0f,  1.0f ),
+		cs237::vec3f(  0.0f,  0.0f,  1.0f ),
+		cs237::vec3f(  0.0f,  0.0f, -1.0f ),
+		cs237::vec3f(  0.0f,  0.0f, -1.0f )
+	};
 	this->mesh = new Mesh(GL_TRIANGLES);
     this->mesh->LoadVertices(8, cubeVertices);
     this->mesh->LoadIndices(36, cubeIndices);
+    this->mesh->LoadNormals(12, cubeNormals);
 
     this->_shader = new cs237::ShaderProgram ("../shaders/cube.vsh", "../shaders/cube.fsh");
     mvLoc = _shader->UniformLocation ("modelView");
@@ -34,11 +51,13 @@ Cube::Cube()
   	htLoc = _shader->UniformLocation("ht");
   	widLoc = _shader->UniformLocation("wid");
   	colorLoc = _shader->UniformLocation("color");
+  	lightDirLoc = _shader->UniformLocation("lightDir");
+    lightIntenLoc = _shader->UniformLocation("lightInten");
+    lightAmbLoc = _shader->UniformLocation("lightAmb");
 }
 
 void Cube::Render(cs237::vec3f pos, cs237::color4f color, cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat)
 {
-	//need to make a toWorld transformation here!!
 	this->_shader->Use();
 	//printf("rendering cube with %f, %f, %f\n", pos.x, pos.y, pos.z);
     cs237::setUniform(projLoc, projectionMat);
@@ -46,6 +65,9 @@ void Cube::Render(cs237::vec3f pos, cs237::color4f color, cs237::mat4f const &pr
     cs237::setUniform(colorLoc, color);
     cs237::setUniform(htLoc, HEIGHT);
     cs237::setUniform(widLoc, WIDTH);
+    CS237_CHECK(cs237::setUniform(lightDirLoc, sun.lightDir));
+    CS237_CHECK(cs237::setUniform(lightIntenLoc, sun.lightInten));
+    CS237_CHECK(cs237::setUniform(lightAmbLoc, sun.lightAmb));
 	this->mesh->Draw();
 }
 
