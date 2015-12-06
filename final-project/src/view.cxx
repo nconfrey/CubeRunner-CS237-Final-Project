@@ -59,7 +59,7 @@ void View::Init (int wid, int ht)
   // Place the viewer in the center of cell(0,0), just above the
   // cell's bounding box.
     cs237::AABBd bb = this->_map->Cell(0,0)->Tile(0).BBox();
-    cs237::vec3d pos = bb.center();
+   cs237::vec3d pos = bb.center();
     pos.y = bb.maxY() + 0.01 * (bb.maxX() - bb.minX());
 
   // The camera's direction is toward the bulk of the terrain
@@ -71,17 +71,24 @@ void View::Init (int wid, int ht)
 	at = pos + cs237::vec3d(double(this->_map->nCols()-1), 0.0, double(this->_map->nRows()-1));
     }
 
-    //this->_cam.move(pos, at, cs237::vec3d(0.0, 1.0, 0.0));
-    this->_cam.move(pos, at, cross(normalize(at), cs237::vec3d(0.0, 1.0, 0.0)));
+    this->_cam.move(pos, at, cs237::vec3d(0.0, 1.0, 0.0));
+    //this->_cam.move(pos, at, cross(normalize(at), cs237::vec3d(0.0, 1.0, 0.0)));
+
+    //place the viewer at the origin with some positive y offset
+    //and have them looking directly down the x axis
+    //then the upvector will be the y axis
+
+    //float yoffset = 20.0f;
+    //this->_cam.init(yoffset);
 
     this->lookTarget = this->_cam.getLookVec();
     turnSpeed = 10.0f;
-    smoothCam = false;
+    smoothCam = true;
     this->upTarget = this->_cam.up();
 
   // set the FOV and near/far planes
     this->_cam.setFOV (60.0);
-    this->_cam.look(cs237::vec3f(0,0,-1));
+    //this->_cam.look(cs237::vec3f(0,0,-1));
     this->_cam.setNearFar (10.0, 2*1.5 * double(this->_map->CellWidth()) * double(this->_map->hScale()));
     this->Resize (wid, ht);
 
@@ -213,7 +220,7 @@ void View::rotateTowardsTargetUp(float dt)
 
     //get the rotation matrix for this much turning
     cs237::mat4x4f rot = cs237::rotate(theta, lookvec);
-    this->_cam.look(lookvec, cs237::vec3f(rot * cs237::vec4f(this->_cam.up())));
+    //this->_cam.look(lookvec, cs237::vec3f(rot * cs237::vec4f(this->_cam.up())));
   } 
     //exit(0);
 }
@@ -319,8 +326,10 @@ void View::Animate ()
     double dt = now - this->_lastStep;
     if (dt >= TIME_STEP) {
 	     this->_lastStep = now;
-	     this->rotateTowardsTarget(dt);
-       this->rotateTowardsTargetUp(dt);
+       if(smoothCam){
+	        this->rotateTowardsTarget(dt);
+          //this->rotateTowardsTargetUp(dt);
+       }
     }
 
 }
