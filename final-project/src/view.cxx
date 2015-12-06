@@ -85,6 +85,7 @@ void View::Init (int wid, int ht)
     this->lookTarget = this->_cam.getLookVec();
     turnSpeed = 10.0f;
     smoothCam = true;
+    smoothRoll = false;
     this->upTarget = this->_cam.up();
 
   // set the FOV and near/far planes
@@ -182,7 +183,7 @@ void View::rotateCamLeftRight(float theta)
 
 void View::rotateCamRoll(float theta)
 {
-  if(!smoothCam)
+  if(!smoothRoll)
     this->_cam.rotateCamRoll(theta);
   else
     this->rotateUpTarget(theta);
@@ -223,10 +224,25 @@ void View::rotateTowardsTargetUp(float dt)
     float signofcurx = this->_cam.up()[0] / std::abs(this->_cam.up()[0]);
     //if the target has a larger abs(x) than us, we have to rotate towards its sign
     float sign;
-    if(std::abs(this->upTarget[0]) > std::abs(this->_cam.up()[0]))
-      sign = signoftargetx;
-    else
-      sign = signofcurx;
+    bool targetFurther = std::abs(this->upTarget[0]) > std::abs(this->_cam.up()[0]);
+    if(signoftargetx < 0 & signofcurx < 0){ 
+      if(targetFurther)
+        sign = 1.0f;
+      else
+        sign = -1.0f;
+    } else if(signoftargetx > 0 & signofcurx > 0){
+      if(targetFurther)
+        sign = -1.0f;
+      else
+        sign = 1.0f;
+    } else if(signoftargetx < 0 & signofcurx > 0){
+      sign = 1.0f;
+    } else {
+      sign = -1.0f;
+    }
+    sign = sign;
+    printf("sign: %f\n", sign);
+    cs237::vec3f axis = normalize(cross(this->_cam.up(), this->upTarget));
     this->_cam.rotateCam(sign*theta, lookvec);
   } 
     //exit(0);
@@ -277,9 +293,9 @@ void View::rotateUpTarget_inner(float theta, bool recursiveCall)
   float curtheta = dot(this->_cam.up(), this->upTarget);
   printf("curtheta is %f\n", curtheta);
       float (signtheta) = (float)(int)((theta)/std::abs(theta));
-  /*if((curtheta < 0.98) & !recursiveCall){
+  if((curtheta < 0.90) & !recursiveCall){
     this->rotateUpTarget_inner((-(signtheta))*theta, true);
-  }*/
+  }
 
   //construct rotation matrix
   cs237::mat4x4f rot = cs237::rotate(theta, axis);
@@ -287,6 +303,11 @@ void View::rotateUpTarget_inner(float theta, bool recursiveCall)
   //update the up vector
   this->upTarget = cs237::vec3f(rot * cs237::vec4f(this->upTarget, 1.0f));
   //exit(9);
+}
+
+void View::toggleSmoothCamType(){
+  this->smoothCam = ! this->smoothCam;
+  this->smoothRoll = ! this->smoothRoll;
 }
 
 //=====translate camera and look at point=====/
@@ -343,8 +364,10 @@ void View::Animate ()
     if (dt >= TIME_STEP) {
 	     this->_lastStep = now;
        if(smoothCam){
-	        //this->rotateTowardsTarget(dt);
-          this->rotateTowardsTargetUp(dt);
+	        this->rotateTowardsTarget(dt);
+       }
+       if(smoothRoll){
+          this->rotateTowardsTargetUp(dt);  
        }
     }
 

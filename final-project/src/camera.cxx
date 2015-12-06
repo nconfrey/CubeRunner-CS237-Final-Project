@@ -160,7 +160,7 @@ cs237::vec3f Camera::getLookVec(){
 void Camera::rotateCam(float theta, cs237::vec3f axis)
 {
     //translate lookat point to be relative to a camera at the origin
-    cs237::vec3f camlook = this->direction() - vec3dToVec3f(this->position());
+    cs237::vec3f camlook = this->getLookVec();
 
     //get the rotation matrix and lookat vector
     cs237::mat4x4f rot = cs237::rotate(theta, axis);

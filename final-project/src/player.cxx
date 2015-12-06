@@ -92,7 +92,7 @@ cs237::AABBd Player::getAABB()
 void Player::updateAABB()
 {
 	//update the AABB based on the position
-	printf("player position: %f, %f, %f\n", this->pos.x, this->pos.y, this->pos.z);
+	//printf("player position: %f, %f, %f\n", this->pos.x, this->pos.y, this->pos.z);
 	this->bb = cs237::AABBd(cs237::toDouble(this->pos - cs237::vec3f(1.0, 1.0, 1.0)), cs237::toDouble(this->pos + cs237::vec3f(1.0, 1.0, 1.0)));
 }
 

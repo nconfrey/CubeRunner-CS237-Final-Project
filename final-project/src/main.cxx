@@ -130,6 +130,9 @@ void Key (GLFWwindow *win, int key, int scancode, int action, int mods)
     case GLFW_KEY_L:
       view->toggleLighting();
       break;
+    case GLFW_KEY_R:
+      view->toggleSmoothCamType();
+      break;
     default: // ignore all other keys
       return;
   }

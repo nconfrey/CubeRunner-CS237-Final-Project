@@ -152,6 +152,8 @@ class View {
 
     Sunlight getSun () { return this->sun; }
 
+    void toggleSmoothCamType();
+
   private:
     Map		*_map;		//!< the map being rendered
     class Camera _cam;		//!< tracks viewer position, etc.
@@ -188,6 +190,7 @@ class View {
     cs237::vec3f upTarget;
     float turnSpeed;
     bool smoothCam;
+    bool smoothRoll;
     void rotateTargetVector(float theta, cs237::vec3f axis);
     void rotateTargetVector_inner(float theta, cs237::vec3f axis, bool recursiveCall);
     void rotateTowardsTarget(float dt);
