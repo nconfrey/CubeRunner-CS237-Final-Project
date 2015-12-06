@@ -17,6 +17,7 @@
 #include "map-cell.hxx"
 #include "buffer-cache.hxx"
 #include "texture-cache.hxx"
+#include "cube.hxx"
 
 static void Error (int err, const char *msg);
 static GLFWwindow *InitGLFW (int wid, int ht, const char *title);
@@ -96,7 +97,7 @@ void View::Init (int wid, int ht)
     /* YOUR CODE HERE */
     this->InitRenderers();
     this->skybox = new Skybox(wid,ht);
-    //this->cube = new Cube();
+    this->cube = new Cube();
 
     /* ADDITIONAL INITIALIZATION */
     this->projectionMat = this->Camera().projTransform();
@@ -366,12 +367,6 @@ void View::Render ()
     if (! this->_isVis)
     return;
 
-    //update model view mat
-    this->UpdateModelViewMat();
-
-    //clear the screen
-    glClearColor (1.0f, 1.0f, 1.0f, 1.0f);  // clear the surface
-    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // cs237::mat3f m = cs237::mat3f(this->modelViewMat);
     // cs237::mat4f noTrans = cs237::mat4f(
@@ -423,8 +418,6 @@ void View::Render ()
     }
     glDisable(GL_PRIMITIVE_RESTART);
 
-
-    glfwSwapBuffers (this->_window);
 
 }
 

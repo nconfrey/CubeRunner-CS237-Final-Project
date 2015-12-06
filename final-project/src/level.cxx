@@ -51,22 +51,25 @@ void Level::RenderAllCubes(Camera c)
 	//Check the cubes for any that are behind the camera
 	//If they are in front of the player, render
 	//Otherwise, generate a new cube at a position ahead of the player
-	//std::cout << "RenderAllCubes: " << projectionMat << "\n";
+	std::cout << "RenderAllCubes: " << c.projTransform() << "\n";
 	//glDisable(GL_DEPTH_TEST);
+	float x;
+	float z;
 	for(int i = 0; i < this->nCubes; i++){
 		float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 		float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 		float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-		if(c.position().z > this->cubePositions[i]->z)
+		if(true)//c.position().z > this->cubePositions[i]->z)
 		{
 			printf("RECYCLE CUBE #%d\n", i);
-			float x = rand() % 5000;
-      		float z = rand() % 2000 + c.position().z;
+			x = rand() % 5000;
+      		z = rand() % 2000; //+ c.position().z;
       		//memory leak here
  			cubePositions[i] = new cs237::vec3f(x, 500, z);
 		}
 		
-		masterCube->Render(*(this->cubePositions[i]), cs237::color4f(r,g,b,1.0f), c.projTransform(), c.ModelViewMatrix());
+		//masterCube->Render(*(this->cubePositions[i]), cs237::color4f(r,g,b,1.0f), c.projTransform(), c.ModelViewMatrix());
+		masterCube->Render(cs237::vec3f(x,500,z), cs237::color4f(r, g, b, 1.0), c.projTransform(), c.ModelViewMatrix());
 	}
 
 }

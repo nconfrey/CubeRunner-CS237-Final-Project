@@ -25,6 +25,8 @@
 #define COS_ONE_DEGREE  0.999847695156f
 #define SQRT_2 1.41421356237f
 
+class Cube;
+
 class View {
   public:
 
@@ -143,12 +145,13 @@ class View {
   //! the cache of normals for the map tiles
     class TextureCache *NormCache () const { return this->_nCache; }
 
+        GLFWwindow  *_window; //!< the main window //lol gotta not make this public before submission
+
   private:
     Map		*_map;		//!< the map being rendered
     class Camera _cam;		//!< tracks viewer position, etc.
     float	_errorLimit;	//!< screen-space error limit
     bool	_isVis;		//!< true when this window is visible
-    GLFWwindow	*_window;	//!< the main window 
     int		_fbWid;		//!< current framebuffer width
     int		_fbHt;		//!< current framebuffer height
     double	_lastFrameTime;	//!< time of last frame
@@ -157,7 +160,7 @@ class View {
 
     Sunlight sun; //container for the light info
     Skybox *skybox;
-    //Cube *cube;
+    Cube *cube;
 
     cs237::mat4f modelViewMat; //!< the current model-view matrix
     cs237::mat4f projectionMat; //<! the camera's projection matrix

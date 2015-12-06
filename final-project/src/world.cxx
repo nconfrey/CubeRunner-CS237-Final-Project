@@ -200,11 +200,20 @@ int World::handleFrame(float t, float dt)
 
 void World::renderWorld()
 {
-	this->levels[curLevel]->RenderAllCubes(this->view->Camera()); //draw every cube in the current level
+	//clear the screen
+    glClearColor (1.0f, 1.0f, 1.0f, 1.0f);  // clear the surface
+    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    //update model view mat
+    this->view->UpdateModelViewMat();
+
 	this->view->Render(); //draw the heighfield and skybox
+	this->levels[curLevel]->RenderAllCubes(this->view->Camera()); //draw every cube in the current level
 	std::cout << this->view->Camera();
 	
 	this->player->Render(); //draw the player
+
+	glfwSwapBuffers (this->view->_window);
 }
 
 void World::updateScore(float dt)
