@@ -18,6 +18,14 @@
 //! Note that we track the camera's position using double-precision so that
 //! we can support large worlds.
 //
+
+ //container strcut for light information
+struct Sunlight {
+  cs237::vec3f lightDir;
+  cs237::color3f lightInten;
+  cs237::color3f lightAmb;
+};
+
 class Camera {
   public:
 

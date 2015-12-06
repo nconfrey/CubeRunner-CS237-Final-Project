@@ -4,7 +4,7 @@
 
 //========================= CONSTRUCTOR AND DESTRUCTOR =========================//
 Level::Level(int difficulty, int levelNum, float zstart, float zend, float scoreMult, float velocity,
-			  cs237::color4f * palletteColors, int nColors, cs237::vec3d playerPos, float width)
+			  cs237::color4f * palletteColors, int nColors, cs237::vec3d playerPos, float width, Sunlight sun)
 {
 	this->difficulty = difficulty;
 	this->levelNum = levelNum;
@@ -14,8 +14,7 @@ Level::Level(int difficulty, int levelNum, float zstart, float zend, float score
 	this->scoreMult = scoreMult;
 	this->velocity = velocity;
 	this->nColors = nColors;
-	this->masterCube = new Cube(); //aidan: this should be moved to world, unless we want to have things like
-								   //a level having a unique cube size, or other mesh type, etc
+	this->masterCube = new Cube(sun); //nick: Should this be here or in view? we can pass it in (only need to make 1 per game)
 	this->palletteColors = new cs237::color4f[nColors];
 	for(int i = 0; i<nColors; i++){
 		this->palletteColors[i] = palletteColors[i];
