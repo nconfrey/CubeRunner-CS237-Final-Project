@@ -200,7 +200,7 @@ int World::handleFrame(float t, float dt)
 
 void World::renderWorld()
 {
-	this->levels[curLevel]->RenderAllCubes(this->view->ProjectionMat(), this->view->ModelViewMat()); //draw every cube in the current level
+	this->levels[curLevel]->RenderAllCubes(this->view->Camera()); //draw every cube in the current level
 	this->view->Render(); //draw the heighfield and skybox
 	std::cout << this->view->Camera();
 	

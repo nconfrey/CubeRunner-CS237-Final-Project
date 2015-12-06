@@ -199,6 +199,11 @@ void Camera::translateCam(cs237::vec3d offset)
 
 }
 
+void Camera::moveZAxis(float dis)
+{
+    this->_pos.z+= dis;
+}
+
 void Camera::translateCamViewAxis(float dis)
 {
 
