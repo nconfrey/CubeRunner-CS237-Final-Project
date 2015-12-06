@@ -24,6 +24,10 @@ class Camera {
   //! constuctor for uninitialized camera
     Camera ();
 
+    //places the camera at the origin with the given y offset, looking down the z axis,
+    //and an up vector that is the positive y axis
+    void init(float yoffset);
+
   //! the current camera position.
     cs237::vec3d position () const { return this->_pos; }
   //! the direction that the camera it looking at.

@@ -20,6 +20,13 @@ Camera::Camera ()
     : _errorFactor(-1)
 { }
 
+void Camera::init(float yoffset)
+{
+    this->_pos = cs237::vec3d(0,(double)yoffset,0);
+    this->_dir = cs237::vec3f(0,0, -10.0);
+    this->_up = cs237::vec3f(0, 1.0, 0);
+}
+
 // translate a point to the coordinate system that has the camera as the origin, but is
 // oriented and scaled the same as the world coordinates.
 cs237::vec3d Camera::translate (cs237::vec3d const &p) const
