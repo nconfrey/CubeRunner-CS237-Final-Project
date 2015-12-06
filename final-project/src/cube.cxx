@@ -1,5 +1,8 @@
 #include "cube.hxx"
 
+#define HEIGHT 300.0f
+#define WIDTH 300.0f
+
 //create a master cube
 Cube::Cube()
 {
@@ -41,8 +44,8 @@ void Cube::Render(cs237::vec3f pos, cs237::color4f color, cs237::mat4f const &pr
     cs237::setUniform(projLoc, projectionMat);
     cs237::setUniform(mvLoc, cs237::translate(modelViewMat, pos));
     cs237::setUniform(colorLoc, color);
-    cs237::setUniform(htLoc, 300.0f);
-    cs237::setUniform(widLoc, 300.0f);
+    cs237::setUniform(htLoc, HEIGHT);
+    cs237::setUniform(widLoc, WIDTH);
 	this->mesh->Draw();
 }
 
@@ -58,5 +61,5 @@ void Cube::RenderRandom(int xRand, int zRand, cs237::mat4f const &projectionMat,
 
 // Cube::CubeAABB(cs237::vec3f pos)
 // {
-	
+// 	//return 
 // }

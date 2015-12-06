@@ -105,6 +105,8 @@ class Camera {
     void translateCam(cs237::vec3d offset);
 
     void translateCamViewAxis(float dis);
+    
+    void moveZAxis(float dis);
 
     void translateCamStrafeAxis(float dis);
 

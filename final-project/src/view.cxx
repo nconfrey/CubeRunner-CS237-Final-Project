@@ -81,6 +81,7 @@ void View::Init (int wid, int ht)
 
   // set the FOV and near/far planes
     this->_cam.setFOV (60.0);
+    this->_cam.look(cs237::vec3f(0,0,-1));
     this->_cam.setNearFar (10.0, 2*1.5 * double(this->_map->CellWidth()) * double(this->_map->hScale()));
     this->Resize (wid, ht);
 
@@ -280,7 +281,7 @@ void View::translateCam(cs237::vec3f offset)
 
 void View::translateCamViewAxis(float dis)
 {
-
+    this->_cam.moveZAxis(dis);
 }
 
 void View::translateCamStrafeAxis(float dis)
@@ -370,7 +371,7 @@ void View::Render ()
     // cs237::vec4f(m[2], 0),
     // cs237::vec4f(0, 0, 0, 1));
     skybox->Render(this->projectionMat, this->modelViewMat, this->Camera().position());
-
+    //std::cout << "View " << this->projectionMat << "\n";
     for(int i = 0; i < 6; i++)
     {
       //init random seed

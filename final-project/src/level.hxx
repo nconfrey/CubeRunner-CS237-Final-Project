@@ -3,6 +3,7 @@
 
 #include "cs237.hxx"
 #include "cube.hxx"
+#include "camera.hxx"
 
 enum locationInPallette {
 	GROUND=0,
@@ -18,7 +19,7 @@ class Level {
 		~Level();
 
 		//render a cube at every positoon in the cube positoon list
-		void RenderAllCubes(cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat);
+		void RenderAllCubes(Camera c);
 
 		//check if the given AABB intersects any cubes in the cube list
 		//note, this needs an intersection function it can call
