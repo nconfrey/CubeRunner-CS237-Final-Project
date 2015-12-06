@@ -1,7 +1,7 @@
 #include "cube.hxx"
 
-#define HEIGHT 3.0f
-#define WIDTH 3.0f
+#define HEIGHT 1.0f
+#define WIDTH 1.0f
 
 //create a master cube
 Cube::Cube()
