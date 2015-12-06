@@ -184,8 +184,8 @@ void View::rotateCamRoll(float theta)
 {
   if(!smoothCam)
     this->_cam.rotateCamRoll(theta);
-  //else
-    //this->rotateUpTarget(theta);
+  else
+    this->rotateUpTarget(theta);
 }
 
 void View::rotateTowardsTarget(float dt)
@@ -213,15 +213,21 @@ void View::rotateTowardsTargetUp(float dt)
   float theta = dot(this->_cam.up(), this->upTarget);
   printf("up: %f %f %f\n",this->_cam.up()[0],this->_cam.up()[1],this->_cam.up()[2]);
   printf("target: %f %f %f\n",this->upTarget[0],this->upTarget[1],this->upTarget[2]);
+  printf("dot: %f\n", theta);
   //don't rotate if we are at target, or above 1.0f due to floating point error
   if(theta < 1.0f){
     //we turn speed degrees per secong
     theta = this->turnSpeed * dt * theta;
 
-    //get the rotation matrix for this much turning
-    //cs237::mat4x4f rot = cs237::rotate(theta, lookvec);
-    //this->_cam.look(lookvec, cs237::vec3f(rot * cs237::vec4f(this->_cam.up())));
-    this->_cam.rotateCam(theta, lookvec);
+    float signoftargetx = this->upTarget[0] / std::abs(this->upTarget[0]);
+    float signofcurx = this->_cam.up()[0] / std::abs(this->_cam.up()[0]);
+    //if the target has a larger abs(x) than us, we have to rotate towards its sign
+    float sign;
+    if(std::abs(this->upTarget[0]) > std::abs(this->_cam.up()[0]))
+      sign = signoftargetx;
+    else
+      sign = signofcurx;
+    this->_cam.rotateCam(sign*theta, lookvec);
   } 
     //exit(0);
 }
@@ -253,7 +259,7 @@ void View::rotateTargetVector_inner(float theta, cs237::vec3f axis, bool recursi
   this->lookTarget = cs237::vec3f(rot * cs237::vec4f(this->lookTarget, 1.0f));
 
   //update the up target as well
-  this->upTarget = cs237::vec3f(rot * cs237::vec4f(this->upTarget, 0.0f));
+  this->upTarget = normalize(cs237::vec3f(rot * cs237::vec4f(this->upTarget, 0.0f)));
 
 }
 
@@ -270,10 +276,10 @@ void View::rotateUpTarget_inner(float theta, bool recursiveCall)
   cs237::vec3f axis = this->_cam.getLookVec();
   float curtheta = dot(this->_cam.up(), this->upTarget);
   printf("curtheta is %f\n", curtheta);
-  if((curtheta < 0.98) & !recursiveCall){
-    float (signtheta) = (float)(int)((theta)/std::abs(theta));
+      float (signtheta) = (float)(int)((theta)/std::abs(theta));
+  /*if((curtheta < 0.98) & !recursiveCall){
     this->rotateUpTarget_inner((-(signtheta))*theta, true);
-  }
+  }*/
 
   //construct rotation matrix
   cs237::mat4x4f rot = cs237::rotate(theta, axis);
@@ -289,6 +295,11 @@ void View::rotateUpTarget_inner(float theta, bool recursiveCall)
 void View::translateCam(cs237::vec3d offset)
 {
   this->_cam.translateCam(offset);
+}
+
+void View::translateCamZAxis(float dis)
+{
+  this->_cam.moveZAxis(dis);
 }
 
 void View::translateCamViewAxis(float dis)
@@ -332,8 +343,8 @@ void View::Animate ()
     if (dt >= TIME_STEP) {
 	     this->_lastStep = now;
        if(smoothCam){
-	        this->rotateTowardsTarget(dt);
-          //this->rotateTowardsTargetUp(dt);
+	        //this->rotateTowardsTarget(dt);
+          this->rotateTowardsTargetUp(dt);
        }
     }
 

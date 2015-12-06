@@ -87,6 +87,8 @@ class View {
 
     void translateCamUpAxis(float dis);
 
+    void translateCamZAxis(float dis);
+
 
 
     void windowShouldClose();

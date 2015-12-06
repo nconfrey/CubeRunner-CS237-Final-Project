@@ -134,6 +134,11 @@ void Camera::look (cs237::vec3f const &dir, cs237::vec3f const &up)
     this->_up = up;
 }
 
+void Camera::setUp(cs237::vec3f const &up)
+{
+    this->_up = normalize(up);
+}
+
 // compute the screen-space error for a geometric error of size err at distance dist.
 float Camera::screenError (float dist, float err) const
 {

@@ -19,7 +19,7 @@ World::World(View *v)
 	this->levels = new Level *[NLEVELS];
 	//for each level, initalize it with preset data
 	//we can make a CREATE LEVEL 1 function, etc
-	Level *level1 = new Level(10, 1, 20, 500, 2, 0.5, pallette1, 3, v->Camera().position(), 100.0f, v->getSun());
+	Level *level1 = new Level(10, 1, 20, 500, 2, 100, pallette1, 3, v->Camera().position(), 100.0f, v->getSun());
 	this->levels[0] = level1;
 
 	//set the x edges
@@ -229,6 +229,7 @@ void World::updatePlayerPosition(float dt)
 {
 	float vel = this->levels[curLevel]->getVelocity(); //get the velocity from the current level
 	this->player->addToZPos(dt * vel); //multiply it by dt and add it to the current z position of the player
+	this->view->translateCamZAxis(dt*vel); //move the camera as well
 }
 
 
