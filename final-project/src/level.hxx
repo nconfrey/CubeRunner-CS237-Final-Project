@@ -15,7 +15,7 @@ enum locationInPallette {
 class Level {
 	public:
 		Level(int difficulty, int levelNum, float zstart, float zend, float scoreMult, float velocity,
-			  cs237::color3f * palletteColors, int nColors, cs237::vec3d playerPos);
+			  cs237::color4f * palletteColors, int nColors, cs237::vec3d playerPos);
 		~Level();
 
 		//render a cube at every positoon in the cube positoon list
@@ -37,7 +37,7 @@ class Level {
 		float getNCubes() const {return this->nCubes;}
 		cs237::vec3f **getCubes() const {return this->cubePositions;}
 
-		cs237::color3f getColorAt(locationInPallette l);
+		cs237::color4f getColorAt(locationInPallette l);
 
 	private:
 		//level details
@@ -48,7 +48,7 @@ class Level {
 		float scoreMult;
 		float velocity;
 		int nColors;
-		cs237::color3f * palletteColors; //colors of ground, fog, and cubes
+		cs237::color4f * palletteColors; //colors of ground, fog, and cubes
 
 		//cube position list
 		//note: since every cube has the exact same mesh

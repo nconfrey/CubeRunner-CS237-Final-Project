@@ -1,7 +1,7 @@
 #include "cube.hxx"
 
-#define HEIGHT 300.0f
-#define WIDTH 300.0f
+#define HEIGHT 3.0f
+#define WIDTH 3.0f
 
 //create a master cube
 Cube::Cube()
@@ -40,7 +40,7 @@ void Cube::Render(cs237::vec3f pos, cs237::color4f color, cs237::mat4f const &pr
 {
 	//need to make a toWorld transformation here!!
 	this->_shader->Use();
-	printf("rendering cube with %f, %f, %f\n", pos.x, pos.y, pos.z);
+	//printf("rendering cube with %f, %f, %f\n", pos.x, pos.y, pos.z);
     cs237::setUniform(projLoc, projectionMat);
     cs237::setUniform(mvLoc, cs237::translate(modelViewMat, pos));
     cs237::setUniform(colorLoc, color);

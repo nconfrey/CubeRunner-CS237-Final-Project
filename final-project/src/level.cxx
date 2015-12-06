@@ -2,7 +2,7 @@
 
 //========================= CONSTRUCTOR AND DESTRUCTOR =========================//
 Level::Level(int difficulty, int levelNum, float zstart, float zend, float scoreMult, float velocity,
-			  cs237::color3f * palletteColors, int nColors, cs237::vec3d playerPos)
+			  cs237::color4f * palletteColors, int nColors, cs237::vec3d playerPos)
 {
 	this->difficulty = difficulty;
 	this->levelNum = levelNum;
@@ -12,7 +12,7 @@ Level::Level(int difficulty, int levelNum, float zstart, float zend, float score
 	this->velocity = velocity;
 	this->nColors = nColors;
 	this->masterCube = new Cube(); //nick: Should this be here or in view? we can pass it in (only need to make 1 per game)
-	this->palletteColors = new cs237::color3f[nColors];
+	this->palletteColors = new cs237::color4f[nColors];
 	for(int i = 0; i<nColors; i++){
 		this->palletteColors[i] = palletteColors[i];
 	}
@@ -38,7 +38,7 @@ Level::~Level()
 
 //========================= MEMBER ACCESS =========================//
 //most of these are defined in the header file
-cs237::color3f Level::getColorAt(locationInPallette l)
+cs237::color4f Level::getColorAt(locationInPallette l)
 {
 	return this->palletteColors[l];
 }
@@ -51,25 +51,24 @@ void Level::RenderAllCubes(Camera c)
 	//Check the cubes for any that are behind the camera
 	//If they are in front of the player, render
 	//Otherwise, generate a new cube at a position ahead of the player
-	std::cout << "RenderAllCubes: " << c.projTransform() << "\n";
+	//std::cout << "RenderAllCubes: " << c.projTransform() << "\n";
 	//glDisable(GL_DEPTH_TEST);
-	float x;
-	float z;
+	float x,z,r,g,b;
 	for(int i = 0; i < this->nCubes; i++){
-		float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-		float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-		float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-		if(true)//c.position().z > this->cubePositions[i]->z)
+		if(c.position().z > this->cubePositions[i]->z)
 		{
+			r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+			g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+			b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 			printf("RECYCLE CUBE #%d\n", i);
 			x = rand() % 5000;
-      		z = rand() % 2000; //+ c.position().z;
+      		z = rand() % 2000 + c.position().z;
       		//memory leak here
  			cubePositions[i] = new cs237::vec3f(x, 500, z);
 		}
 		
-		//masterCube->Render(*(this->cubePositions[i]), cs237::color4f(r,g,b,1.0f), c.projTransform(), c.ModelViewMatrix());
-		masterCube->Render(cs237::vec3f(x,500,z), cs237::color4f(r, g, b, 1.0), c.projTransform(), c.ModelViewMatrix());
+		masterCube->Render(*(this->cubePositions[i]), this->getColorAt(BOXCOLORSTART), c.projTransform(), c.ModelViewMatrix());
+		//masterCube->Render(cs237::vec3f(x,500,z), cs237::color4f(r, g, b, 1.0), c.projTransform(), c.ModelViewMatrix());
 	}
 
 }
