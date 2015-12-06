@@ -15,7 +15,7 @@ Level::Level(int difficulty, int levelNum, float zstart, float zend, float score
 	this->scoreMult = scoreMult;
 	this->velocity = velocity;
 	this->nColors = nColors;
-	this->masterCube = new Cube(sun); //nick: Should this be here or in view? we can pass it in (only need to make 1 per game)
+	this->masterCube = new Cube(sun, 1, 1); //nick: Should this be here or in view? we can pass it in (only need to make 1 per game)
 	this->palletteColors = new cs237::color4f[nColors];
 	for(int i = 0; i<nColors; i++){
 		this->palletteColors[i] = palletteColors[i];

@@ -5,10 +5,10 @@
 
 //========================= CONSTRUCTOR AND DESTRUCTOR =========================//
 
-Player::Player()
+Player::Player(Sunlight sun)
 {
 	//start at the origin
-	this->pos = cs237::vec3f(0.0f, 0.0f, 0.0f);
+	this->pos = cs237::vec3f(0.0f, 15.0f, 0.0f);
 
 	//use the 0th mesh and color
 	curMesh = 0;
@@ -19,14 +19,14 @@ Player::Player()
 	nColors = NCOLORS;
 
 	//initalize the mesh array
-	playerMeshes = new Mesh *[NMESHES];
+	playerMeshes = new Cube *[NMESHES];
 	for(int i = 0; i<NMESHES; i++){
-		//some kind of intialization code for the meshes
+		playerMeshes[i] = new Cube(sun, 0.3, 0.3);
 	}
 
 	//initalize the colors
-	playerColors = new cs237::color3f[NCOLORS];
-	playerColors[0] = cs237::color3f(0.2f, 0.6f, 1.0f); 
+	playerColors = new cs237::color4f[NCOLORS];
+	playerColors[0] = cs237::color4f(0.2f, 1.0f, 0.3f, 1.0f); 
 
 	//init the aabb
 	this->bb = cs237::AABBd(cs237::toDouble(this->pos));
@@ -57,7 +57,13 @@ cs237::vec3f Player::addToZPos(float z)
 	return this->getPos();
 }
 
-Mesh* Player::getMeshInUse()
+cs237::vec3f Player::updateXPos(Camera c)
+{
+	this->pos = cs237::vec3f(c.position()[0], this->pos[1], this->pos[2]);
+	return this->getPos();
+}
+
+Cube* Player::getMeshInUse()
 {
 	return this->playerMeshes[this->curMesh];
 }
@@ -69,7 +75,7 @@ void Player::setMeshInUse(int n)
 	}
 }
 
-cs237::color3f Player::getColorInUse()
+cs237::color4f Player::getColorInUse()
 {
 	return this->playerColors[this->curColor];
 }
@@ -99,7 +105,9 @@ void Player::updateAABB()
 
 //========================= RENDERING =========================//
 
-void Player::Render()
+void Player::Render(Camera c)
 {
-	//not gonna do this rn
+	Cube *curcube = this->getMeshInUse();
+
+	curcube->Render(this->getPos(), this->getColorInUse(),c.projTransform(), c.ModelViewMatrix());
 }

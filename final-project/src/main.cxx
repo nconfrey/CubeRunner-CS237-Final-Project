@@ -18,7 +18,7 @@
 
 
 #define SPEED 2.0f
-#define ROLLSPEED 2.0f
+#define ROLLSPEED 0.1f
 
 /***** callbacks *****
  *
@@ -115,8 +115,10 @@ void Key (GLFWwindow *win, int key, int scancode, int action, int mods)
       break;
       //PLAYER MOVEMENT CONTROLS
     case GLFW_KEY_LEFT:
+      //view->translateCamXAxis(2.0);
       break;
     case GLFW_KEY_RIGHT:
+      //view->translateCamXAxis(-2.0);
       break;
     case GLFW_KEY_UP:
       view->translateCamViewAxis(25.0);
@@ -138,6 +140,17 @@ void Key (GLFWwindow *win, int key, int scancode, int action, int mods)
   }
 
 } /* Key */
+
+  void handleLeftArrow(View * view){
+    view->translateCamXAxis(2.0);
+    view->rotateCamRoll(-ROLLSPEED);
+  }
+
+  void handleRightArrow(View * view)
+  {
+    view->translateCamXAxis(-2.0);
+    view->rotateCamRoll(ROLLSPEED);
+  }
 
 /*! \brief The mouse enter/leave callback function
  */
@@ -231,6 +244,15 @@ int main (int argc, const char **argv)
     	usleep (1000);	// sleep for 1mS to avoid excessive polling
 
     	glfwPollEvents ();
+
+      int leftarrowstate = glfwGetKey(view->Window(), GLFW_KEY_LEFT);
+      int rightarrowstate = glfwGetKey(view->Window(), GLFW_KEY_RIGHT);
+      if(leftarrowstate == GLFW_PRESS){
+        handleLeftArrow(view);
+      }
+      if(rightarrowstate == GLFW_PRESS){
+        handleRightArrow(view);
+      }
     }
 
     glfwTerminate ();

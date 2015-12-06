@@ -22,7 +22,7 @@ Camera::Camera ()
 
 void Camera::init(float yoffset)
 {
-    this->_pos = cs237::vec3d(0,(double)yoffset,0);
+    this->_pos = cs237::vec3d(0,(double)yoffset,-20.0);
     this->_dir = cs237::vec3f(0,(double)yoffset, 10.0);
     this->_up = cs237::vec3f(0, 1.0, 0);
 }
