@@ -24,7 +24,7 @@ Level::Level(int difficulty, int levelNum, float zstart, float zend, float score
 	//Randomly generate cubes for this level
 	this->nCubes = difficulty * 10;
 	//this->cubePositions = new cs237::vec3f *[this->nCubes];
-	this->cubePositions = this->generateCubePositions(this->nCubes, zstart, zend, width);
+	this->generateCubePositions(this->nCubes, zstart, zend, width);
 }
 
 Level::~Level()
@@ -35,10 +35,11 @@ Level::~Level()
 
 //divides the zrange into a number of slices and populates each slice with a number of cubes
 //determined by the difficulty
-cs237::vec3f ** Level::generateCubePositions(int nCubes, float zstart, float zend, float width)
+void Level::generateCubePositions(int nCubes, float zstart, float zend, float width)
 {
 
-	cs237::vec3f ** cubePositions = new cs237::vec3f *[nCubes];
+	this->cubePositions = new cs237::vec3f *[nCubes];
+	this->cubeColors = new locationInPallette [nCubes];
 	//calculate the number of slices and density of those slices
 	int nSlices = (SLICE_DENSITY * (zend - zstart)) / 1000;
 	int sliceWidth = (zend - zstart) / nSlices;
@@ -50,29 +51,31 @@ cs237::vec3f ** Level::generateCubePositions(int nCubes, float zstart, float zen
 	for(int i = 0; i<nSlices-1; i++)
 	{
 		//printf("indexing into %d to %d\n", i*cubesPerSlice, (i+1)*cubesPerSlice-1);
-		this->generateCubeSlice(cubesPerSlice, i*sliceWidth + zstart, (i+1)*sliceWidth + zstart - 1, width, i*cubesPerSlice, cubePositions);
+		this->generateCubeSlice(cubesPerSlice, i*sliceWidth + zstart, (i+1)*sliceWidth + zstart - 1, width, i*cubesPerSlice);
 		nCubesAfterSlicing += cubesPerSlice;
 	}
 
 	//handle remainder
 	int cubesLeft = nCubes - nCubesAfterSlicing;
-	this->generateCubeSlice(cubesLeft, sliceWidth*(nSlices-1) + zstart, zend, width, (nSlices-1)*cubesPerSlice, cubePositions);
+	this->generateCubeSlice(cubesLeft, sliceWidth*(nSlices-1) + zstart, zend, width, (nSlices-1)*cubesPerSlice);
 
-	return cubePositions;
 }
 
 //populates a given zrange wtih cubes based on the difficulty
-void Level::generateCubeSlice(int nCubes, float zstart, float zend, float width, int arrayStart, cs237::vec3f **cubes)
+void Level::generateCubeSlice(int nCubes, float zstart, float zend, float width, int arrayStart)
 {
 	for(int i=arrayStart; i<nCubes+arrayStart; i++)
 	{
+		//generate a color for the cube from the pallette
+		locationInPallette color = (locationInPallette)(rand() % (this->nColors - 2));
 		//new cubes are placed on the x/z plane
  		float x = rand() % (int)(2.0f * width);
  		x -= width;
       	float z = rand() % (int)(zend - zstart);
       	z += zstart;
       	//printf("%d  ",i);
- 		cubes[i] = new cs237::vec3f(x, 15, z);
+ 		this->cubePositions[i] = new cs237::vec3f(x, 15, z);
+ 		this->cubeColors[i] = (locationInPallette)(BOXCOLORSTART+color);
  		//printf("%f %f %f\n", cubes[i]->x, cubes[i]->y, cubes[i]->z );
 	}
 }
@@ -95,11 +98,13 @@ void Level::RenderAllCubes(Camera c)
 	//Otherwise, generate a new cube at a position ahead of the player
 	//std::cout << "RenderAllCubes: " << c.projTransform() << "\n";
 	//glDisable(GL_DEPTH_TEST);
-	float x,z,r,g,b;
+	float x,z;
+	//int color;
 	for(int i = 0; i < this->nCubes; i++){
 		if(c.position().z > this->cubePositions[i]->z)
 		{
-
+			//get a random color from the number of box colors
+			//color = rand() % (this->nColors - 2);
 			//randomize the xvalue
 			x = rand() % (int)(2.0f * this->width) - this->width;
 			//take the z value, wiggle it a little
@@ -109,7 +114,7 @@ void Level::RenderAllCubes(Camera c)
  			cubePositions[i] = new cs237::vec3f(x, 15, cubePositions[i]->z+z);
 		}
 		
-		masterCube->Render(*(this->cubePositions[i]), this->getColorAt(BOXCOLORSTART), c.projTransform(), c.ModelViewMatrix());
+		masterCube->Render(*(this->cubePositions[i]), this->getColorAt(this->cubeColors[i]), c.projTransform(), c.ModelViewMatrix());
 
 		//masterCube->Render(cs237::vec3f(x,500,z), cs237::color4f(r, g, b, 1.0), c.projTransform(), c.ModelViewMatrix());
 	}

@@ -31,6 +31,8 @@ class Player {
 
 		cs237::AABBd getAABB(); //note, we might want to eschew all this and have the AABB be a property of the mesh
 
+		void reset();
+
 	private:
 		//players can choose between availible meshes and colors 
 
