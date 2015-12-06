@@ -19,11 +19,11 @@ World::World(View *v)
 	this->levels = new Level *[NLEVELS];
 	//for each level, initalize it with preset data
 	//we can make a CREATE LEVEL 1 function, etc
-	Level *level1 = new Level(1, 1, 0, 100, 2, 0.5, pallette1, 3, v->Camera().position());
+	Level *level1 = new Level(10, 1, 20, 500, 2, 0.5, pallette1, 3, v->Camera().position(), 100.0f);
 	this->levels[0] = level1;
 
 	//set the x edges
-	this->xEdge = 10.0f;
+	this->xEdge = 100.0f;
 
 	//grab the view
 	this->view = v;
@@ -212,7 +212,6 @@ void World::renderWorld()
 
 	this->view->Render(); //draw the heighfield and skybox
 	this->levels[curLevel]->RenderAllCubes(this->view->Camera()); //draw every cube in the current level
-	std::cout << this->view->Camera();
 	
 	this->player->Render(); //draw the player
 

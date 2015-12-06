@@ -15,7 +15,7 @@ enum locationInPallette {
 class Level {
 	public:
 		Level(int difficulty, int levelNum, float zstart, float zend, float scoreMult, float velocity,
-			  cs237::color4f * palletteColors, int nColors, cs237::vec3d playerPos);
+			  cs237::color4f * palletteColors, int nColors, cs237::vec3d playerPos, float width);
 		~Level();
 
 		//render a cube at every positoon in the cube positoon list
@@ -48,6 +48,7 @@ class Level {
 		float scoreMult;
 		float velocity;
 		int nColors;
+		int width;
 		cs237::color4f * palletteColors; //colors of ground, fog, and cubes
 
 		//cube position list
@@ -61,6 +62,15 @@ class Level {
 		Cube * masterCube;
 		cs237::AABBd cubeAABB(cs237::vec3f); //returns the AABB for a cube at the given position
 											 //NOTE: we have to predefine a cube size somewhere, not currently done
+
+
+		//cube generation
+		//divides the zrange into a number of slices and populates each slice with a number of cubes
+		//determined by the difficulty
+		cs237::vec3f ** generateCubePositions(int nCubes, float zstart, float zend, float width);
+
+		//populates a given zrange wtih cubes based on the difficulty
+		void generateCubeSlice(int nCubes, float zstart, float zend, float width, int arrayStart, cs237::vec3f **cubes);
 
 };
 
