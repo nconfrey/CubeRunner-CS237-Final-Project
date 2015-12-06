@@ -99,6 +99,7 @@ void Level::RenderAllCubes(Camera c)
 	for(int i = 0; i < this->nCubes; i++){
 		if(c.position().z > this->cubePositions[i]->z)
 		{
+
 			//randomize the xvalue
 			x = rand() % (int)(2.0f * this->width) - this->width;
 			//take the z value, wiggle it a little
@@ -109,6 +110,7 @@ void Level::RenderAllCubes(Camera c)
 		}
 		
 		masterCube->Render(*(this->cubePositions[i]), this->getColorAt(BOXCOLORSTART), c.projTransform(), c.ModelViewMatrix());
+
 		//masterCube->Render(cs237::vec3f(x,500,z), cs237::color4f(r, g, b, 1.0), c.projTransform(), c.ModelViewMatrix());
 	}
 
@@ -116,17 +118,21 @@ void Level::RenderAllCubes(Camera c)
 
 //========================= COLLISION DETECTION =========================//
 
+bool intersectionTest(cs237::AABBd bb, cs237::AABBd bb2)
+{
+	std::cout << "Cube pos\n";
+	std::cout << bb.center();
+	std::cout << "Player pos\n";
+	std::cout << bb2.center();
+	return bb.includesPt(bb2.center()) || bb2.includesPt(bb.center());
+}
+
 bool Level::intersectsAnyCube(cs237::AABBd bb)
 {
 	for(int i = 0; i<this->nCubes; i++){
-		//if(intersectionTest(this->cubeAABB(this->cubePositions[i]), bb) {
-		//	return true;
-		//}
+		if(intersectionTest(this->masterCube->CubeAABB(this->cubePositions[i]), bb)) {
+			return true;
+		}
 	}
 	return false;
-}
-
-cs237::AABBd cubeAABB(cs237::vec3f)
-{
-	//not gonna do this right now
 }
