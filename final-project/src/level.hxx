@@ -61,8 +61,6 @@ class Level {
 		int nCubes;
 		cs237::vec3f **cubePositions;
 		Cube * masterCube;
-		cs237::AABBd cubeAABB(cs237::vec3f); //returns the AABB for a cube at the given position
-											 //NOTE: we have to predefine a cube size somewhere, not currently done
 
 
 		//cube generation

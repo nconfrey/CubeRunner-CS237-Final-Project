@@ -19,7 +19,7 @@ World::World(View *v)
 	this->levels = new Level *[NLEVELS];
 	//for each level, initalize it with preset data
 	//we can make a CREATE LEVEL 1 function, etc
-	Level *level1 = new Level(10, 1, 20, 500, 2, 0.5, pallette1, 3, v->Camera().position(), 100.0f, v->getSun());
+	Level *level1 = new Level(10, 1, 20, 500, 2, 10, pallette1, 3, v->Camera().position(), 100.0f, v->getSun());
 	this->levels[0] = level1;
 
 	//set the x edges
@@ -242,10 +242,11 @@ int World::checkForCollisions()
 		return 2;
 	}
 	//check if the player is touching any cube
-	/*if(this->levels[curLevel]->intersectsAnyCube(this->player->getAABB())){
-		printf("in case 1        \n");
+	if(this->levels[curLevel]->intersectsAnyCube(this->player->getAABB())){
+		printf("COLLISION YOU LOSER\n");
+		exit(-1);
 		return 1;
-	}*/ //enable after levels are intialized
+	}
 
 	//we good
 	return 0;

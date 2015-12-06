@@ -23,6 +23,6 @@ public:
     Cube(Sunlight sun);
     void Render(cs237::vec3f pos, cs237::color4f color, cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat);
     void RenderRandom(int xRand, int zRand, cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat);
-    //cs237::AABB CubeAABB(cs237::vec3f pos);
+    cs237::AABBd CubeAABB(cs237::vec3f *pos);
 	
 };

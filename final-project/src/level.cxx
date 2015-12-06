@@ -47,13 +47,13 @@ cs237::vec3f ** Level::generateCubePositions(int nCubes, float zstart, float zen
 
 	//note this leaves some remainder without any cubes at the end of each level
 
-	printf("nslices: %d\n", nSlices);
-	printf("slicewidth: %d\n", sliceWidth);
-	printf("cubesperslice : %d\n", cubesPerSlice);
+	//printf("nslices: %d\n", nSlices);
+	//printf("slicewidth: %d\n", sliceWidth);
+	//printf("cubesperslice : %d\n", cubesPerSlice);
 
 	for(int i = 0; i<nSlices-1; i++)
 	{
-		printf("indexing into %d to %d\n", i*cubesPerSlice, (i+1)*cubesPerSlice-1);
+		//printf("indexing into %d to %d\n", i*cubesPerSlice, (i+1)*cubesPerSlice-1);
 		this->generateCubeSlice(cubesPerSlice, i*sliceWidth + zstart, (i+1)*sliceWidth + zstart - 1, width, i*cubesPerSlice, cubePositions);
 		nCubesAfterSlicing += cubesPerSlice;
 	}
@@ -77,7 +77,7 @@ void Level::generateCubeSlice(int nCubes, float zstart, float zend, float width,
       	z += zstart;
       	printf("%d  ",i);
  		cubes[i] = new cs237::vec3f(x, 15, z);
- 		printf("%f %f %f\n", cubes[i]->x, cubes[i]->y, cubes[i]->z );
+ 		//printf("%f %f %f\n", cubes[i]->x, cubes[i]->y, cubes[i]->z );
 	}
 }
 
@@ -103,7 +103,7 @@ void Level::RenderAllCubes(Camera c)
 	for(int i = 0; i < this->nCubes; i++){
 		if(c.position().z > this->cubePositions[i]->z)
 		{
-			printf("RECYCLE CUBE #%d\n", i);
+			//printf("RECYCLE CUBE #%d\n", i);
 			//randomize the xvalue
 			x = rand() % (int)(2.0f * this->width) - this->width;
 			//take the z value, wiggle it a little
@@ -114,7 +114,7 @@ void Level::RenderAllCubes(Camera c)
 		}
 		
 		masterCube->Render(*(this->cubePositions[i]), this->getColorAt(BOXCOLORSTART), c.projTransform(), c.ModelViewMatrix());
-		printf("rendered cube at %f %f %f\n", this->cubePositions[i]->x, this->cubePositions[i]->y, this->cubePositions[i]->z);
+		//printf("rendered cube at %f %f %f\n", this->cubePositions[i]->x, this->cubePositions[i]->y, this->cubePositions[i]->z);
 		//masterCube->Render(cs237::vec3f(x,500,z), cs237::color4f(r, g, b, 1.0), c.projTransform(), c.ModelViewMatrix());
 	}
 
@@ -122,17 +122,21 @@ void Level::RenderAllCubes(Camera c)
 
 //========================= COLLISION DETECTION =========================//
 
+bool intersectionTest(cs237::AABBd bb, cs237::AABBd bb2)
+{
+	std::cout << "Cube pos\n";
+	std::cout << bb.center();
+	std::cout << "Player pos\n";
+	std::cout << bb2.center();
+	return bb.includesPt(bb2.center()) || bb2.includesPt(bb.center());
+}
+
 bool Level::intersectsAnyCube(cs237::AABBd bb)
 {
 	for(int i = 0; i<this->nCubes; i++){
-		//if(intersectionTest(this->cubeAABB(this->cubePositions[i]), bb) {
-		//	return true;
-		//}
+		if(intersectionTest(this->masterCube->CubeAABB(this->cubePositions[i]), bb)) {
+			return true;
+		}
 	}
 	return false;
-}
-
-cs237::AABBd cubeAABB(cs237::vec3f)
-{
-	//not gonna do this right now
 }

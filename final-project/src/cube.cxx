@@ -105,7 +105,7 @@ void Cube::RenderRandom(int xRand, int zRand, cs237::mat4f const &projectionMat,
 	Render(cs237::vec3f(x,500,z), cs237::color4f(r, g, b, 1.0), projectionMat, modelViewMat);
 }
 
-// Cube::CubeAABB(cs237::vec3f pos)
-// {
-// 	//return 
-// }
+cs237::AABBd Cube::CubeAABB(cs237::vec3f *pos)
+{
+	return cs237::AABBd(cs237::toDouble((*pos) - cs237::vec3f(1.0, 1.0, 1.0)), cs237::toDouble((*pos) + cs237::vec3f(1.0, 1.0, 1.0)));
+}
