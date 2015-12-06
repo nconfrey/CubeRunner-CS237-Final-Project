@@ -26,24 +26,48 @@ Cube::Cube(Sunlight sun)
 	    7,5,6,  7,4,5
 	  };
 
-	cs237::vec3f cubeNormals[12] = {
+	cs237::vec3f cubeNormals[36] = {
+		cs237::vec3f(  0.0f,  0.0f,  1.0f ),
+		cs237::vec3f(  0.0f,  0.0f,  1.0f ),
+		cs237::vec3f(  0.0f,  0.0f,  1.0f ),
+		cs237::vec3f(  0.0f,  0.0f,  1.0f ),
+		cs237::vec3f(  0.0f,  0.0f,  1.0f ),
+		cs237::vec3f(  0.0f,  0.0f,  1.0f ),
+		cs237::vec3f(  1.0f,  0.0f,  0.0f ),
+		cs237::vec3f(  1.0f,  0.0f,  0.0f ),
+		cs237::vec3f(  1.0f,  0.0f,  0.0f ),
+		cs237::vec3f(  1.0f,  0.0f,  0.0f ),
 		cs237::vec3f(  1.0f,  0.0f,  0.0f ),
 		cs237::vec3f(  1.0f,  0.0f,  0.0f ),
 		cs237::vec3f( -1.0f,  0.0f,  0.0f ),
 		cs237::vec3f( -1.0f,  0.0f,  0.0f ),
+		cs237::vec3f( -1.0f,  0.0f,  0.0f ),
+		cs237::vec3f( -1.0f,  0.0f,  0.0f ),
+		cs237::vec3f( -1.0f,  0.0f,  0.0f ),
+		cs237::vec3f( -1.0f,  0.0f,  0.0f ),
+		cs237::vec3f(  0.0f, -1.0f,  0.0f ),
+		cs237::vec3f(  0.0f, -1.0f,  0.0f ),
+		cs237::vec3f(  0.0f, -1.0f,  0.0f ),
+		cs237::vec3f(  0.0f, -1.0f,  0.0f ),
 		cs237::vec3f(  0.0f, -1.0f,  0.0f ),
 		cs237::vec3f(  0.0f, -1.0f,  0.0f ),
 		cs237::vec3f(  0.0f,  1.0f,  0.0f ),
 		cs237::vec3f(  0.0f,  1.0f,  0.0f ),
-		cs237::vec3f(  0.0f,  0.0f,  1.0f ),
-		cs237::vec3f(  0.0f,  0.0f,  1.0f ),
+		cs237::vec3f(  0.0f,  1.0f,  0.0f ),
+		cs237::vec3f(  0.0f,  1.0f,  0.0f ),
+		cs237::vec3f(  0.0f,  1.0f,  0.0f ),
+		cs237::vec3f(  0.0f,  1.0f,  0.0f ),
+		cs237::vec3f(  0.0f,  0.0f, -1.0f ),
+		cs237::vec3f(  0.0f,  0.0f, -1.0f ),
+		cs237::vec3f(  0.0f,  0.0f, -1.0f ),
+		cs237::vec3f(  0.0f,  0.0f, -1.0f ),
 		cs237::vec3f(  0.0f,  0.0f, -1.0f ),
 		cs237::vec3f(  0.0f,  0.0f, -1.0f )
 	};
 	this->mesh = new Mesh(GL_TRIANGLES);
     this->mesh->LoadVertices(8, cubeVertices);
     this->mesh->LoadIndices(36, cubeIndices);
-    this->mesh->LoadNormals(12, cubeNormals);
+    this->mesh->LoadNormals(36, cubeNormals);
 
     this->_shader = new cs237::ShaderProgram ("../shaders/cube.vsh", "../shaders/cube.fsh");
     mvLoc = _shader->UniformLocation ("modelView");

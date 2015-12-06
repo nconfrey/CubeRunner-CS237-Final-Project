@@ -119,10 +119,10 @@ void Key (GLFWwindow *win, int key, int scancode, int action, int mods)
     case GLFW_KEY_RIGHT:
       break;
     case GLFW_KEY_UP:
-      view->translateCamViewAxis(5.0);
+      view->translateCamViewAxis(25.0);
       break;
     case GLFW_KEY_DOWN:
-      view->translateCamViewAxis(-5.0);
+      view->translateCamViewAxis(-25.0);
       break;
     case GLFW_KEY_F:
       view->toggleFog();

@@ -1,5 +1,7 @@
 #include "level.hxx"
 
+#define yOffset 15
+
 //========================= CONSTRUCTOR AND DESTRUCTOR =========================//
 Level::Level(int difficulty, int levelNum, float zstart, float zend, float scoreMult, float velocity,
 			  cs237::color4f * palletteColors, int nColors, cs237::vec3d playerPos, Sunlight sun)
@@ -27,7 +29,7 @@ Level::Level(int difficulty, int levelNum, float zstart, float zend, float score
  		float x = rand() % 200;
  		x = x - 100;
       	float z = rand() % 2000;
- 		cubePositions[i] = new cs237::vec3f(x, 15, z);
+ 		cubePositions[i] = new cs237::vec3f(x, yOffset, z);
  		//printf("cube %d at %f, %f, %f\n", i, cubePositions[i]->x, cubePositions[i]->y, cubePositions[i]->z);
  	}
 }
@@ -65,11 +67,11 @@ void Level::RenderAllCubes(Camera c)
 			x = rand() % 5000;
       		z = rand() % 2000 + c.position().z;
       		//memory leak here
- 			cubePositions[i] = new cs237::vec3f(x, 500, z);
+ 			cubePositions[i] = new cs237::vec3f(x, yOffset, z);
 		}
 		
 		masterCube->Render(*(this->cubePositions[i]), this->getColorAt(BOXCOLORSTART), c.projTransform(), c.ModelViewMatrix());
-		//masterCube->Render(cs237::vec3f(x,500,z), cs237::color4f(r, g, b, 1.0), c.projTransform(), c.ModelViewMatrix());
+		//masterCube->Render(*(this->cubePositions[i]), cs237::color4f(r, g, b, 1.0), c.projTransform(), c.ModelViewMatrix());
 	}
 
 }
