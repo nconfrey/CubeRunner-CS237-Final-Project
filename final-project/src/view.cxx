@@ -80,7 +80,7 @@ void View::Init (int wid, int ht)
     //then the upvector will be the y axis
 
     float yoffset = 20.0f;
-    this->_cam.init(yoffset);
+    this->_cam.init(cs237::vec3d(0.0, (double)yoffset, -20), cs237::vec3f(0.0, yoffset, 10.0), cs237::vec3f(0.0, 1.0, 0.0));
 
     this->lookTarget = this->_cam.getLookVec();
     turnSpeed = 6.0f;
@@ -127,9 +127,9 @@ void View::Init (int wid, int ht)
 
 }
 
-void View::initCamera(float offset)
+void View::initCamera(cs237::vec3d pos, cs237::vec3f dir, cs237::vec3f up)
 {
-  this->_cam.init(offset);
+  this->_cam.init(pos, dir, up);
 }
 
 void View::HandleKey (int key, int scancode, int action, int mods)
@@ -645,7 +645,7 @@ void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat, 
     struct Chunk const c = t->Chunk();
 
     //scales for the vertices
-    float hscale = t->Cell()->hScale();
+    float hscale = t->Cell()->hScale() / 10.0f;
     float vscale = t->Cell()->vScale();
 
     //first, check what information is already chaced for us in the tile struct
@@ -685,7 +685,7 @@ void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat, 
     u->hscale = hscale;
     u->vscale = vscale;
     u->tw = t->Width();
-    u->nw_pos = nw;
+    u->nw_pos = (nw / 10.0) + cs237::vec3d(-300.0, 0.0, 0.0);
     u->nw_tile = nw_tile;
     u->hasfog = t->Cell()->_map->hasFog() & this->_fogOn;
     u->fogcolor = t->Cell()->_map->FogColor();
