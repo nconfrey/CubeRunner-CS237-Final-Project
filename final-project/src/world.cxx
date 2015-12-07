@@ -9,7 +9,7 @@ cs237::color4f pallette1[5] = {cs237::color4f(0.5, 0.5, 0.5, 1.0), cs237::color4
 
 void World::generateLevels(View *v)
 {
-	Level *level1 = new Level(30, 1, 100, 500, 2, 60, pallette1, 5, v->Camera().position(), 100.0f, v->getSun());
+	Level *level1 = new Level(50, 1, 100, 500, 2, 80, pallette1, 5, v->Camera().position(), 100.0f, v->getSun());
 	this->levels[0] = level1;
 }
 
