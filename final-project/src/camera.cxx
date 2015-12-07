@@ -20,11 +20,11 @@ Camera::Camera ()
     : _errorFactor(-1)
 { }
 
-void Camera::init(float yoffset)
+void Camera::init(cs237::vec3d pos, cs237::vec3f dir, cs237::vec3f up)
 {
-    this->_pos = cs237::vec3d(0,(double)yoffset,-20.0);
-    this->_dir = cs237::vec3f(0,(double)yoffset, 10.0);
-    this->_up = cs237::vec3f(0, 1.0, 0);
+    this->_pos = pos;
+    this->_dir = dir;
+    this->_up = up;
 }
 
 // translate a point to the coordinate system that has the camera as the origin, but is

@@ -42,7 +42,7 @@ class View {
   //! initialize the view (i.e., allocate its window)
     void Init (int wid, int ht);
 
-    void initCamera(float offset);
+    void initCamera(cs237::vec3d pos, cs237::vec3f dir, cs237::vec3f up);
 
   //! method to handle display of the view
     void Render ();

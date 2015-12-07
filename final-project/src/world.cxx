@@ -9,7 +9,7 @@ cs237::color4f pallette1[5] = {cs237::color4f(0.5, 0.5, 0.5, 1.0), cs237::color4
 
 void World::generateLevels(View *v)
 {
-	Level *level1 = new Level(50, 1, 100, 500, 2, 80, pallette1, 5, v->Camera().position(), 100.0f, v->getSun());
+	Level *level1 = new Level(40, 1, 100, 500, 2, 60, pallette1, 5, v->Camera().position(), 100.0f, v->getSun());
 	this->levels[0] = level1;
 }
 
@@ -61,7 +61,7 @@ void World::restart()
 	this->tod = 0.0f;
 	this->tsd = 0.0f;
 	this->player->reset();
-	this->view->initCamera(20.0f);
+	this->view->initCamera(cs237::vec3d(0.0, 20.0f, -20), cs237::vec3f(0.0, 20.0f, 10.0), cs237::vec3f(0.0, 1.0, 0.0));
 	this->generateLevels(this->view);
 }
 
@@ -245,7 +245,7 @@ void World::updatePlayerPosition(float dt)
 int World::checkForCollisions()
 {
 	//check if the player's x coord is out of bounds
-	if(this->player->getPos()[0] > std::abs(this->xEdge)){
+	if(std::abs(this->player->getPos()[0]) > this->xEdge){
 		return 2;
 	}
 	//check if the player is touching any cube
