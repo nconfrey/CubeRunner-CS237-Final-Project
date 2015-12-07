@@ -17,3 +17,10 @@ Roadmap for the Final Project Sample Code:
 	  render.cxx		-- rendering code
 	  texture-cache.*	-- a cache for OpenGL textures used for chunks
 	  view.*		-- the viewer
+
+
+TODO:
+
+[] Reppy Mode
+[] Title Screen
+[] Level Progression
