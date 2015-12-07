@@ -20,17 +20,17 @@ class Plane {
 		};
 
 		Plane();
-		Plane(float a, float b, float c, float d);
+		Plane(double a, double b, double c, double d);
 
 		Plane ** extractPlanes(Camera c, cs237::mat4x4f projTransform);
 		void NormalizePlane();
 		void transformPlane(cs237::mat3x3d mv, cs237::vec3d t);
 		int ClassifyPoint(const cs237::vec3d & pt, cs237::mat4x4f ModelViewMatrix);
 
-		float a;
-		float b;
-		float c;
-		float d;
+		double a;
+		double b;
+		double c;
+		double d;
 };
 
 #endif // !_PLANE_HXX_
