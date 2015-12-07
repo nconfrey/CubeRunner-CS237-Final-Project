@@ -129,7 +129,12 @@ bool intersectionTest(cs237::AABBd bb, cs237::AABBd bb2)
 	//std::cout << bb.center();
 	//std::cout << "Player pos\n";
 	//std::cout << bb2.center();
-	return bb.includesPt(bb2.center()) || bb2.includesPt(bb.center());
+	//return bb.includesPt(bb2.center()) || bb2.includesPt(bb.center());
+	for (int i = 0; i < 8; ++i)
+	{
+		if(bb.distanceToPt(bb2.corner(i)) < .1)
+			return true;
+	}
 }
 
 bool Level::intersectsAnyCube(cs237::AABBd bb)
