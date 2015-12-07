@@ -16,5 +16,5 @@ void main()
     /* This is the color for the fragment without lighting. You will use the lighting equation 
       defined in the project to compute the frag color with lighting included. */ 
 
-    colorOut = vec4(lightAmb + max(0, dot(-lightDir, norm)) * lightInten,1) * color;
+    colorOut = vec4((lightAmb + 0.5) + max(0, dot(-lightDir, norm)) * lightInten,1) * color;
 }
