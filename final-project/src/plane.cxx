@@ -16,7 +16,7 @@
  	this->d = 0;
  }
 
- Plane::Plane(float a, float b, float c, float d)
+ Plane::Plane(double a, double b, double c, double d)
  {
  	this->a = a;
  	this->b = b;
@@ -83,12 +83,11 @@
 
  	float e = 1.0f/(tan(cs237::radians(c.fov())/2));
  	float a = c.aspect();
- 	printf("a: [%f] e: [%f]\n",a,e);
  	//Near
  	p_planes[0]->a = 0;
  	p_planes[0]->b = 0;
  	p_planes[0]->c = -1.0f;
- 	p_planes[0]->d = c.near();
+ 	p_planes[0]->d = -c.near();
  	//Far
  	p_planes[1]->a = 0;
  	p_planes[1]->b = 0;
@@ -158,7 +157,7 @@ int Plane::ClassifyPoint(const cs237::vec3d & pt, cs237::mat4x4f ModelViewMatrix
 	//normal = cs237::__detail::normalize(normal);
 	float epsilon = 10;
 	float distance = cs237::__detail::dot(normal, pt) + this->d;
-	printf("distance to plane %f\n", distance - epsilon);
+	//printf("distance to plane %f\n", distance - epsilon);
 	if (distance + epsilon > 0 || distance - epsilon > 0) return INSIDE;
 	if (distance + epsilon < 0 || distance - epsilon < 0) return OUTSIDE;
 	

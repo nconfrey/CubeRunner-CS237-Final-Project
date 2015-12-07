@@ -539,7 +539,7 @@ bool View::inFrustum(Tile *t)
   Plane **frustum = frust->extractPlanes(this->Camera(), this->Camera().projTransform() * this->Camera().ModelViewMatrix());
 
   //Plane **frustum = frust->extractPlanes(this->Camera());
-  printf("Ref:\n far plane is %f\n near plane is %f\n", this->Camera().far(), this->Camera().near());
+  //printf("Ref:\n far plane is %f\n near plane is %f\n", this->Camera().far(), this->Camera().near());
   cs237::mat3x3d mv = cs237::mat3x3d(cs237::lookAt(cs237::vec3d(0.0, 0.0, 0.0),
                           cs237::toDouble(this->Camera().direction()),
                           cs237::toDouble(this->Camera().up())));
@@ -548,7 +548,7 @@ bool View::inFrustum(Tile *t)
   {
     //frustum[i]->NormalizePlane();
     frustum[i]->transformPlane(mv, mv * -(this->Camera().position()));
-    printf("Plane [%d]: %f, %f, %f, %f\n", i, frustum[i]->a, frustum[i]->b, frustum[i]->c, frustum[i]->d);
+    //printf("Plane [%d]: %f, %f, %f, %f\n", i, frustum[i]->a, frustum[i]->b, frustum[i]->c, frustum[i]->d);
   }
 
   int totalIn = 0;
@@ -556,7 +556,7 @@ bool View::inFrustum(Tile *t)
   //Test all 8 corners of the bounding box with the 6 planes of the view frustum
   for(int frustPlane = 0; frustPlane < 6; frustPlane++)
   {
-    printf("CONSIDERING PLANE [%d]\n", frustPlane);
+    //printf("CONSIDERING PLANE [%d]\n", frustPlane);
     //counting how many corners are in the planes
     int inCount = 8;
     int somewhatIn = 1;
@@ -564,7 +564,7 @@ bool View::inFrustum(Tile *t)
     {
       //test this corner against all of the planes
       cs237::vec3d c = boundingBox.corner(i);
-      printf("corner [%d] is %f, %f, %f\n", i, c.x, c.y, c.z);
+      //printf("corner [%d] is %f, %f, %f\n", i, c.x, c.y, c.z);
       
       if(frustum[frustPlane]->ClassifyPoint(c, this->Camera().projTransform() * this->Camera().ModelViewMatrix()) == Plane::OUTSIDE)
       {
@@ -587,7 +587,7 @@ bool View::inFrustum(Tile *t)
   //exit(-1);
 
   //printf("total corners in is: %d", totalIn);
-  if(totalIn == 6)
+  if(totalIn == 8)
     return true; // all of the corners are inside the view
 
   //otherwise, we are partially in which we will consider as an in for now
@@ -606,8 +606,8 @@ float View::SSE(Tile *t)
 void View::Recursive_Render_Chunk(Tile *t, Renderer *r, int row, int col)
 {
   //check to see if this tile is in the view frustum to save time
-  //if(!inFrustum(t))
-  // return;
+  if(!inFrustum(t))
+   return;
 
   //calculate SSE
   float sse = this->SSE(t);
