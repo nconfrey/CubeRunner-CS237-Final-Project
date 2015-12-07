@@ -132,7 +132,7 @@ bool intersectionTest(cs237::AABBd bb, cs237::AABBd bb2)
 	//return bb.includesPt(bb2.center()) || bb2.includesPt(bb.center());
 	for (int i = 0; i < 8; ++i)
 	{
-		if(bb.distanceToPt(bb2.corner(i)) < .1)
+		if(bb.distanceToPt(bb2.corner(i)) <= 0)
 			return true;
 	}
 }
