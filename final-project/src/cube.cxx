@@ -14,7 +14,7 @@ Cube::Cube(Sunlight sun, float height, float width)
 					                   cs237::vec3f (-1.0f,  -1.0f, -1.0f), //4
 					                   cs237::vec3f (-1.0f,  1.0f, -1.0f), //5
 					                   cs237::vec3f ( 1.0f,  1.0f, -1.0f), //6
-					                   cs237::vec3f ( 1.0f,  -1.0f, -1.0f)}; //7 
+					                   cs237::vec3f ( 1.0f,  -1.0f, -1.0f)}; //7      
 
 	/* the indices that allow us to create the cube. */ 
 	uint32_t cubeIndices[36] = {
@@ -26,48 +26,21 @@ Cube::Cube(Sunlight sun, float height, float width)
 	    7,5,6,  7,4,5
 	  };
 
-	cs237::vec3f cubeNormals[36] = {
+	cs237::vec3f cubeNormals[8] = {
+
+		cs237::vec3f(  0.0f,  0.0f,  -1.0f ),
+		cs237::vec3f(  0.0f,  0.0f,  -1.0f ),
+		cs237::vec3f(  1.0f,  0.0f,  0.0f ),
+		cs237::vec3f(  0.0f, -1.0f,  1.0f ),
+		cs237::vec3f(  -1.0f,  0.0f,  0.0f ),
+		cs237::vec3f(  1.0f,  0.0f,  0.0f ),
 		cs237::vec3f(  0.0f,  0.0f,  1.0f ),
 		cs237::vec3f(  0.0f,  0.0f,  1.0f ),
-		cs237::vec3f(  0.0f,  0.0f,  1.0f ),
-		cs237::vec3f(  0.0f,  0.0f,  1.0f ),
-		cs237::vec3f(  0.0f,  0.0f,  1.0f ),
-		cs237::vec3f(  0.0f,  0.0f,  1.0f ),
-		cs237::vec3f(  1.0f,  0.0f,  0.0f ),
-		cs237::vec3f(  1.0f,  0.0f,  0.0f ),
-		cs237::vec3f(  1.0f,  0.0f,  0.0f ),
-		cs237::vec3f(  1.0f,  0.0f,  0.0f ),
-		cs237::vec3f(  1.0f,  0.0f,  0.0f ),
-		cs237::vec3f(  1.0f,  0.0f,  0.0f ),
-		cs237::vec3f( -1.0f,  0.0f,  0.0f ),
-		cs237::vec3f( -1.0f,  0.0f,  0.0f ),
-		cs237::vec3f( -1.0f,  0.0f,  0.0f ),
-		cs237::vec3f( -1.0f,  0.0f,  0.0f ),
-		cs237::vec3f( -1.0f,  0.0f,  0.0f ),
-		cs237::vec3f( -1.0f,  0.0f,  0.0f ),
-		cs237::vec3f(  0.0f, -1.0f,  0.0f ),
-		cs237::vec3f(  0.0f, -1.0f,  0.0f ),
-		cs237::vec3f(  0.0f, -1.0f,  0.0f ),
-		cs237::vec3f(  0.0f, -1.0f,  0.0f ),
-		cs237::vec3f(  0.0f, -1.0f,  0.0f ),
-		cs237::vec3f(  0.0f, -1.0f,  0.0f ),
-		cs237::vec3f(  0.0f,  1.0f,  0.0f ),
-		cs237::vec3f(  0.0f,  1.0f,  0.0f ),
-		cs237::vec3f(  0.0f,  1.0f,  0.0f ),
-		cs237::vec3f(  0.0f,  1.0f,  0.0f ),
-		cs237::vec3f(  0.0f,  1.0f,  0.0f ),
-		cs237::vec3f(  0.0f,  1.0f,  0.0f ),
-		cs237::vec3f(  0.0f,  0.0f, -1.0f ),
-		cs237::vec3f(  0.0f,  0.0f, -1.0f ),
-		cs237::vec3f(  0.0f,  0.0f, -1.0f ),
-		cs237::vec3f(  0.0f,  0.0f, -1.0f ),
-		cs237::vec3f(  0.0f,  0.0f, -1.0f ),
-		cs237::vec3f(  0.0f,  0.0f, -1.0f )
 	};
 	this->mesh = new Mesh(GL_TRIANGLES);
     this->mesh->LoadVertices(8, cubeVertices);
     this->mesh->LoadIndices(36, cubeIndices);
-    this->mesh->LoadNormals(36, cubeNormals);
+    this->mesh->LoadNormals(8, cubeNormals);
 
     this->height = height;
     this->width = width;
