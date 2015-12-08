@@ -54,9 +54,15 @@ Cube::Cube(Sunlight sun, float height, float width)
   	lightDirLoc = _shader->UniformLocation("lightDir");
     lightIntenLoc = _shader->UniformLocation("lightInten");
     lightAmbLoc = _shader->UniformLocation("lightAmb");
+
+    //fog uniforms
+    hasFogLoc = _shader->UniformLocation("hasFog");
+    fogColorLoc = _shader->UniformLocation("fogColor");
+    fogDensityLoc = _shader->UniformLocation("fogDensity");
 }
 
-void Cube::Render(cs237::vec3f pos, cs237::color4f color, cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat)
+void Cube::Render(cs237::vec3f pos, cs237::color4f color, cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat,
+	bool hasFog, cs237::color3f fogColor, float fogDensity)
 {
 	this->_shader->Use();
 	//printf("rendering cube with %f, %f, %f\n", pos.x, pos.y, pos.z);
@@ -65,20 +71,13 @@ void Cube::Render(cs237::vec3f pos, cs237::color4f color, cs237::mat4f const &pr
     cs237::setUniform(colorLoc, color);
     cs237::setUniform(htLoc, this->height);
     cs237::setUniform(widLoc, this->width);
+    cs237::setUniform(hasFogLoc, hasFog);
+    cs237::setUniform(fogColorLoc, fogColor);
+    cs237::setUniform(fogDensityLoc, fogDensity);
     CS237_CHECK(cs237::setUniform(lightDirLoc, sun.lightDir));
     CS237_CHECK(cs237::setUniform(lightIntenLoc, sun.lightInten));
     CS237_CHECK(cs237::setUniform(lightAmbLoc, sun.lightAmb));
 	this->mesh->Draw();
-}
-
-void Cube::RenderRandom(int xRand, int zRand, cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat)
-{
-	float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-	float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-	float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-	float x = rand() % xRand;//5000;
-	float z = rand() % zRand;
-	Render(cs237::vec3f(x,500,z), cs237::color4f(r, g, b, 1.0), projectionMat, modelViewMat);
 }
 
 cs237::AABBd Cube::CubeAABB(cs237::vec3f *pos)

@@ -20,6 +20,11 @@ class Cube {
     int lightIntenLoc;
     int lightAmbLoc;
 
+    //fog uniforms
+    int hasFogLoc;
+    int fogColorLoc;
+    int fogDensityLoc;
+
     //Assuming that the sunlight isn't gonna suddenly change
     Sunlight sun;
 
@@ -29,8 +34,8 @@ class Cube {
 
 public:
     Cube(Sunlight sun, float height, float width);
-    void Render(cs237::vec3f pos, cs237::color4f color, cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat);
-    void RenderRandom(int xRand, int zRand, cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat);
+    void Render(cs237::vec3f pos, cs237::color4f color, cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat,
+        bool hasFog, cs237::color3f fogColor, float fogDensity);
     cs237::AABBd CubeAABB(cs237::vec3f *pos);
 	
 };
