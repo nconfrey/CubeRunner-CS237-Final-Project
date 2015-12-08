@@ -71,6 +71,8 @@ class View {
     //rotate camera around an arbitrary axis
     void rotateCam(float theta, cs237::vec3f axis);
 
+    void rotateCamAnimation(float theta, cs237::vec3f axis);
+
     void rotateCamUpDown(float theta);
 
     void rotateCamLeftRight(float theta);
@@ -84,6 +86,8 @@ class View {
 
     //translate cam along arbitrary axis, without rotating view at all
     void translateCam(cs237::vec3d offset);
+
+    void translateCamAnimation(cs237::vec3d offset);
 
     void translateCamViewAxis(float dis);
 
@@ -136,7 +140,7 @@ class View {
     bool wireframeMode () const { return this->_wireframe; }
 
   //! the view's current camera state
-    class Camera const &Camera () const { return this->_cam; }
+    class Camera  &Camera ()  { return this->_cam; }
 
     cs237::mat4f ModelViewMat() { return modelViewMat; }
     cs237::mat4f ProjectionMat() { return projectionMat; }//<! the camera's projection matrix

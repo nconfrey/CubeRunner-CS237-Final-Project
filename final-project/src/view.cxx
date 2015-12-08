@@ -173,6 +173,11 @@ void View::rotateCam(float theta, cs237::vec3f axis)
     rotateTargetVector(theta, axis);
 }
 
+void View::rotateCamAnimation(float theta, cs237::vec3f axis)
+{
+    this->_cam.rotateCam(theta, axis);
+}
+
 void View::rotateCamUpDown(float theta)
 {
   if(!smoothCam)
@@ -361,6 +366,11 @@ void View::translateCam(cs237::vec3d offset)
     this->_cam.translateCam(offset);
   else
     this->translateTarget(offset);
+}
+
+void View::translateCamAnimation(cs237::vec3d offset)
+{
+    this->_cam.translateCam(offset);
 }
 
 void View::translateCamZAxis(float dis)

@@ -2,6 +2,7 @@
 
 #define OFFSET 1
 #define NLEVELS 1
+#define NANIMES 2
 
 //========================= LEVEL MAKER =========================//
 cs237::color4f pallette1[5] = {cs237::color4f(0.5, 0.5, 0.5, 1.0), cs237::color4f(0.0, 0.0, 0.0,1.0), 
@@ -12,6 +13,29 @@ void World::generateLevels(View *v)
 	Level *level1 = new Level(40, 1, 100, 500, 2, 60, pallette1, 5, v->Camera().position(), 100.0f, v->getSun(),
 		true, cs237::color3f(0.0f, 0.0f, 0.0f), 0.00375f);
 	this->levels[0] = level1;
+}
+
+void World::generateAnimes(View *v)
+{
+	cs237::vec3f up1 = cs237::vec3f(0.0, 1.0, 0.0);
+	cs237::vec3f up2 = cs237::vec3f(0.0, 0.0, 1.0);
+	cameraAnimation *anime1 = new cameraAnimation(cs237::vec3d(-100.0, 20.0, 100.0), cs237::vec3d(-100.0, 20.0, 100.0),
+												  cs237::vec3f(-100.0, 20.0, 120.0), cs237::vec3f(-80.0, 20.0, 113.0),
+												  up1, up1,
+												  0.1f, 10.0f, 10.0f,
+												  view);
+	cameraAnimation *anime2 = new cameraAnimation(cs237::vec3d(-100.0, 20.0, 100.0), cs237::vec3d(-100.0, 20.0, 100.0),
+												  cs237::vec3f(-100.0, 20.0, 120.0), cs237::vec3f(-50.0, 20.0, 103.0),
+												  up1, up1,
+												  5.0f, 5.0f, 5.0f,
+												  view);
+	/*cameraAnimation *anime2 = new cameraAnimation(cs237::vec3d(0.0, 50.0, 100.0), cs237::vec3d(0.0, 50.0, 300.0),
+												  cs237::vec3f(0, 20.0, 100.0), cs237::vec3f(0.0, 20.0, 100.0),
+												  up2, up2,
+												  5.0f, 0.1f, 5.0f,
+												  view);*/
+	this->animes[0] = anime1;
+	this->animes[1] = anime2;
 }
 
 
@@ -39,6 +63,12 @@ World::World(View *v)
 	//make sure all values are intialized to their correct values
 	this->restart();
 
+	//set up camera animations
+	this->nAnimations = NANIMES;
+	this->curAnimation = 0;
+	this->animes = new cameraAnimation *[NANIMES];
+	this->generateAnimes(view);
+
 	//set the state to title screen
 	this->state = TITLE;
 }
@@ -58,11 +88,12 @@ void World::restart()
 {	
 	//reset world member variables
 	this->score = 0.0f;
+	this->curAnimation = 0;
 	this->curLevel = 0;
 	this->tod = 0.0f;
 	this->tsd = 0.0f;
 	this->player->reset();
-	this->view->initCamera(cs237::vec3d(0.0, 20.0f, -20), cs237::vec3f(0.0, 20.0f, 10.0), cs237::vec3f(0.0, 1.0, 0.0));
+	this->view->initCamera(cs237::vec3d(0.0, 20.0, -20), cs237::vec3f(0.0, 20.0f, 10.0), cs237::vec3f(0.0, 1.0, 0.0));
 	this->generateLevels(this->view);
 }
 
@@ -95,9 +126,12 @@ int World::handleEvent(EventType t)
 //if you wanna die in mid game just hit a cube, fool
 int World::handleEventNEWGAME()
 {
+	cameraAnimation *cur;
 	switch(this->state)
 	{
 		case TITLE:
+			cur = this->animes[this->curAnimation];
+			cur->stop();
 			this->restart(); 
 			this->state = RUNNING;
 			return 0;
@@ -132,13 +166,18 @@ int World::handleEventCOLLISION()
 	}
 }
 
-//player pressed the pause button while runnning the game
+//player pressed the pause button while runnning the game or in title
 int World::handleEventPAUSEBUTTON()
 {
+	cameraAnimation *cur;
 	switch(this->state)
 	{
 		case RUNNING:
 			this->state = PAUSED;
+			return 0;
+		case TITLE:
+			cur = this->animes[this->curAnimation];
+			cur->pause();
 			return 0;
 		default: 
 			fprintf(stderr,"Error, cannot handle a PAUSEBUTTON event in state %d\n", this->state);
@@ -170,6 +209,8 @@ int World::handleFrame(float t, float dt)
 	{
 		case TITLE:
 			//render some kind of informative screen
+			this->renderAnimations(dt);
+			this->renderWorld();
 			break;
 		case RUNNING:
 			//check if we have any collisions
@@ -223,6 +264,23 @@ void World::renderWorld()
 
 	//draw the window to the window
 	glfwSwapBuffers (this->view->Window());
+}
+
+void World::renderAnimations(float dt)
+{
+	//seeif our animation is active and move on if not
+	cameraAnimation *cur = this->animes[this->curAnimation];
+	if(cur->isDone()){
+		printf("was done\n");
+		cur->stop();
+		this->curAnimation = (this->curAnimation + 1) % this->nAnimations;
+		cur = this->animes[this->curAnimation];
+	}
+	if(! cur->started())
+		cur->start();
+
+	//render a frame for that animation
+	cur->handleFrame(dt);
 }
 
 void World::updateScore(float dt)
