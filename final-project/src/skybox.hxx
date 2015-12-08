@@ -15,6 +15,11 @@ class Skybox {
     int htLoc;
     int sideLoc;
 
+    //fog uniforms
+    int hasFogLoc;
+    int fogColorLoc;
+    int fogDensityLoc;
+
     GLuint    vaoId;
     GLuint    verticesVBOId;
 	GLuint    textureID;
@@ -23,6 +28,7 @@ class Skybox {
 
     public:
     Skybox(int wid, int ht);
-    void Render(cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat, cs237::vec3d position);
+    void Render(cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat, cs237::vec3d position,
+        bool hasFog, cs237::color3f fogColor, float fogDensity);
 	
 };

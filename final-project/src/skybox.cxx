@@ -140,9 +140,15 @@ Skybox::Skybox(int wid, int ht)
 
     htLoc = _shader->UniformLocation("ht");
     widLoc = _shader->UniformLocation("wid");
+
+    //fog uniforms
+    hasFogLoc = _shader->UniformLocation("hasFog");
+    fogColorLoc = _shader->UniformLocation("fogColor");
+    fogDensityLoc = _shader->UniformLocation("fogDensity");
 }
 
-void Skybox::Render(cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat, cs237::vec3d position)
+void Skybox::Render(cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat, cs237::vec3d position,
+                    bool hasFog, cs237::color3f fogColor, float fogDensity)
 {
 	//printf("Skybox render\n");
 	glDepthMask(GL_FALSE);
@@ -156,6 +162,11 @@ void Skybox::Render(cs237::mat4f const &projectionMat, cs237::mat4f const &model
     
     cs237::setUniform(htLoc, this->ht);
     cs237::setUniform(widLoc, this->wid);
+
+    //fog uniforms
+    CS237_CHECK(cs237::setUniform(hasFogLoc, hasfog));
+    CS237_CHECK(cs237::setUniform(fogColorLoc, fogcolor));
+    CS237_CHECK(cs237::setUniform(fogDensityLoc, fogdensity));
 
     CS237_CHECK(glActiveTexture(GL_TEXTURE0));
     
