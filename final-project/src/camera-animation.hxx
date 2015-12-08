@@ -20,15 +20,17 @@ public:
 	//tells the camera to start moving towards its targets
 	void start();
 
+	//tells the camera to stop permanently
+	void stop();
+
 	//stops camera movement until pause is called again
 	void pause();
 
 	//return true if the animation has arrived at its targets
 	//returns false otherwise
-	//meant to be used within a while loop:
-	//	call the animation
-	//	while(!isDone()){loop until done}
 	bool isDone();
+
+	bool started() const {return isStarted;}
 
 private:
 	cs237::vec3d startingPos;
@@ -41,8 +43,8 @@ private:
 	float turnSpeed;
 	float upSpeed;
 
-	bool checkIsTranslated(); //check if we are done moving
-	bool checkIsRotated(); //check if we are done rotating
+	//bool checkIsTranslated(); //check if we are done moving
+	//bool checkIsRotated(); //check if we are done rotating
 
 	//internal state vars
 	bool isTranslated;
@@ -52,6 +54,10 @@ private:
 
 	//the view to do all this animation for
 	View *view;
+
+	//handle the movement
+	void translateCam(float dt);
+	void rotateCamTowardsTarget(float dt);
 
 };
 

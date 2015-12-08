@@ -79,8 +79,6 @@ class Map {
     //override map values with what we want for cuberunner
     void Override()
     {
-      this->_hScale = this->_hScale;
-      this->_vScale = this->_vScale;
       this->_sunDir = cs237::vec3f(0.8f, 0.8f, 0.8f);
       //this->_sunI = cs237::vec3f(0.)
       this->_hasFog = true;
