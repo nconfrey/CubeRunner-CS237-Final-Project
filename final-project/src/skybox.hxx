@@ -1,3 +1,6 @@
+#ifndef _SKYBOX_HXX_
+#define _SKYBOX_HXX_
+
 #include "cs237.hxx"
 #include "mesh.hxx"
 
@@ -34,3 +37,5 @@ class Skybox {
         bool hasFog, cs237::color3f fogColor, float fogDensity);
 	
 };
+
+#endif // ! _SKYBOX_HXX_
