@@ -1,0 +1,16 @@
+{
+  "name" : "map-1414",
+  "version" : 1,
+  "h-scale" : 5,
+  "v-scale" : 0.0149995,
+  "base-elev" : 0,
+  "min-elev" : 0,
+  "max-elev" : 491.49,
+  "width" : 1024,
+  "height" : 8192,
+  "cell-size" : 1024,
+  "color-map" : true,
+  "normal-map" : true,
+  "water-map" : false,
+  "grid" : [ "00_00", "01_00", "02_00", "03_00", "04_00", "05_00", "06_00", "07_00" ]
+}
