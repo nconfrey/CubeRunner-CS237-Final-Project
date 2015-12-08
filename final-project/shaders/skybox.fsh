@@ -6,6 +6,10 @@ out vec4 color;
 uniform sampler2D skybox;
 uniform int side;
 
+uniform int hasFog;
+uniform vec3 fogColor;
+uniform float fogDensity;
+
 void main()
 {   
 	vec2 texSide; 
@@ -31,4 +35,10 @@ void main()
 			texSide = vec2(1 - TexCoords.x, TexCoords.y);
 	}
     color = texture(skybox, texSide);
+
+    if(hasFog != 0){
+		float ffog = exp2(-1.442695 * fogDensity * fogDensity * (1.0-gl_FragCoord.y) * (1.0-gl_FragCoord.y));
+		vec3 fog = (1.0 - ffog) * fogColor;
+		color = ffog * color + vec4(fog, 1.0);
+	}
 }
