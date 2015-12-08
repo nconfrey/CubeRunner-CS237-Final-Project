@@ -2,7 +2,7 @@
 
 #define OFFSET 1
 #define NLEVELS 1
-#define NANIMES 2
+#define NANIMES 4
 
 //========================= LEVEL MAKER =========================//
 cs237::color4f pallette1[5] = {cs237::color4f(0.5, 0.5, 0.5, 1.0), cs237::color4f(0.0, 0.0, 0.0,1.0), 
@@ -20,22 +20,29 @@ void World::generateAnimes(View *v)
 	cs237::vec3f up1 = cs237::vec3f(0.0, 1.0, 0.0);
 	cs237::vec3f up2 = cs237::vec3f(0.0, 0.0, 1.0);
 	cameraAnimation *anime1 = new cameraAnimation(cs237::vec3d(-100.0, 20.0, 100.0), cs237::vec3d(-100.0, 20.0, 100.0),
-												  cs237::vec3f(-100.0, 20.0, 120.0), cs237::vec3f(-80.0, 20.0, 113.0),
+												  cs237::vec3f(-100.0, 20.0, 120.0), cs237::vec3f(-60.0, 20.0, 117.0),
 												  up1, up1,
-												  0.1f, 10.0f, 10.0f,
+												  0.1f, 5.0f, 10.0f,
 												  view);
-	cameraAnimation *anime2 = new cameraAnimation(cs237::vec3d(-100.0, 20.0, 100.0), cs237::vec3d(-100.0, 20.0, 100.0),
-												  cs237::vec3f(-100.0, 20.0, 120.0), cs237::vec3f(-50.0, 20.0, 103.0),
-												  up1, up1,
+	cameraAnimation *anime2 = new cameraAnimation(cs237::vec3d(0.0, 50.0, 200.0), cs237::vec3d(0.0, 50.0, 200.0),
+												  cs237::vec3f(0.0, 20.0, 220.0), cs237::vec3f(0.0, 50.0, 250.0),
+												  up2, up2,
 												  5.0f, 5.0f, 5.0f,
 												  view);
-	/*cameraAnimation *anime2 = new cameraAnimation(cs237::vec3d(0.0, 50.0, 100.0), cs237::vec3d(0.0, 50.0, 300.0),
-												  cs237::vec3f(0, 20.0, 100.0), cs237::vec3f(0.0, 20.0, 100.0),
+	cameraAnimation *anime3 = new cameraAnimation(cs237::vec3d(0.0, 10.0, 300.0), cs237::vec3d(0.0, 10.0, 300.0),
+											      cs237::vec3f(30.0, 10.0, 350.0), cs237::vec3f(-30.0, 10.0, 350.0),
+											 	  up1, up1,
+											 	  5.0f, 5.0f, 5.0f,
+											      view);
+	cameraAnimation *anime4 = new cameraAnimation(cs237::vec3d(0.0, 300.0, 300.0), cs237::vec3d(0.0, 300.0, 300.0),
+												  cs237::vec3f(-50.0, 20.0, 300.0), cs237::vec3f(50.0, 20.0, 300.0),
 												  up2, up2,
-												  5.0f, 0.1f, 5.0f,
-												  view);*/
+												  5.0f, 2.0f, 5.0f,
+												  view);
 	this->animes[0] = anime1;
 	this->animes[1] = anime2;
+	this->animes[2] = anime3;
+	this->animes[3] = anime4;
 }
 
 
@@ -68,6 +75,7 @@ World::World(View *v)
 	this->curAnimation = 0;
 	this->animes = new cameraAnimation *[NANIMES];
 	this->generateAnimes(view);
+	this->inAnimation = true;
 
 	//set the state to title screen
 	this->state = TITLE;
@@ -133,6 +141,7 @@ int World::handleEventNEWGAME()
 			cur = this->animes[this->curAnimation];
 			cur->stop();
 			this->restart(); 
+			this->inAnimation = false;
 			this->state = RUNNING;
 			return 0;
 		case DEAD: 
@@ -192,8 +201,10 @@ int World::handleEventBACKTOTITLE()
 	{
 		case DEAD:
 			this->state = TITLE;
+			this->inAnimation = true;
 			return 0;
 		case PAUSED:
+			this->inAnimation = true;
 			this->state = TITLE;
 			return 0;
 		default:
@@ -209,8 +220,8 @@ int World::handleFrame(float t, float dt)
 	{
 		case TITLE:
 			//render some kind of informative screen
-			//this->renderAnimations(dt);
-			//this->renderWorld();
+			this->renderAnimations(dt);
+			this->renderWorld();
 			break;
 		case RUNNING:
 			//check if we have any collisions
@@ -258,7 +269,7 @@ void World::renderWorld()
     this->view->UpdateModelViewMat();
 
 	this->view->Render(); //draw the heighfield and skybox
-	this->levels[curLevel]->RenderAllCubes(this->view->Camera()); //draw every cube in the current level
+	this->levels[curLevel]->RenderAllCubes(this->view->Camera(), this->inAnimation); //draw every cube in the current level
 	
 	this->player->Render(this->view->Camera()); //draw the player
 

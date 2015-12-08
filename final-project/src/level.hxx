@@ -21,7 +21,7 @@ class Level {
 		~Level();
 
 		//render a cube at every positoon in the cube positoon list
-		void RenderAllCubes(Camera c);
+		void RenderAllCubes(Camera c, bool inAnimation);
 
 		//check if the given AABB intersects any cubes in the cube list
 		//note, this needs an intersection function it can call
