@@ -6,7 +6,7 @@
 //========================= CONSTRUCTOR AND DESTRUCTOR =========================//
 Level::Level(int difficulty, int levelNum, float zstart, float zend, float scoreMult, float velocity,
 			  cs237::color4f * palletteColors, int nColors, cs237::vec3d playerPos, float width, Sunlight sun,
-			  bool hasFog, float fogDensity, bool wireframe, cs237::vec3f up, float zstop)
+			  bool hasFog, float fogDensity, bool wireframe, cs237::vec3f up, float zstop, float zbegin)
 {
 	this->difficulty = difficulty;
 	this->levelNum = levelNum;
@@ -16,6 +16,8 @@ Level::Level(int difficulty, int levelNum, float zstart, float zend, float score
 	this->scoreMult = scoreMult;
 	this->velocity = velocity;
 	this->nColors = nColors;
+	this->zstop = zstop;
+	this->zbegin = zbegin;
 	this->masterCube = new Cube(sun, 1, 1); //nick: Should this be here or in view? we can pass it in (only need to make 1 per game)
 	this->palletteColors = new cs237::color4f[nColors];
 	for(int i = 0; i<nColors; i++){
@@ -34,7 +36,6 @@ Level::Level(int difficulty, int levelNum, float zstart, float zend, float score
 	//this->cubePositions = new cs237::vec3f *[this->nCubes];
 	this->generateCubePositions(this->nCubes, zstart, zend, width);
 
-	this->zstop = zstop;
 }
 
 Level::~Level()
@@ -84,7 +85,8 @@ void Level::generateCubeSlice(int nCubes, float zstart, float zend, float width,
       	float z = rand() % (int)(zend - zstart);
       	z += zstart;
       	//printf("%d  ",i);
- 		this->cubePositions[i] = new cs237::vec3f(x, 15, z);
+ 		this->cubePositions[i] = new cs237::vec3f(x, 15, z + this->zbegin);
+ 		//printf("%f\n",z + this->zbegin);
  		this->cubeColors[i] = (locationInPallette)(BOXCOLORSTART+color);
  		//printf("%f %f %f\n", cubes[i]->x, cubes[i]->y, cubes[i]->z );
 	}
@@ -121,7 +123,7 @@ void Level::RenderAllCubes(Camera c, bool inAnimation)
 			//increment it by the length of the field (zend - zstart)
 			//translate the z value by that amount
       		z = (((rand() % 100) - 100) / 2) + (zend-zstart);
-      		if(!(z > this->zstop)) //don't add cubes beyond the end of the level
+      		if((z < this->zstop)) //don't add cubes beyond the end of the level
  				cubePositions[i] = new cs237::vec3f(x, 15, cubePositions[i]->z+z);
 		}
 		
