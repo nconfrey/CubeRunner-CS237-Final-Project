@@ -5,7 +5,8 @@
 
 //========================= CONSTRUCTOR AND DESTRUCTOR =========================//
 Level::Level(int difficulty, int levelNum, float zstart, float zend, float scoreMult, float velocity,
-			  cs237::color4f * palletteColors, int nColors, cs237::vec3d playerPos, float width, Sunlight sun)
+			  cs237::color4f * palletteColors, int nColors, cs237::vec3d playerPos, float width, Sunlight sun,
+			  bool hasFog, cs237::color3f fogColor, float fogDensity)
 {
 	this->difficulty = difficulty;
 	this->levelNum = levelNum;
@@ -20,6 +21,10 @@ Level::Level(int difficulty, int levelNum, float zstart, float zend, float score
 	for(int i = 0; i<nColors; i++){
 		this->palletteColors[i] = palletteColors[i];
 	}
+
+	this->hasFog = hasFog;
+	this->fogColor = fogColor;
+	this->fogDensity = fogDensity;
 
 	//Randomly generate cubes for this level
 	this->nCubes = difficulty * 10;
@@ -114,7 +119,8 @@ void Level::RenderAllCubes(Camera c)
  			cubePositions[i] = new cs237::vec3f(x, 15, cubePositions[i]->z+z);
 		}
 		
-		masterCube->Render(*(this->cubePositions[i]), this->getColorAt(this->cubeColors[i]), c.projTransform(), c.ModelViewMatrix());
+		masterCube->Render(*(this->cubePositions[i]), this->getColorAt(this->cubeColors[i]), c.projTransform(), c.ModelViewMatrix(),
+			this->hasFog, this->fogColor, this->fogDensity);
 
 		//masterCube->Render(cs237::vec3f(x,500,z), cs237::color4f(r, g, b, 1.0), c.projTransform(), c.ModelViewMatrix());
 	}

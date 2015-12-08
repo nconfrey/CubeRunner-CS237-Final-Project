@@ -9,10 +9,13 @@ uniform float ht;
 uniform float wid;
 
 out vec3 f_normal;
+out float distToCam;
 
 void main()
 {
 	f_normal = normal;
 	vec3 stretchedpos = vec3((position.x * wid) , (position.y * ht), (position.z * wid));
     gl_Position = projection * modelView * vec4(stretchedpos, 1);
+
+    distToCam = -gl_Position.z;
 }
