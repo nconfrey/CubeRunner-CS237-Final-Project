@@ -1,18 +1,68 @@
 #include "world.hxx"
 
 #define OFFSET 1
-#define NLEVELS 1
+#define NLEVELS 5
 #define NANIMES 5
 
 //========================= LEVEL MAKER =========================//
+//blue and pink
 cs237::color4f pallette1[5] = {cs237::color4f(0.5, 0.5, 0.5, 1.0), cs237::color4f(0.0, 0.0, 0.0,1.0), 
 	cs237::color4f(1.0, 0.2, 1.0, 1.0), cs237::color4f(0.2, 1.0, 1.0, 1.0), cs237::color4f(1.0, 1.0, 1.0, 1.0)} ;
+
+//hacker green
+cs237::color4f pallette2[5] = {cs237::color4f(0.5, 0.5, 0.5, 1.0), cs237::color4f(0.0, 0.0, 0.0,1.0), 
+	cs237::color4f(0.0, 0.8, 0.2, 1.0), cs237::color4f(0.2, 1.0, 0.2, 1.0), cs237::color4f(1.0, 1.0, 1.0, 1.0)} ;
+
+//grass and sky
+cs237::color4f pallette3[5] = {cs237::color4f(0.5, 0.5, 0.5, 1.0), cs237::color4f(0.8, 0.85, 0.9, 1.0), 
+	cs237::color4f(0.2, 0.67, 0.8, 1.0), cs237::color4f(0.2, 0.47, 0.1, 1.0), cs237::color4f(0.8, 0.85, 0.9, 1.0)} ;
+
+//cloud city
+cs237::color4f pallette4[5] = {cs237::color4f(0.5, 0.5, 0.5, 1.0), cs237::color4f(1.0, 0.7, 0.4, 1.0), 
+	cs237::color4f(1.0, 0.7, 0.4, 1.0), cs237::color4f(0.58, 0.29, 0.15, 1.0), cs237::color4f(0.2, 0.67, 0.8, 1.0)} ;
+
+//black and white
+cs237::color4f pallette5[5] = {cs237::color4f(0.5, 0.5, 0.5, 1.0), cs237::color4f(0.0, 0.0, 0.0,1.0), 
+	cs237::color4f(1.0, 1.0, 1.0, 1.0), cs237::color4f(0.8, 0.8, 0.8, 1.0), cs237::color4f(0.5, 0.5, 0.5, 1.0)} ;
+
+	//black and white
+cs237::color4f pallette6[5] = {cs237::color4f(0.5, 0.5, 0.5, 1.0), cs237::color4f(0.0, 0.0, 0.0,1.0), 
+	cs237::color4f(1.0, 1.0, 1.0, 1.0), cs237::color4f(0.8, 0.8, 0.8, 1.0), cs237::color4f(0.5, 0.5, 0.5, 1.0)} ;
+
+//black hole
+cs237::color4f pallette7[5] = {cs237::color4f(0.5, 0.5, 0.5, 1.0), cs237::color4f(0.0, 0.0, 0.0,1.0), 
+	cs237::color4f(0.6, 0.6, 0.8, 1.0), cs237::color4f(1.0, 1.0, 0.6, 1.0), cs237::color4f(0.1, 0.1, 0.85, 1.0)} ;
+
+//galaxy hubble
+cs237::color4f pallette8[5] = {cs237::color4f(0.5, 0.5, 0.5, 1.0), cs237::color4f(0.0, 0.0, 0.0,1.0), 
+	cs237::color4f(0.45, 0.26, 0.22, 1.0), cs237::color4f(0.5, 0.53, 0.85, 1.0), cs237::color4f(1.0, 0.6, 0.65, 1.0)} ;
+
+//galaxy skyrim
+cs237::color4f pallette9[5] = {cs237::color4f(0.5, 0.5, 0.5, 1.0), cs237::color4f(0.0, 0.0, 0.0,1.0), 
+	cs237::color4f(0.15, 0.22, 0.78, 1.0), cs237::color4f(0.0, 0.8, 1.0, 1.0), cs237::color4f(0.48, 0.12, 0.36, 1.0)} ;
 
 void World::generateLevels(View *v)
 {
 	Level *level1 = new Level(40, 1, 100, 500, 2, 60, pallette1, 5, v->Camera().position(), 100.0f, v->getSun(),
-		true, cs237::color3f(0.0f, 0.0f, 0.0f), 0.00375f);
+		true, 0.00375f, false, cs237::vec3f(0.0, 1.0, 0.0), 1000);
+	
+	Level *level2 = new Level(60, 2, 300, 700, 4, 70, pallette2, 5, v->Camera().position(), 100.0f, v->getSun(),
+		true, 0.00375, true, cs237::vec3f(0.0, 1.0, 0.0), 2300.0);
+
+	Level *level3 = new Level(80, 3, 300, 700, 8, 80, pallette3, 5, v->Camera().position(), 100.0f, v->getSun(),
+		true, 0.00375, false, cs237::vec3f(1.0, 0.0, 0.0), 3600.0);
+
+	Level *level4 = new Level(100, 4, 300, 700, 16, 85, pallette4, 5, v->Camera().position(), 100.0f, v->getSun(),
+		true, 0.00375, false, cs237::vec3f(0.0, 1.0, 0.0), 9900.0);
+
+	Level *level5 = new Level(120, 5, 300, 700, 32, 90, pallette5, 5, v->Camera().position(), 100.0f, v->getSun(),
+		true, 0.00375, false, cs237::vec3f(0.0, 1.0, 0.0), 11000.0);
+
 	this->levels[0] = level1;
+	this->levels[1] = level2;
+	this->levels[2] = level3;
+	this->levels[3] = level4;
+	this->levels[4] = level5;
 }
 
 void World::generateAnimes(View *v)
@@ -35,12 +85,12 @@ void World::generateAnimes(View *v)
 											 	  up1, up1,
 											 	  5.0f, 5.0f, 5.0f,
 											      view);
-	cameraAnimation *anime5 = new cameraAnimation(cs237::vec3d(0.0, 300.0, 300.0), cs237::vec3d(0.0, 300.0, 300.0),
+	cameraAnimation *anime4 = new cameraAnimation(cs237::vec3d(0.0, 300.0, 300.0), cs237::vec3d(0.0, 300.0, 300.0),
 												  cs237::vec3f(-50.0, 20.0, 300.0), cs237::vec3f(50.0, 20.0, 300.0),
 												  up2, up2,
 												  5.0f, 2.0f, 5.0f,
 												  view);
-	cameraAnimation *anime4 = new cameraAnimation(cs237::vec3d(0.0, 18.0, 100.0), cs237::vec3d(0.0, 18.0, 100.0),
+	cameraAnimation *anime5 = new cameraAnimation(cs237::vec3d(0.0, 18.0, 100.0), cs237::vec3d(0.0, 18.0, 100.0),
 												  cs237::vec3f(-50.0, 18.0, 150.0), cs237::vec3f(-50.0, 200.0, 150.0),
 												  up1, up1,
 												  5.0f, 5.0f, 5.0f,
@@ -64,6 +114,7 @@ World::World(View *v)
 	//for each level, initalize it with preset data
 	//we can make a CREATE LEVEL 1 function, etc
 	this->generateLevels(v);
+	this->curLevel = 0;
 
 	//set the x edges
 	this->xEdge = 100.0f;
@@ -237,6 +288,14 @@ int World::handleFrame(float t, float dt)
 				this->handleEventCOLLISION();
 				break;
 			} //if here, no collisions
+			if(this->playerPastLevel()){
+				//the player has moved into the next level
+				if(this->curLevel + 1 >= this->numLevels){
+					this->state = WIN; //we have no more levels after this one!
+				} else {
+					(this->curLevel)++;
+				}
+			}
 			this->renderWorld(); //renders ground, player, cubes
 			this->view->Animate();
 			this->updateScore(dt); 
@@ -277,6 +336,8 @@ void World::renderWorld()
 
 	this->view->Render(); //draw the heighfield and skybox
 	this->levels[curLevel]->RenderAllCubes(this->view->Camera(), this->inAnimation); //draw every cube in the current level
+	if(!((curLevel + 1) >= numLevels))
+		this->levels[curLevel+1]->RenderAllCubes(this->view->Camera(), this->inAnimation); //also draw all cubes in the upcoming level
 	
 	this->player->Render(this->view->Camera()); //draw the player
 
@@ -313,6 +374,11 @@ void World::updatePlayerPosition(float dt)
 	this->view->translateCamZAxis(dt*vel); //move the camera as well
 	this->player->addToZPos(dt * vel); //multiply it by dt and add it to the current z position of the player
 	this->player->updateXPos(this->view->Camera()); //update the x pos to match the camera
+}
+
+bool World::playerPastLevel()
+{
+	return this->player->getPos()[2] > this->levels[curLevel]->getZStop();
 }
 
 

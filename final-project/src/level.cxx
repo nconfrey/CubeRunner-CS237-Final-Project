@@ -6,7 +6,7 @@
 //========================= CONSTRUCTOR AND DESTRUCTOR =========================//
 Level::Level(int difficulty, int levelNum, float zstart, float zend, float scoreMult, float velocity,
 			  cs237::color4f * palletteColors, int nColors, cs237::vec3d playerPos, float width, Sunlight sun,
-			  bool hasFog, cs237::color3f fogColor, float fogDensity)
+			  bool hasFog, float fogDensity, bool wireframe, cs237::vec3f up, float zstop)
 {
 	this->difficulty = difficulty;
 	this->levelNum = levelNum;
@@ -23,13 +23,18 @@ Level::Level(int difficulty, int levelNum, float zstart, float zend, float score
 	}
 
 	this->hasFog = hasFog;
-	this->fogColor = fogColor;
+	this->fogColor = cs237::color3f(palletteColors[SKY][0], palletteColors[SKY][1], palletteColors[SKY][2]);
 	this->fogDensity = fogDensity;
+
+	this->wireframe = wireframe;
+	this->up = up;
 
 	//Randomly generate cubes for this level
 	this->nCubes = difficulty * 10;
 	//this->cubePositions = new cs237::vec3f *[this->nCubes];
 	this->generateCubePositions(this->nCubes, zstart, zend, width);
+
+	this->zstop = zstop;
 }
 
 Level::~Level()
@@ -116,13 +121,17 @@ void Level::RenderAllCubes(Camera c, bool inAnimation)
 			//increment it by the length of the field (zend - zstart)
 			//translate the z value by that amount
       		z = (((rand() % 100) - 100) / 2) + (zend-zstart);
- 			cubePositions[i] = new cs237::vec3f(x, 15, cubePositions[i]->z+z);
+      		if(!(z > this->zstop)) //don't add cubes beyond the end of the level
+ 				cubePositions[i] = new cs237::vec3f(x, 15, cubePositions[i]->z+z);
 		}
 		
+		if(this->wireframe)
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 		masterCube->Render(*(this->cubePositions[i]), this->getColorAt(this->cubeColors[i]), c.projTransform(), c.ModelViewMatrix(),
 			this->hasFog, this->fogColor, this->fogDensity);
 
-		//masterCube->Render(cs237::vec3f(x,500,z), cs237::color4f(r, g, b, 1.0), c.projTransform(), c.ModelViewMatrix());
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
 }

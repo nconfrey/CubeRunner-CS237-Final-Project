@@ -14,7 +14,8 @@ enum WorldState { //world state
 	TITLE = 0,
 	RUNNING,
 	DEAD,
-	PAUSED
+	PAUSED,
+	WIN
 };
 
 enum EventType { //things that can cause us to change state
@@ -69,6 +70,7 @@ class World {
 		//per frame updates
 		void updateScore(float dt);
 		void updatePlayerPosition(float dt);
+		bool playerPastLevel();
 
 		//LEVELS
 		void generateLevels(View *v);
