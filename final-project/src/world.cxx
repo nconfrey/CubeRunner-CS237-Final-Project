@@ -43,19 +43,19 @@ cs237::color4f pallette9[5] = {cs237::color4f(0.5, 0.5, 0.5, 1.0), cs237::color4
 
 void World::generateLevels(View *v)
 {
-	Level *level1 = new Level(40, 1, 100, 500, 2, 60, pallette1, 5, v->Camera().position(), 100.0f, v->getSun(),
-		true, 0.00375f, false, cs237::vec3f(0.0, 1.0, 0.0), 1000.0, 110.0);
+	Level *level1 = new Level(40, 1, 100, 500, 16, 60, pallette1, 5, v->Camera().position(), 100.0f, v->getSun(),
+		true, 0.00375f, false, cs237::vec3f(0.0, 1.0, 0.0), 1200.0, 110.0);
 	
-	Level *level2 = new Level(50, 2, 300, 700, 4, 70, pallette2, 5, v->Camera().position(), 100.0f, v->getSun(),
+	Level *level2 = new Level(50, 2, 100, 700, 32, 70, pallette2, 5, v->Camera().position(), 100.0f, v->getSun(),
 		true, 0.00375, true, cs237::vec3f(0.0, 1.0, 0.0), 2300.0,  1200.0);
 
-	Level *level3 = new Level(70, 3, 300, 700, 8, 80, pallette3, 5, v->Camera().position(), 100.0f, v->getSun(),
-		true, 0.00375, false, cs237::vec3f(1.0, 0.0, 0.0), 3600.0, 2600.0);
+	Level *level3 = new Level(70, 3, 100, 700, 64, 80, pallette3, 5, v->Camera().position(), 100.0f, v->getSun(),
+		true, 0.00375, false, cs237::vec3f(1.0, 0.0, 0.0), 3600.0, 2300.0);
 
-	Level *level4 = new Level(100, 4, 300, 700, 16, 85, pallette4, 5, v->Camera().position(), 100.0f, v->getSun(),
-		true, 0.00375, false, cs237::vec3f(0.0, 1.0, 0.0), 9900.0, 3900.0);
+	Level *level4 = new Level(100, 4, 100, 700, 128, 85, pallette4, 5, v->Camera().position(), 100.0f, v->getSun(),
+		true, 0.00375, false, cs237::vec3f(0.0, 1.0, 0.0), 11000.0, 3600.0);
 
-	Level *level5 = new Level(120, 5, 300, 700, 32, 90, pallette5, 5, v->Camera().position(), 100.0f, v->getSun(),
+	Level *level5 = new Level(120, 5, 100, 700, 256, 90, pallette5, 5, v->Camera().position(), 100.0f, v->getSun(),
 		true, 0.00375, false, cs237::vec3f(0.0, 1.0, 0.0), 12000.0, 11000.0);
 
 	this->levels[0] = level1;
@@ -156,6 +156,7 @@ void World::restart()
 	this->score = 0.0f;
 	this->curAnimation = 0;
 	this->curLevel = 0;
+	this->view->skybox->Switch(curLevel);
 	this->tod = 0.0f;
 	this->tsd = 0.0f;
 	this->player->reset();
@@ -294,6 +295,7 @@ int World::handleFrame(float t, float dt)
 					this->state = WIN; //we have no more levels after this one!
 				} else {
 					(this->curLevel)++;
+					this->view->skybox->Switch(curLevel);
 				}
 			}
 			this->renderWorld(); //renders ground, player, cubes
@@ -337,7 +339,7 @@ void World::renderWorld()
 	this->view->Render(); //draw the heighfield and skybox
 	this->levels[curLevel]->RenderAllCubes(this->view->Camera(), this->inAnimation); //draw every cube in the current level
 	//if(!((curLevel + 1) >= numLevels))
-		//this->levels[curLevel+1]->RenderAllCubes(this->view->Camera(), this->inAnimation); //also draw all cubes in the upcoming level
+	//	this->levels[curLevel+1]->RenderAllCubes(this->view->Camera(), this->inAnimation); //also draw all cubes in the upcoming level
 	
 	this->player->Render(this->view->Camera()); //draw the player
 
