@@ -76,6 +76,18 @@ class Map {
     float FogDensity () const { return this->_fogDensity; }
 
 
+    //override map values with what we want for cuberunner
+    void Override()
+    {
+      this->_hScale = this->_hScale;
+      this->_vScale = this->_vScale;
+      this->_sunDir = cs237::vec3f(0.8f, 0.8f, 0.8f);
+      //this->_sunI = cs237::vec3f(0.)
+      this->_hasFog = true;
+      this->_fogColor = cs237::color3f(1.0f, 1.0f, 1.0f);
+      this->_fogDensity = 0.000075f;
+    }
+
   //! return the cell at grid cell (row, col)
     class Cell *Cell (uint32_t row, uint32_t col) const;
 
