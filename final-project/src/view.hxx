@@ -171,7 +171,8 @@ class View {
     int   _fbWid;   //!< current framebuffer width
     int   _fbHt;    //!< current framebuffer height
     int score;
-        Skybox *skybox;
+    Skybox *skybox;
+    bool _inAnimation;
   private:
     Map		*_map;		//!< the map being rendered
     class Camera _cam;		//!< tracks viewer position, etc.
