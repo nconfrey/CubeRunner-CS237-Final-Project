@@ -44,6 +44,7 @@ Text::Text(cs237::vec2f screenSize) {
 
 void Text::Render(cs237::vec2f const &screen, int score) {
 	this->_shader->Use();
+    //glDisable(GL_DEPTH_TEST);
 	//glEnable (GL_BLEND);
 	//glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	CS237_CHECK( glPolygonMode(GL_FRONT_AND_BACK, GL_FILL) );
@@ -57,7 +58,7 @@ void Text::Render(cs237::vec2f const &screen, int score) {
     cs237::setUniform (this->squishLoc, 0.0f);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
-    for (int i = 0; i < 12; ++i)
+    for (int i = 12; i >= 0; --i)
     {
         int curInt = score%10;//i==0?score%10:(score/10*i) % 10;
         score /= 10;

@@ -167,21 +167,24 @@ class View {
 
     void toggleSmoothCamType();
 
+    Text *text;
+    int   _fbWid;   //!< current framebuffer width
+    int   _fbHt;    //!< current framebuffer height
+    int score;
   private:
     Map		*_map;		//!< the map being rendered
     class Camera _cam;		//!< tracks viewer position, etc.
     float	_errorLimit;	//!< screen-space error limit
     GLFWwindow  *_window; //!< the main window
     bool	_isVis;		//!< true when this window is visible
-    int		_fbWid;		//!< current framebuffer width
-    int		_fbHt;		//!< current framebuffer height
+
     double	_lastFrameTime;	//!< time of last frame
     double	_lastStep;	//!< time of last animation step
     cs237::AABBd _mapBBox;	//!< a bounding box around the entire map
 
     Sunlight sun; //container for the light info
     Skybox *skybox;
-    Text *text;
+    
 
     cs237::mat4f modelViewMat; //!< the current model-view matrix
     cs237::mat4f projectionMat; //<! the camera's projection matrix

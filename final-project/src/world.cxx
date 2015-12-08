@@ -366,6 +366,8 @@ void World::updateScore(float dt)
 {
 	float mult = this->levels[curLevel]->getScoreMult(); //get the score multiplier from the current level
 	this->addToScore(mult * dt); //multiply it by dt and add it to the current score
+	//this->view->text->Render(cs237::vec2f(this->view->_fbWid, this->view->_fbHt), 9999);
+	this->view->score = this->getScore();
 }
 
 void World::updatePlayerPosition(float dt)
