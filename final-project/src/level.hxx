@@ -17,7 +17,7 @@ class Level {
 	public:
 		Level(int difficulty, int levelNum, float zstart, float zend, float scoreMult, float velocity,
 			  cs237::color4f * palletteColors, int nColors, cs237::vec3d playerPos, float width, Sunlight sun,
-			  bool hasFog, float fogDensity, bool wireframe, cs237::vec3f up, float zstop);
+			  bool hasFog, float fogDensity, bool wireframe, cs237::vec3f up, float zstop, float zbegin);
 		~Level();
 
 		//render a cube at every positoon in the cube positoon list
@@ -74,6 +74,7 @@ class Level {
 		bool wireframe;
 		cs237::vec3f up;
 		float zstop;
+		float zbegin;
 
 
 		//cube generation
