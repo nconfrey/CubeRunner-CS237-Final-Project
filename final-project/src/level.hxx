@@ -17,7 +17,7 @@ class Level {
 	public:
 		Level(int difficulty, int levelNum, float zstart, float zend, float scoreMult, float velocity,
 			  cs237::color4f * palletteColors, int nColors, cs237::vec3d playerPos, float width, Sunlight sun,
-			  bool hasFog, cs237::color3f fogColor, float fogDensity);
+			  bool hasFog, float fogDensity, bool wireframe, cs237::vec3f up, float zstop);
 		~Level();
 
 		//render a cube at every positoon in the cube positoon list
@@ -35,6 +35,7 @@ class Level {
 		float getZEnd() const {return this->zend;} 
 		float getScoreMult() const {return this->scoreMult;}
 		float getVelocity() const {return this->velocity;}
+		float getZStop() const {return this->zstop;}
 
 		float getNCubes() const {return this->nCubes;}
 		cs237::vec3f **getCubes() const {return this->cubePositions;}
@@ -45,14 +46,15 @@ class Level {
 		//level details
 		int difficulty; //affects number of cubes generated
 		int levelNum; //who am I???
-		float zstart; //the start of the level
-		float zend;   //the end of the level
+		float zstart; //how far from the level start cubes appear
+		float zend;   //how far from the level start cubes stop
 		float scoreMult;
 		float velocity;
 		int nColors;
 		int width;
 		cs237::color4f * palletteColors; //colors of ground, fog, and cubes
 
+		//fog
 		bool hasFog;
 		cs237::color3f fogColor;
 		float fogDensity;
@@ -67,6 +69,11 @@ class Level {
 		cs237::vec3f **cubePositions;
 		locationInPallette *cubeColors;
 		Cube * masterCube;
+
+		//crazy level customization
+		bool wireframe;
+		cs237::vec3f up;
+		float zstop;
 
 
 		//cube generation
