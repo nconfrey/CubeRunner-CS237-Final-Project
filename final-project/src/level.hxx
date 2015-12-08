@@ -16,7 +16,8 @@ class Level {
 
 	public:
 		Level(int difficulty, int levelNum, float zstart, float zend, float scoreMult, float velocity,
-			  cs237::color4f * palletteColors, int nColors, cs237::vec3d playerPos, float width, Sunlight sun);
+			  cs237::color4f * palletteColors, int nColors, cs237::vec3d playerPos, float width, Sunlight sun,
+			  bool hasFog, cs237::color3f fogColor, float fogDensity);
 		~Level();
 
 		//render a cube at every positoon in the cube positoon list
@@ -51,6 +52,10 @@ class Level {
 		int nColors;
 		int width;
 		cs237::color4f * palletteColors; //colors of ground, fog, and cubes
+
+		bool hasFog;
+		cs237::color3f fogColor;
+		float fogDensity;
 
 		//cube position list
 		//note: since every cube has the exact same mesh

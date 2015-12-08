@@ -121,5 +121,6 @@ void Player::Render(Camera c)
 {
 	Cube *curcube = this->getMeshInUse();
 
-	curcube->Render(this->getPos(), this->getColorInUse(),c.projTransform(), c.ModelViewMatrix());
+	curcube->Render(this->getPos(), this->getColorInUse(),c.projTransform(), c.ModelViewMatrix(), 
+		false, cs237::color3f(0.0, 0.0, 0.0), 0.0);
 }

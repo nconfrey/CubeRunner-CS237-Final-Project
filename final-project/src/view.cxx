@@ -174,6 +174,11 @@ void View::rotateCam(float theta, cs237::vec3f axis)
     rotateTargetVector(theta, axis);
 }
 
+void View::rotateCamAnimation(float theta, cs237::vec3f axis)
+{
+    this->_cam.rotateCam(theta, axis);
+}
+
 void View::rotateCamUpDown(float theta)
 {
   if(!smoothCam)
@@ -294,7 +299,7 @@ void View::rotateTargetTowardsStraightUp(float dt)
 {
   cs237::vec3f straightup = cs237::vec3f(0.0, 0.0, 0.0);
   float theta = dot(this->upTarget, straightup);
-  printf("theta %f\n", theta);
+  //printf("theta %f\n", theta);
   if(theta < 1.0f){
     theta = this->turnSpeed * dt * theta;
 
@@ -320,7 +325,7 @@ void View::rotateTargetTowardsStraightUp(float dt)
 //wrapper function for rotating the target up vector
 void View::rotateUpTarget(float theta)
 {
-  printf("theta is %f\n", theta);
+  //printf("theta is %f\n", theta);
   this->rotateUpTarget_inner(theta, false);
 }
 
@@ -329,7 +334,7 @@ void View::rotateUpTarget_inner(float theta, bool recursiveCall)
 {
   cs237::vec3f axis = this->_cam.getLookVec();
   float curtheta = dot(this->_cam.up(), this->upTarget);
-  printf("curtheta is %f\n", curtheta);
+  //printf("curtheta is %f\n", curtheta);
       float (signtheta) = (float)(int)((theta)/std::abs(theta));
   if((curtheta < 0.90) & !recursiveCall){
     this->rotateUpTarget_inner((-(signtheta))*theta, true);
@@ -353,6 +358,11 @@ void View::toggleSmoothCamType(){
   this->smoothRoll = ! this->smoothRoll;
 }
 
+cs237::vec3f View::getCameraLookVec()
+{
+  return this->_cam.getLookVec();
+}
+
 //=====translate camera and look at point=====/
 
 //translate cam along arbitrary axis, without rotating view at all
@@ -362,6 +372,11 @@ void View::translateCam(cs237::vec3d offset)
     this->_cam.translateCam(offset);
   else
     this->translateTarget(offset);
+}
+
+void View::translateCamAnimation(cs237::vec3d offset)
+{
+    this->_cam.translateCam(offset);
 }
 
 void View::translateCamZAxis(float dis)
@@ -512,6 +527,9 @@ void View::Render ()
 
     //DRAW GROUND
     r->Enable(this->projectionMat, this->sun);
+
+    //find out if we are past the map and have to move it forward
+    //cs237::vec3d nw = this->_map->NWCellCorner(this->_map->nRows()-1, this->_map->nCols()-1);
     glEnable(GL_PRIMITIVE_RESTART);
     glPrimitiveRestartIndex(0xffff);
     for(int row = 0; row < this->_map->nRows(); row++){
@@ -576,12 +594,12 @@ bool View::inFrustum(Tile *t)
       }
     }
       
-      printf("\n\n");
+      //printf("\n\n");
 
     if(inCount == 0)
     {
       //all the corners of the bounding box were outside of the planes
-      printf("CULLED BY FACE [%d]\n", frustPlane);
+      //printf("CULLED BY FACE [%d]\n", frustPlane);
       return false;
     }
     totalIn += somewhatIn;
@@ -608,8 +626,8 @@ float View::SSE(Tile *t)
 void View::Recursive_Render_Chunk(Tile *t, Renderer *r, int row, int col)
 {
   //check to see if this tile is in the view frustum to save time
-  if(!inFrustum(t))
-   return;
+  //if(!inFrustum(t))
+   //return;
 
   //calculate SSE
   float sse = this->SSE(t);
@@ -647,7 +665,7 @@ void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat, 
     struct Chunk const c = t->Chunk();
 
     //scales for the vertices
-    float hscale = t->Cell()->hScale() / 10.0f;
+    float hscale = t->Cell()->hScale();
     float vscale = t->Cell()->vScale();
 
     //first, check what information is already chaced for us in the tile struct
@@ -687,7 +705,7 @@ void View::Render_Chunk(Tile *t, Renderer *r, cs237::mat4f const &modelViewMat, 
     u->hscale = hscale;
     u->vscale = vscale;
     u->tw = t->Width();
-    u->nw_pos = (nw / 10.0) + cs237::vec3d(-300.0, 0.0, 0.0);
+    u->nw_pos = (nw) + cs237::vec3d(-512.0, 0.0, 0.0);
     u->nw_tile = nw_tile;
     u->hasfog = t->Cell()->_map->hasFog() & this->_fogOn;
     u->fogcolor = t->Cell()->_map->FogColor();

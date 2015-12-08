@@ -7,6 +7,7 @@
 #include "map.hxx"
 #include "player.hxx"
 #include "render.hxx"
+#include "camera-animation.hxx"
 
 
 enum WorldState { //world state
@@ -31,6 +32,7 @@ class World {
 		//a dispatch function for each event type
 		int handleEvent(EventType t);
 		int handleFrame(float t, float dt);
+		void renderAnimations(float dt);
 
 		//access member variables
 		float getScore();				//returns the player score
@@ -80,6 +82,12 @@ class World {
 
 		//VIEW
 		View *view;
+
+		//CAMERA ANIMATIONS DURING TITLE
+		void generateAnimes(View *v);
+		int nAnimations;
+		int curAnimation;
+		cameraAnimation **animes;
 
 
 
