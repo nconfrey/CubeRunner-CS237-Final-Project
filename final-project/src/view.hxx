@@ -127,6 +127,8 @@ class View {
     //calculate the model view matrix for the given camera position
     void UpdateModelViewMat ();
 
+    cs237::vec3f getCameraLookVec();
+
   //! handle resizing the view
     void Resize (int wid, int ht);
 
@@ -140,7 +142,7 @@ class View {
     bool wireframeMode () const { return this->_wireframe; }
 
   //! the view's current camera state
-    class Camera  &Camera ()  { return this->_cam; }
+    class Camera const &Camera () const { return this->_cam; }
 
     cs237::mat4f ModelViewMat() { return modelViewMat; }
     cs237::mat4f ProjectionMat() { return projectionMat; }//<! the camera's projection matrix

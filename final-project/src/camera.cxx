@@ -216,7 +216,7 @@ void Camera::rotateZ(float theta)
 void Camera::translateCam(cs237::vec3d offset)
 {
     this->_pos = this->_pos + offset;
-    //this->_dir = this->_dir + vec3dToVec3f(offset);
+    this->_dir = this->_dir + vec3dToVec3f(offset);
 }
 
 void Camera::moveZAxis(float dis)

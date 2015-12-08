@@ -357,6 +357,11 @@ void View::toggleSmoothCamType(){
   this->smoothRoll = ! this->smoothRoll;
 }
 
+cs237::vec3f View::getCameraLookVec()
+{
+  return this->_cam.getLookVec();
+}
+
 //=====translate camera and look at point=====/
 
 //translate cam along arbitrary axis, without rotating view at all
