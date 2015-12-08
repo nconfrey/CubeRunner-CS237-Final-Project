@@ -306,6 +306,9 @@ bool Map::LoadMap (std::string mapName, bool verbose)
 	}
     }
 
+    //lol
+    this->Override();
+
     return true;
 
 }

@@ -72,6 +72,8 @@ class View {
     //rotate camera around an arbitrary axis
     void rotateCam(float theta, cs237::vec3f axis);
 
+    void rotateCamAnimation(float theta, cs237::vec3f axis);
+
     void rotateCamUpDown(float theta);
 
     void rotateCamLeftRight(float theta);
@@ -85,6 +87,8 @@ class View {
 
     //translate cam along arbitrary axis, without rotating view at all
     void translateCam(cs237::vec3d offset);
+
+    void translateCamAnimation(cs237::vec3d offset);
 
     void translateCamViewAxis(float dis);
 
@@ -123,6 +127,8 @@ class View {
 
     //calculate the model view matrix for the given camera position
     void UpdateModelViewMat ();
+
+    cs237::vec3f getCameraLookVec();
 
   //! handle resizing the view
     void Resize (int wid, int ht);
