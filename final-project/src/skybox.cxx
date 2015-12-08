@@ -101,10 +101,11 @@ Skybox::Skybox(int wid, int ht)
 	this->wid = (float)wid;
 	this->ht = (float)ht;
 
+    //load initial skybox
 	this->faces = new cs237::texture2D *[6];
     for (int i = 0; i < 6; ++i)
     {
-        cs237::image2d * image = new cs237::image2d("../assets/skybox/face" + std::to_string(i+1) + ".png");
+        cs237::image2d * image = new cs237::image2d("../assets/skybox/new" + std::to_string(i+1) + ".png");
         this->faces[i] = new cs237::texture2D (GL_TEXTURE_2D, image);
         this->faces[i]->Bind();
         this->faces[i]->Parameter(GL_TEXTURE_MIN_FILTER,GL_LINEAR); 
@@ -112,6 +113,20 @@ Skybox::Skybox(int wid, int ht)
         this->faces[i]->Parameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         this->faces[i]->Parameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         this->faces[i]->Parameter(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    }
+
+    //load new level backdrops
+    this->levels = new cs237::texture2D *[5];
+    for (int i = 0; i < 5; ++i)
+    {
+        cs237::image2d * image = new cs237::image2d("../assets/skybox/level" + std::to_string(i+1) + ".png");
+        this->levels[i] = new cs237::texture2D (GL_TEXTURE_2D, image);
+        this->levels[i]->Bind();
+        this->levels[i]->Parameter(GL_TEXTURE_MIN_FILTER,GL_LINEAR); 
+        this->levels[i]->Parameter(GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+        this->levels[i]->Parameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        this->levels[i]->Parameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        this->levels[i]->Parameter(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
     }
 
     const uint32_t indices[4] = {0, 1, 2, 3};
@@ -147,6 +162,11 @@ Skybox::Skybox(int wid, int ht)
     fogDensityLoc = _shader->UniformLocation("fogDensity");
 }
 
+void Skybox::Switch(int level)
+{
+    this->faces[level] = this->levels[level];
+}
+
 void Skybox::Render(cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat, cs237::vec3d position,
                     bool hasFog, cs237::color3f fogColor, float fogDensity)
 {
@@ -166,7 +186,7 @@ void Skybox::Render(cs237::mat4f const &projectionMat, cs237::mat4f const &model
     //fog uniforms
     CS237_CHECK(cs237::setUniform(hasFogLoc, hasFog));
     CS237_CHECK(cs237::setUniform(fogColorLoc, fogColor));
-    CS237_CHECK(cs237::setUniform(fogDensityLoc, fogDensity));
+    CS237_CHECK(cs237::setUniform(fogDensityLoc, 0.0f));
 
     CS237_CHECK(glActiveTexture(GL_TEXTURE0));
     
