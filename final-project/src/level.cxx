@@ -96,7 +96,7 @@ cs237::color4f Level::getColorAt(locationInPallette l)
 
 //========================= CUBE RENDERING =========================//
 
-void Level::RenderAllCubes(Camera c)
+void Level::RenderAllCubes(Camera c, bool inAnimation)
 {
 	//Check the cubes for any that are behind the camera
 	//If they are in front of the player, render
@@ -106,7 +106,7 @@ void Level::RenderAllCubes(Camera c)
 	float x,z;
 	//int color;
 	for(int i = 0; i < this->nCubes; i++){
-		if(c.position().z > this->cubePositions[i]->z)
+		if((c.position().z > this->cubePositions[i]->z) & !inAnimation)
 		{
 			//get a random color from the number of box colors
 			//color = rand() % (this->nColors - 2);

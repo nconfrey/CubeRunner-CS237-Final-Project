@@ -80,7 +80,7 @@ class Map {
     void Override()
     {
       this->_vScale = this->_vScale * 4.0f;
-      this->_sunDir = cs237::vec3f(0.8f, 0.8f, 0.8f);
+      this->_sunDir = cs237::vec3f(0.0f, -1.0f, 0.0f);
       //this->_sunI = cs237::vec3f(0.)
       this->_hasFog = true;
       this->_fogColor = cs237::color3f(1.0f, 1.0f, 1.0f);

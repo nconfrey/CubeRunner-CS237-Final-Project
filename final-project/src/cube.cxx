@@ -28,12 +28,12 @@ Cube::Cube(Sunlight sun, float height, float width)
 
 	cs237::vec3f cubeNormals[8] = {
 
-		cs237::vec3f(  0.0f,  0.0f,  -1.0f ),
-		cs237::vec3f(  0.0f,  0.0f,  -1.0f ),
-		cs237::vec3f(  1.0f,  0.0f,  0.0f ),
-		cs237::vec3f(  0.0f, -1.0f,  1.0f ),
+		cs237::vec3f(  0.0f,  0.0f,  1.0f ),
+		cs237::vec3f(  0.0f,  1.0f,  0.0f ),
 		cs237::vec3f(  -1.0f,  0.0f,  0.0f ),
+		cs237::vec3f(  0.0f,  1.0f,  1.0f ),
 		cs237::vec3f(  1.0f,  0.0f,  0.0f ),
+		cs237::vec3f(  0.0f,  1.0f,  0.0f ),
 		cs237::vec3f(  0.0f,  0.0f,  1.0f ),
 		cs237::vec3f(  0.0f,  0.0f,  1.0f ),
 	};
