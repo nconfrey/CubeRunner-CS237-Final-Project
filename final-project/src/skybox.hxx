@@ -7,6 +7,7 @@
 class Skybox {
 
 	cs237::texture2D **faces;
+    cs237::texture2D **levels;
     Mesh **meshes;
     cs237::ShaderProgram    *_shader;
     //Holders for the memory locations of shader program variables
@@ -31,6 +32,7 @@ class Skybox {
 
     public:
     Skybox(int wid, int ht);
+    void Switch(int level);
     void Render(cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat, cs237::vec3d position,
         bool hasFog, cs237::color3f fogColor, float fogDensity);
 	

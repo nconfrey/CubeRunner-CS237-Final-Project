@@ -524,7 +524,7 @@ void View::Render ()
     //DRAW SKYBOX
     skybox->Render(this->projectionMat, this->modelViewMat, this->Camera().position(), 
       true, cs237::color3f(0.0, 0.0, 0.0), 0.0035f);
-    text->Render(cs237::vec2f(this->_fbWid, this->_fbHt));
+    text->Render(cs237::vec2f(this->_fbWid, this->_fbHt), 9999);
 
     //DRAW GROUND
     r->Enable(this->projectionMat, this->sun);
