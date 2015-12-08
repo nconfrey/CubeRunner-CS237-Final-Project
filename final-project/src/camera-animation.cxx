@@ -32,7 +32,7 @@ cameraAnimation::~cameraAnimation()
 void cameraAnimation::start()
 {
 	this->isStarted = true;
-	this->view->Camera().init(this->startingPos, this->startingLook, this->startingUp);
+	this->view->initCamera(this->startingPos, this->startingLook, this->startingUp);
 	printf("created an animation camera at %f %f %f, looking at %f %f %f, with the up vector %f %f %f\n",
 		this->startingPos[0],this->startingPos[1],this->startingPos[2],
 		this->startingLook[0],this->startingLook[1],this->startingLook[2],
@@ -91,7 +91,7 @@ void cameraAnimation::translateCam(float dt)
 
 void cameraAnimation::rotateCamTowardsTarget(float dt)
 {
-	cs237::vec3f lookvec = this->view->Camera().getLookVec();
+	cs237::vec3f lookvec = this->view->getCameraLookVec();
 
 	cs237::vec3f translatedEndingLook = this->endingLook - cs237::toFloat(this->view->Camera().position());
 

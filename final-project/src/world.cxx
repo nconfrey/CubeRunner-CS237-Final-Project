@@ -93,7 +93,7 @@ void World::restart()
 	this->tod = 0.0f;
 	this->tsd = 0.0f;
 	this->player->reset();
-	this->view->initCamera(cs237::vec3d(0.0, 20.0, -20), cs237::vec3f(0.0, 20.0f, 10.0), cs237::vec3f(0.0, 1.0, 0.0));
+	this->view->initCamera(cs237::vec3d(0.0, 20.0f, -20), cs237::vec3f(0.0, 20.0f, 10.0), cs237::vec3f(0.0, 1.0, 0.0));
 	this->generateLevels(this->view);
 }
 
@@ -209,8 +209,8 @@ int World::handleFrame(float t, float dt)
 	{
 		case TITLE:
 			//render some kind of informative screen
-			this->renderAnimations(dt);
-			this->renderWorld();
+			//this->renderAnimations(dt);
+			//this->renderWorld();
 			break;
 		case RUNNING:
 			//check if we have any collisions
