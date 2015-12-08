@@ -164,9 +164,9 @@ void Skybox::Render(cs237::mat4f const &projectionMat, cs237::mat4f const &model
     cs237::setUniform(widLoc, this->wid);
 
     //fog uniforms
-    CS237_CHECK(cs237::setUniform(hasFogLoc, hasfog));
-    CS237_CHECK(cs237::setUniform(fogColorLoc, fogcolor));
-    CS237_CHECK(cs237::setUniform(fogDensityLoc, fogdensity));
+    CS237_CHECK(cs237::setUniform(hasFogLoc, hasFog));
+    CS237_CHECK(cs237::setUniform(fogColorLoc, fogColor));
+    CS237_CHECK(cs237::setUniform(fogDensityLoc, fogDensity));
 
     CS237_CHECK(glActiveTexture(GL_TEXTURE0));
     
