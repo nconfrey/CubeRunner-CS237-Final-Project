@@ -167,6 +167,8 @@ class View {
 
     void toggleSmoothCamType();
 
+        Skybox *skybox;
+
   private:
     Map		*_map;		//!< the map being rendered
     class Camera _cam;		//!< tracks viewer position, etc.
@@ -180,7 +182,6 @@ class View {
     cs237::AABBd _mapBBox;	//!< a bounding box around the entire map
 
     Sunlight sun; //container for the light info
-    Skybox *skybox;
     Text *text;
 
     cs237::mat4f modelViewMat; //!< the current model-view matrix

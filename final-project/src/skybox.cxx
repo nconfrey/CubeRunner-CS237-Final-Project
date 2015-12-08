@@ -164,7 +164,7 @@ Skybox::Skybox(int wid, int ht)
 
 void Skybox::Switch(int level)
 {
-    this->faces[level] = this->levels[level];
+    this->faces[5] = this->levels[level];
 }
 
 void Skybox::Render(cs237::mat4f const &projectionMat, cs237::mat4f const &modelViewMat, cs237::vec3d position,
