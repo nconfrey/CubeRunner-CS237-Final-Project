@@ -33,9 +33,9 @@ Text::Text(cs237::vec2f screenSize) {
 
 void Text::Render(cs237::vec2f const &screen) {
 	this->_shader->Use();
-	//glEnable (GL_BLEND);
-	//glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	CS237_CHECK( glPolygonMode(GL_FRONT_AND_BACK, GL_FILL) );
+	glEnable (GL_BLEND);
+	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//CS237_CHECK( glPolygonMode(GL_FRONT_AND_BACK, GL_FILL) );
 
 	glBindVertexArray(this->vaoId);
 	CS237_CHECK(glActiveTexture(GL_TEXTURE0));
@@ -43,4 +43,6 @@ void Text::Render(cs237::vec2f const &screen) {
     cs237::setUniform (this->texLoc, 0);
     cs237::setUniform (this->screenLoc, screen);
     glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    //CS237_CHECK( glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) );
 }
