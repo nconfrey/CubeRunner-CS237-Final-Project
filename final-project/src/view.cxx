@@ -101,6 +101,7 @@ void View::Init (int wid, int ht)
     /* YOUR CODE HERE */
     this->InitRenderers();
     this->skybox = new Skybox(wid,ht);
+    this->text = new Text(cs237::vec2f(wid, ht));
 
     /* ADDITIONAL INITIALIZATION */
     this->projectionMat = this->Camera().projTransform();
@@ -522,6 +523,7 @@ void View::Render ()
 
     //DRAW SKYBOX
     skybox->Render(this->projectionMat, this->modelViewMat, this->Camera().position());
+    text->Render(cs237::vec2f(this->_fbWid, this->_fbHt));
 
     //DRAW GROUND
     r->Enable(this->projectionMat, this->sun);

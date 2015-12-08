@@ -20,6 +20,7 @@
 #include "render.hxx"
 #include "map-cell.hxx"
 #include "skybox.hxx"
+#include "text.hxx"
 
 #define SIN_ONE_DEGREE  0.0174524064373f
 #define COS_ONE_DEGREE  0.999847695156f
@@ -180,6 +181,7 @@ class View {
 
     Sunlight sun; //container for the light info
     Skybox *skybox;
+    Text *text;
 
     cs237::mat4f modelViewMat; //!< the current model-view matrix
     cs237::mat4f projectionMat; //<! the camera's projection matrix
