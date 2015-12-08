@@ -122,7 +122,7 @@ void View::Init (int wid, int ht)
     this->_lastFrameTime = glfwGetTime();
 
     //logic intialization
-    this->_wireframe = true;
+    this->_wireframe = false;
     this->_lightingOn = true;
     this->_fogOn = true;
 
