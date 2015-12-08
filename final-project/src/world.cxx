@@ -134,6 +134,7 @@ World::World(View *v)
 	this->animes = new cameraAnimation *[NANIMES];
 	this->generateAnimes(view);
 	this->inAnimation = true;
+	this->view->_inAnimation = true;
 
 	//set the state to title screen
 	this->state = TITLE;
@@ -201,6 +202,7 @@ int World::handleEventNEWGAME()
 			cur->stop();
 			this->restart(); 
 			this->inAnimation = false;
+			this->view->_inAnimation = false;
 			this->state = RUNNING;
 			return 0;
 		case DEAD: 
@@ -261,9 +263,11 @@ int World::handleEventBACKTOTITLE()
 		case DEAD:
 			this->state = TITLE;
 			this->inAnimation = true;
+			this->view->_inAnimation = true;
 			return 0;
 		case PAUSED:
 			this->inAnimation = true;
+			this->view->_inAnimation = true;
 			this->state = TITLE;
 			return 0;
 		default:
