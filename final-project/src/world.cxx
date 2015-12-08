@@ -2,7 +2,7 @@
 
 #define OFFSET 1
 #define NLEVELS 1
-#define NANIMES 4
+#define NANIMES 5
 
 //========================= LEVEL MAKER =========================//
 cs237::color4f pallette1[5] = {cs237::color4f(0.5, 0.5, 0.5, 1.0), cs237::color4f(0.0, 0.0, 0.0,1.0), 
@@ -19,6 +19,7 @@ void World::generateAnimes(View *v)
 {
 	cs237::vec3f up1 = cs237::vec3f(0.0, 1.0, 0.0);
 	cs237::vec3f up2 = cs237::vec3f(0.0, 0.0, 1.0);
+	//cs237::vec3f up3 = cs237::vec3f();
 	cameraAnimation *anime1 = new cameraAnimation(cs237::vec3d(-100.0, 20.0, 100.0), cs237::vec3d(-100.0, 20.0, 100.0),
 												  cs237::vec3f(-100.0, 20.0, 120.0), cs237::vec3f(-60.0, 20.0, 117.0),
 												  up1, up1,
@@ -34,15 +35,21 @@ void World::generateAnimes(View *v)
 											 	  up1, up1,
 											 	  5.0f, 5.0f, 5.0f,
 											      view);
-	cameraAnimation *anime4 = new cameraAnimation(cs237::vec3d(0.0, 300.0, 300.0), cs237::vec3d(0.0, 300.0, 300.0),
+	cameraAnimation *anime5 = new cameraAnimation(cs237::vec3d(0.0, 300.0, 300.0), cs237::vec3d(0.0, 300.0, 300.0),
 												  cs237::vec3f(-50.0, 20.0, 300.0), cs237::vec3f(50.0, 20.0, 300.0),
 												  up2, up2,
 												  5.0f, 2.0f, 5.0f,
+												  view);
+	cameraAnimation *anime4 = new cameraAnimation(cs237::vec3d(0.0, 18.0, 100.0), cs237::vec3d(0.0, 18.0, 100.0),
+												  cs237::vec3f(-50.0, 18.0, 150.0), cs237::vec3f(-50.0, 200.0, 150.0),
+												  up1, up1,
+												  5.0f, 5.0f, 5.0f,
 												  view);
 	this->animes[0] = anime1;
 	this->animes[1] = anime2;
 	this->animes[2] = anime3;
 	this->animes[3] = anime4;
+	this->animes[4] = anime5;
 }
 
 
