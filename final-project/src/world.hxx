@@ -88,6 +88,7 @@ class World {
 		int nAnimations;
 		int curAnimation;
 		cameraAnimation **animes;
+		bool inAnimation;
 
 
 
