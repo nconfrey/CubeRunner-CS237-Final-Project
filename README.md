@@ -4,10 +4,10 @@ The assignment was to build on our knowledge of OpenGl gained throughout the qua
 
 ##Controls:
 
-N - New Game
-Left/Right keys: Move Player
-Up Key: God/Invincible Mode
-T - Go back to title screen
+- N - New Game
+- Left/Right keys: Move Player
+- Up Key: God/Invincible Mode
+- T - Go back to title screen
 
 ##Installation:
 
