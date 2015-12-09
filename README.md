@@ -15,10 +15,14 @@ T - Go back to title screen
 - Run on the correct map by 
 	"./proj5 ../assets/heightmap/map-1414"
 
+###Dynamic Level Generation
 ![Alt text](/final-project/assets/ScreenShot1.png?raw=true "Dynamic Level Generation")
 
+###Full Game State Engine
 ![Alt text](/final-project/assets/ScreenShot2.png?raw=true "Full Game State Engine")
 
+###Chunked Level of Detail Heightmap Generation
 ![Alt text](/final-project/assets/ScreenShot3.png?raw=true "Chunked Level of Detail Heightmap Generation")
 
+###Smooth Vector Based Camera Animation
 ![Alt text](/final-project/assets/ScreenShot4.png?raw=true "Smooth Vector Based Camera Animation")
